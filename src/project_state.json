@@ -1,0 +1,302 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 13,
+  "summary": "Build a ReactJS game replicating an existing reference game with the same layout/UI design and functionality, delivered as a step-by-step implementation guide.",
+  "architectural_notes": [
+    "Gameplay needs basic 2D physics/collision handling: border reflection and obstacle-obstacle response, plus bullet-obstacle and player-obstacle collisions.",
+    "User preference: player ship + on-screen joystick + SHOOT button should be rendered via code (CSS/SVG/canvas), not static image assets; visuals should be bright/attractive neon style."
+  ],
+  "known_issues": [
+    "On-screen joystick, SHOOT button, and gameplay borders are currently not visible (UI rendering bug).",
+    "Gameplay controls UI still not visible: user reports on-screen joystick and SHOOT button are not appearing during gameplay (likely persists even after latest deploy)."
+  ],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-implement-a-mobile-first-start-menu-screen-that-visually-matches-the-uploaded-reference-screenshots-including-1-neon-space-starfield-background-2-large-stacked-title-text-space-and-shooter-with-glow-3-a-logo-mark-above-the-title-4-a-high-score-card-showing-a-trophy-icon-and-a-numeric-score-5-a-prominent-start-game-button-and-6-instruction-panels-describing-desktop-and-mobile-controls-and-an-auto-save-note",
+      "title": "Implement a mobile-first Start/Menu screen that visually matches the uploaded reference screenshots, including: (1) neon space/starfield background, (2) large stacked title text “SPACE” and “SHOOTER” with glow, (3) a logo mark above the title, (4) a “High Score” card showing a trophy icon and a numeric score, (5) a prominent “START GAME” button, and (6) instruction panels describing desktop and mobile controls and an auto-save note.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-core-gameplay-screen-in-landscape-layout-to-match-the-reference-starfield-background-hud-cards-for-score-top-left-and-level-top-right-a-centered-top-circular-pause-button-and-a-centered-top-progress-xp-bar-labeled-like-lvl-1-with-a-percent-indicator",
+      "title": "Implement the core Gameplay screen in landscape layout to match the reference: starfield background; HUD cards for Score (top-left) and Level (top-right); a centered top circular Pause button; and a centered top progress/XP bar labeled like “LVL 1” with a percent indicator.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-player-controls-matching-the-reference-behavior-desktop-controls-arrow-keys-wasd-movement-space-to-shoot-and-mobile-controls-on-screen-joystick-for-movement-at-bottom-right-and-a-large-shoot-button-at-bottom-left",
+      "title": "Implement player controls matching the reference behavior: Desktop controls (Arrow Keys/WASD movement, Space to shoot) and Mobile controls (on-screen joystick for movement at bottom-right and a large “SHOOT” button at bottom-left).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-basic-space-shooter-gameplay-loop-a-player-ship-bullets-fired-by-the-player-enemies-targets-that-spawn-over-time-collision-detection-bullet-enemy-and-optionally-enemy-player-scoring-rules-and-a-game-over-reset-flow-that-returns-to-the-start-menu-screen-while-preserving-high-score",
+      "title": "Implement the basic space shooter gameplay loop: a player ship, bullets fired by the player, enemies/targets that spawn over time, collision detection (bullet-enemy and optionally enemy-player), scoring rules, and a game-over/reset flow that returns to the Start/Menu screen while preserving High Score.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-persist-player-progress-via-auto-save-store-at-minimum-the-high-score-and-optionally-the-last-unlocked-level-progress-so-that-refreshing-the-page-retains-it-matching-the-reference-s-auto-saved-messaging",
+      "title": "Persist player progress via auto-save: store at minimum the High Score (and optionally the last unlocked level/progress) so that refreshing the page retains it, matching the reference’s “auto-saved” messaging.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-provide-a-step-by-step-implementation-guide-inside-the-repository-e-g-a-docs-page-or-readme-section-that-explains-how-the-game-is-structured-screens-game-loop-controls-persistence-and-how-to-run-it-locally-with-the-ic-template",
+      "title": "Provide a step-by-step implementation guide inside the repository (e.g., a docs page or README section) that explains how the game is structured (screens, game loop, controls, persistence) and how to run it locally with the IC template.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-match-the-reference-visual-style-consistently-across-screens-neon-glow-space-theme-with-glassmorphism-cards-rounded-corners-soft-outer-glow-and-starfield-background-ensure-all-ui-is-consistent-and-polished",
+      "title": "Match the reference visual style consistently across screens: neon/glow space theme with glassmorphism cards, rounded corners, soft outer glow, and starfield background; ensure all UI is consistent and polished.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-generated-static-image-assets-required-to-reproduce-the-ui-background-icons-logo-ship-joystick-buttons-into-frontend-public-assets-generated-and-render-them-from-the-frontend-without-routing-through-the-backend",
+      "title": "Add generated static image assets required to reproduce the UI (background, icons, logo, ship, joystick, buttons) into frontend/public/assets/generated and render them from the frontend without routing through the backend.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-gameplay-ui-rendering-so-the-on-screen-joystick-shoot-button-and-gameplay-borders-are-visible-during-gameplay-on-touch-devices",
+      "title": "Fix gameplay UI rendering so the on-screen joystick, SHOOT button, and gameplay borders are visible during gameplay on touch devices.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-obstacle-enemy-physics-so-obstacles-reflect-bounce-in-the-opposite-direction-when-colliding-with-the-gameplay-borders-instead-of-disappearing-off-screen",
+      "title": "Implement obstacle (enemy) physics so obstacles reflect/bounce in the opposite direction when colliding with the gameplay borders instead of disappearing off-screen.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-obstacle-to-obstacle-collision-response-so-that-when-two-obstacles-collide-they-reflect-away-from-each-other-swap-reflect-velocities-instead-of-overlapping",
+      "title": "Implement obstacle-to-obstacle collision response so that when two obstacles collide, they reflect away from each other (swap/reflect velocities) instead of overlapping.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-hold-to-fire-continuous-shooting-from-the-front-header-of-the-player-ship-while-allowing-simultaneous-movement-via-joystick-touch-or-keyboard",
+      "title": "Implement hold-to-fire continuous shooting from the front/header of the player ship while allowing simultaneous movement via joystick (touch) or keyboard.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-three-bullet-sizes-small-medium-large-and-render-them-distinctly-during-gameplay",
+      "title": "Add three bullet sizes (small, medium, large) and render them distinctly during gameplay.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-three-obstacle-sizes-small-medium-large-and-update-bullet-vs-obstacle-collision-so-obstacles-explode-blast-on-hit-and-scoring-is-based-on-obstacle-size-small-5-medium-10-large-15",
+      "title": "Add three obstacle sizes (small/medium/large) and update bullet-vs-obstacle collision so obstacles explode/blast on hit and scoring is based on obstacle size: small=5, medium=10, large=15.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-player-collision-with-any-obstacle-immediately-triggers-game-over",
+      "title": "Ensure player collision with any obstacle immediately triggers Game Over.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-level-progression-tied-to-the-progress-xp-bar-so-that-when-it-fills-the-ui-displays-a-level-completion-message-like-level-1-completed-and-advances-to-the-next-level-continuing-up-to-n-levels",
+      "title": "Update level progression tied to the progress/XP bar so that when it fills, the UI displays a level-completion message like \"Level 1 completed\" and advances to the next level, continuing up to N levels.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-gameplay-ui-rendering-issue-so-that-on-touch-devices-the-on-screen-joystick-bottom-right-shoot-button-bottom-left-and-gameplay-border-are-consistently-visible-and-usable-during-gameplay-including-after-pause-resume-and-orientation-resize-changes",
+      "title": "Fix the gameplay UI rendering issue so that on touch devices the on-screen joystick (bottom-right), SHOOT button (bottom-left), and gameplay border are consistently visible and usable during gameplay, including after pause/resume and orientation/resize changes.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-on-screen-touch-controls-bottom-left-shoot-button-and-bottom-right-joystick-reliably-render-and-remain-visible-during-gameplay-on-touch-devices-including-after-orientation-changes-viewport-resizes-and-pause-resume-transitions",
+      "title": "Ensure the on-screen touch controls (bottom-left SHOOT button and bottom-right joystick) reliably render and remain visible during gameplay on touch devices, including after orientation changes, viewport resizes, and pause/resume transitions.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-touch-control-overlay-stacking-and-interaction-so-the-canvas-and-other-layers-cannot-occlude-or-intercept-pointer-events-meant-for-the-touch-controls",
+      "title": "Fix touch-control overlay stacking and interaction so the canvas and other layers cannot occlude or intercept pointer events meant for the touch controls.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-improve-mobile-viewport-sizing-so-gameplay-and-fixed-position-overlays-including-touch-controls-are-not-pushed-off-screen-by-mobile-browser-ui-address-bar-toolbars-and-dynamic-viewport-height-changes",
+      "title": "Improve mobile viewport sizing so gameplay and fixed-position overlays (including touch controls) are not pushed off-screen by mobile browser UI (address bar/toolbars) and dynamic viewport height changes.",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-developer-only-diagnostic-mode-enabled-via-a-url-parameter-that-forces-touch-controls-to-render-and-shows-a-small-on-screen-debug-readout-for-touch-detection-and-layer-stacking-during-gameplay",
+      "title": "Add a developer-only diagnostic mode (enabled via a URL parameter) that forces touch controls to render and shows a small on-screen debug readout for touch detection and layer stacking during gameplay.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-gameplay-input-system-so-the-on-screen-joystick-and-shoot-button-render-and-work-on-both-mobile-and-desktop-by-default-not-only-on-touch-devices-while-keeping-keyboard-controls-functional-on-desktop",
+      "title": "Update the gameplay input system so the on-screen Joystick and SHOOT button render and work on both mobile and desktop by default (not only on touch devices), while keeping keyboard controls functional on desktop.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-when-both-keyboard-and-on-screen-controls-are-available-combine-inputs-so-movement-uses-the-strongest-active-direction-from-either-input-method-and-shooting-activates-if-either-space-is-held-or-the-on-screen-shoot-button-is-pressed",
+      "title": "When both keyboard and on-screen controls are available, combine inputs so movement uses the strongest/active direction from either input method and shooting activates if either Space is held or the on-screen SHOOT button is pressed.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-on-screen-controls-remain-visually-above-the-gameplay-canvas-and-are-interactable-on-both-mobile-and-desktop-including-after-pause-resume-transitions-and-viewport-orientation-changes",
+      "title": "Ensure the on-screen controls remain visually above the gameplay canvas and are interactable on both mobile and desktop, including after pause/resume transitions and viewport/orientation changes.",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-on-screen-joystick-ui-to-be-fully-code-rendered-no-img-assets-while-keeping-the-existing-joystick-input-behavior-and-event-lifecycle-intact",
+      "title": "Replace the on-screen Joystick UI to be fully code-rendered (no <img> assets), while keeping the existing joystick input behavior and event lifecycle intact.",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-on-screen-shoot-button-ui-to-be-fully-code-rendered-no-icon-image-assets-while-keeping-the-existing-press-hold-release-behavior-and-event-coverage-intact",
+      "title": "Replace the on-screen SHOOT button UI to be fully code-rendered (no icon image assets), while keeping the existing press/hold/release behavior and event coverage intact.",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-player-ship-rendering-in-the-gameplay-canvas-to-be-fully-code-rendered-no-ship-image-asset-preserving-rotation-behavior-and-overall-readability-at-different-player-radii",
+      "title": "Replace the player ship rendering in the gameplay canvas to be fully code-rendered (no ship image asset), preserving rotation behavior and overall readability at different player radii.",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-dependencies-on-generated-image-assets-for-the-joystick-shoot-button-icon-and-player-ship-without-affecting-other-existing-generated-assets-e-g-space-background-logo-mark-trophy-icon",
+      "title": "Remove dependencies on generated image assets for the joystick, shoot button icon, and player ship, without affecting other existing generated assets (e.g., space background, logo mark, trophy icon).",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Recreate the referenced game in ReactJS with identical layout/UI design and functionality, provided step-by-step",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Add backend APIs in the single Motoko actor to support saving/loading game stats for a user (at least High Score). Use stable storage so the data survives canister upgrades.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Fix UI rendering so the on-screen joystick, SHOOT button, and gameplay borders are visible on the gameplay screen",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Implement obstacle physics: bounce/reflect off screen borders and reflect when two obstacles collide",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Implement hold-to-fire continuous shooting from the front/header of the player ship; allow simultaneous joystick movement while shooting",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Implement collision rules: player hitting an obstacle triggers Game Over; bullets hitting obstacles cause a blast/explosion and add score",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Add 3 obstacle sizes (small/medium/large) with scoring: small=5, medium=10, large=15 when destroyed by bullets",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Implement level progression tied to the progress/XP bar: when filled, display 'Level X completed' and advance to next level up to N",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Replace image-based player ship, joystick, and SHOOT button with code-rendered UI (e.g., CSS/SVG/canvas) that looks bright/attractive and matches the neon style",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "2d",
+  "projectName": "Recreate the referenced Space Shooter game UI and core gameplay in React (IC template)",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

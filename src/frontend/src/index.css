@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --radius: 0.625rem;
+        --background: 0.08 0.02 270;
+        --foreground: 0.95 0.01 270;
+        --card: 0.12 0.03 270;
+        --card-foreground: 0.95 0.01 270;
+        --popover: 0.12 0.03 270;
+        --popover-foreground: 0.95 0.01 270;
+        --primary: 0.55 0.25 300;
+        --primary-foreground: 0.98 0.01 270;
+        --secondary: 0.20 0.05 270;
+        --secondary-foreground: 0.95 0.01 270;
+        --muted: 0.25 0.05 270;
+        --muted-foreground: 0.60 0.05 270;
+        --accent: 0.50 0.28 180;
+        --accent-foreground: 0.98 0.01 270;
+        --destructive: 0.55 0.25 20;
+        --destructive-foreground: 0.98 0.01 270;
+        --border: 0.25 0.10 270;
+        --input: 0.25 0.10 270;
+        --ring: 0.55 0.25 300;
+        --chart-1: 0.55 0.25 300;
+        --chart-2: 0.50 0.28 180;
+        --chart-3: 0.60 0.25 330;
+        --chart-4: 0.65 0.20 60;
+        --chart-5: 0.50 0.22 200;
+        
+        /* Dynamic viewport height variable */
+        --app-dvh: 100vh;
+    }
+
+    .dark {
+        --background: 0.08 0.02 270;
+        --foreground: 0.95 0.01 270;
+        --card: 0.12 0.03 270;
+        --card-foreground: 0.95 0.01 270;
+        --popover: 0.15 0.03 270;
+        --popover-foreground: 0.95 0.01 270;
+        --primary: 0.55 0.25 300;
+        --primary-foreground: 0.98 0.01 270;
+        --secondary: 0.20 0.05 270;
+        --secondary-foreground: 0.95 0.01 270;
+        --muted: 0.25 0.05 270;
+        --muted-foreground: 0.60 0.05 270;
+        --accent: 0.50 0.28 180;
+        --accent-foreground: 0.98 0.01 270;
+        --destructive: 0.55 0.25 20;
+        --destructive-foreground: 0.98 0.01 270;
+        --border: 0.25 0.10 270;
+        --input: 0.25 0.10 270;
+        --ring: 0.55 0.25 300;
+        --chart-1: 0.55 0.25 300;
+        --chart-2: 0.50 0.28 180;
+        --chart-3: 0.60 0.25 330;
+        --chart-4: 0.65 0.20 60;
+        --chart-5: 0.50 0.22 200;
+    }
+
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+        font-feature-settings: "rlig" 1, "calt" 1;
+    }
+}
+
+@layer utilities {
+    /* Gameplay root container using dynamic viewport height */
+    .gameplay-root {
+        height: var(--app-dvh);
+        min-height: var(--app-dvh);
+    }
+
+    /* Touch Controls Overlay - Fixed positioning with high z-index, always above canvas */
+    .touch-controls-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        pointer-events: none;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    /* Touch control positioning with safe-area support */
+    .touch-control-left {
+        position: absolute;
+        bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));
+        left: max(1.5rem, env(safe-area-inset-left, 1.5rem));
+        pointer-events: auto;
+        z-index: 51;
+    }
+
+    .touch-control-right {
+        position: absolute;
+        bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));
+        right: max(1.5rem, env(safe-area-inset-right, 1.5rem));
+        pointer-events: auto;
+        z-index: 51;
+    }
+
+    /* Debug overlay for touch controls */
+    .touch-debug-overlay {
+        position: fixed;
+        top: max(1rem, env(safe-area-inset-top, 1rem));
+        right: max(1rem, env(safe-area-inset-right, 1rem));
+        z-index: 60;
+        padding: 0.75rem 1rem;
+        background: oklch(0.12 0.03 270 / 0.9);
+        border: 1px solid oklch(0.50 0.28 180 / 0.3);
+        border-radius: 0.5rem;
+        backdrop-filter: blur(8px);
+        pointer-events: none;
+    }
+
+    /* Glass card effect */
+    .glass-card {
+        background: oklch(0.12 0.03 270 / 0.8);
+        backdrop-filter: blur(16px);
+        border: 1px solid oklch(0.25 0.10 270 / 0.3);
+    }
+
+    /* Neon text and element shadows */
+    .drop-shadow-neon-cyan {
+        filter: drop-shadow(0 0 8px oklch(0.75 0.20 195 / 0.6));
+    }
+
+    .drop-shadow-neon-purple {
+        filter: drop-shadow(0 0 8px oklch(0.65 0.28 300 / 0.6));
+    }
+
+    .drop-shadow-neon-magenta {
+        filter: drop-shadow(0 0 8px oklch(0.65 0.30 330 / 0.6));
+    }
+
+    /* Box shadow variants for neon glow effects */
+    .shadow-neon-cyan {
+        box-shadow: 0 0 10px oklch(0.75 0.20 195 / 0.4),
+                    0 0 20px oklch(0.75 0.20 195 / 0.2);
+    }
+
+    .shadow-neon-cyan-lg {
+        box-shadow: 0 0 15px oklch(0.75 0.20 195 / 0.5),
+                    0 0 30px oklch(0.75 0.20 195 / 0.3),
+                    0 0 45px oklch(0.75 0.20 195 / 0.1);
+    }
+
+    .shadow-neon-magenta {
+        box-shadow: 0 0 10px oklch(0.65 0.30 330 / 0.4),
+                    0 0 20px oklch(0.65 0.30 330 / 0.2);
+    }
+
+    .shadow-neon-magenta-lg {
+        box-shadow: 0 0 15px oklch(0.65 0.30 330 / 0.5),
+                    0 0 30px oklch(0.65 0.30 330 / 0.3),
+                    0 0 45px oklch(0.65 0.30 330 / 0.1);
+    }
+
+    .shadow-neon-magenta-xl {
+        box-shadow: 0 0 20px oklch(0.65 0.30 330 / 0.6),
+                    0 0 40px oklch(0.65 0.30 330 / 0.4),
+                    0 0 60px oklch(0.65 0.30 330 / 0.2);
+    }
+}

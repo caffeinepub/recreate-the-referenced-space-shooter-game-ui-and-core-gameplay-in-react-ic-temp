@@ -1,0 +1,85 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-replace-the-on-screen-joystick-ui-to-be-fully-code-rendered-no-img-assets-while-keeping-the-existing-joystick-input-behavior-and-event-lifecycle-intact",
+      "featureTitle": "Replace the on-screen Joystick UI to be fully code-rendered (no <img> assets), while keeping the existing joystick input behavior and event lifecycle intact.",
+      "files": [
+        "frontend/src/game/controls/Joystick.tsx",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-26"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-replace-the-on-screen-shoot-button-ui-to-be-fully-code-rendered-no-icon-image-assets-while-keeping-the-existing-press-hold-release-behavior-and-event-coverage-intact",
+      "featureTitle": "Replace the on-screen SHOOT button UI to be fully code-rendered (no icon image assets), while keeping the existing press/hold/release behavior and event coverage intact.",
+      "files": [
+        "frontend/src/game/controls/ShootButton.tsx",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-27"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-replace-the-player-ship-rendering-in-the-gameplay-canvas-to-be-fully-code-rendered-no-ship-image-asset-preserving-rotation-behavior-and-overall-readability-at-different-player-radii",
+      "featureTitle": "Replace the player ship rendering in the gameplay canvas to be fully code-rendered (no ship image asset), preserving rotation behavior and overall readability at different player radii.",
+      "files": [
+        "frontend/src/game/render/GameCanvas.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-28"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-remove-dependencies-on-generated-image-assets-for-the-joystick-shoot-button-icon-and-player-ship-without-affecting-other-existing-generated-assets-e-g-space-background-logo-mark-trophy-icon",
+      "featureTitle": "Remove dependencies on generated image assets for the joystick, shoot button icon, and player ship, without affecting other existing generated assets (e.g., space background, logo mark, trophy icon).",
+      "files": [
+        "frontend/src/game/controls/Joystick.tsx",
+        "frontend/src/game/controls/ShootButton.tsx",
+        "frontend/src/game/render/GameCanvas.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-29"
+      ],
+      "confidence": "high"
+    }
+  ]
+}
