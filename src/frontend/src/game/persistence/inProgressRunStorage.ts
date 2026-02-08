@@ -1,6 +1,6 @@
 import type { GamePhase } from '../types';
 
-interface InProgressRunData {
+export interface LocalRunData {
   currentScore: number;
   currentLevel: number;
   progress: number;
@@ -9,6 +9,9 @@ interface InProgressRunData {
   destroyedNormalObstacles: number;
   bossProgressPct: number;
   timeRemainingSeconds: number;
+}
+
+interface InProgressRunData extends LocalRunData {
   timestamp: number;
   version: number;
 }
@@ -16,7 +19,7 @@ interface InProgressRunData {
 const STORAGE_KEY = 'space-shooter-in-progress-run';
 const CURRENT_VERSION = 2;
 
-export function saveInProgressRun(data: Omit<InProgressRunData, 'timestamp' | 'version'>): void {
+export function saveInProgressRun(data: LocalRunData): void {
   try {
     const payload: InProgressRunData = {
       ...data,
@@ -29,7 +32,7 @@ export function saveInProgressRun(data: Omit<InProgressRunData, 'timestamp' | 'v
   }
 }
 
-export function loadInProgressRun(): InProgressRunData | null {
+export function loadInProgressRun(): LocalRunData | null {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return null;
@@ -42,7 +45,9 @@ export function loadInProgressRun(): InProgressRunData | null {
       return null;
     }
 
-    return data;
+    // Return without timestamp and version
+    const { timestamp, version, ...localData } = data;
+    return localData;
   } catch (error) {
     console.error('Failed to load in-progress run:', error);
     return null;

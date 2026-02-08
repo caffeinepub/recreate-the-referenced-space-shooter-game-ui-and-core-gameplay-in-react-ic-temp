@@ -1,11 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Match the in-game touch controls layout and styling (joystick + shoot button) to the provided reference image.
+**Goal:** Make the on-screen touch controls (joystick and SHOOT button) reliably visible in production on top of the gameplay view when `showTouchControls` is enabled.
 
 **Planned changes:**
-- Swap the on-screen touch controls positions during gameplay so the **SHOOT** button is anchored bottom-left and the joystick is anchored bottom-right, respecting safe-area insets.
-- Update the shoot button presentation to match the reference: label text **"SHOOT"** (not "FIRE") and a bright neon-magenta/pink circular button with clear icon/label contrast.
-- Update the joystick presentation to match the reference: bright neon-cyan/teal circular base with a distinct inner knob, while preserving existing drag/clamp and recenter behavior and ensuring it remains above the game canvas.
+- Adjust frontend layout/CSS for the touch-controls overlay to ensure correct positioning (bottom-left joystick, bottom-right SHOOT), sizing, safe-area padding, and stacking order so it renders above the gameplay canvas/HUD.
+- Fix any styling/class/stacking-context issues that can leave controls in the DOM but not visibly rendered (e.g., opacity/visibility, off-screen positioning, zero-size, clipping, z-index).
+- Add a minimal regression check/manual verification path to confirm that when `showTouchControls` is true the controls render with non-zero size and are visible in-viewport (including a simple debug path such as `?debugControls=1`).
 
-**User-visible outcome:** On touch devices (and when touch controls are shown), players see a neon **SHOOT** button on the bottom-left and a neon-cyan joystick on the bottom-right, with the same movement and shooting behavior as before.
+**User-visible outcome:** On touch-capable mobile devices in landscape during active gameplay, the joystick and SHOOT button appear on-screen (without special forcing), stay on top of the game view, and remain tappable near screen edges including safe-area regions.

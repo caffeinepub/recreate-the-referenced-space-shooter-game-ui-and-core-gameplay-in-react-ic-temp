@@ -7,17 +7,18 @@ interface JoystickProps {
 export default function Joystick({ onMove }: JoystickProps) {
   const baseRef = useRef<HTMLDivElement>(null);
   const [knobPosition, setKnobPosition] = useState({ x: 0, y: 0 });
-  const isDraggingRef = useRef(false);
-  const maxDistanceRef = useRef(40); // Will be updated based on actual size
+  const activePointerRef = useRef<number | null>(null);
+  const maxDistanceRef = useRef(40);
 
   useEffect(() => {
     if (!baseRef.current) return;
 
     const base = baseRef.current;
+
     // Calculate max distance based on actual rendered size
     const updateMaxDistance = () => {
       const rect = base.getBoundingClientRect();
-      maxDistanceRef.current = rect.width * 0.35; // 35% of base width
+      maxDistanceRef.current = rect.width * 0.35;
     };
     updateMaxDistance();
 
@@ -42,37 +43,55 @@ export default function Joystick({ onMove }: JoystickProps) {
     };
 
     const handleEnd = () => {
-      isDraggingRef.current = false;
+      activePointerRef.current = null;
       setKnobPosition({ x: 0, y: 0 });
       onMove(0, 0);
     };
 
-    const handleTouchStart = (e: TouchEvent) => {
+    const handlePointerDown = (e: PointerEvent) => {
+      // Only respond if no pointer is active
+      if (activePointerRef.current !== null) return;
+      
       e.preventDefault();
-      isDraggingRef.current = true;
-      const touch = e.touches[0];
-      handleMove(touch.clientX, touch.clientY);
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!isDraggingRef.current) return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      handleMove(touch.clientX, touch.clientY);
-    };
-
-    const handleMouseDown = (e: MouseEvent) => {
-      e.preventDefault();
-      isDraggingRef.current = true;
+      activePointerRef.current = e.pointerId;
+      base.setPointerCapture(e.pointerId);
       handleMove(e.clientX, e.clientY);
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDraggingRef.current) return;
+    const handlePointerMove = (e: PointerEvent) => {
+      // Only respond to the active pointer
+      if (activePointerRef.current !== e.pointerId) return;
+      
+      e.preventDefault();
       handleMove(e.clientX, e.clientY);
     };
 
-    // Reset on visibility/orientation changes to prevent stuck state
+    const handlePointerUp = (e: PointerEvent) => {
+      // Only respond to the active pointer
+      if (activePointerRef.current !== e.pointerId) return;
+      
+      e.preventDefault();
+      if (base.hasPointerCapture(e.pointerId)) {
+        base.releasePointerCapture(e.pointerId);
+      }
+      handleEnd();
+    };
+
+    const handlePointerCancel = (e: PointerEvent) => {
+      // Only respond to the active pointer
+      if (activePointerRef.current !== e.pointerId) return;
+      
+      handleEnd();
+    };
+
+    const handleLostPointerCapture = (e: PointerEvent) => {
+      // Only respond to the active pointer
+      if (activePointerRef.current !== e.pointerId) return;
+      
+      handleEnd();
+    };
+
+    // Reset on visibility/orientation/resize/blur changes to prevent stuck state
     const handleVisibilityChange = () => {
       if (document.hidden) {
         handleEnd();
@@ -84,29 +103,44 @@ export default function Joystick({ onMove }: JoystickProps) {
       setTimeout(updateMaxDistance, 100);
     };
 
-    // Attach listeners
-    base.addEventListener('touchstart', handleTouchStart, { passive: false });
-    base.addEventListener('touchmove', handleTouchMove, { passive: false });
-    base.addEventListener('touchend', handleEnd, { passive: false });
-    base.addEventListener('touchcancel', handleEnd, { passive: false });
-    base.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleEnd);
+    const handleResize = () => {
+      handleEnd();
+      setTimeout(updateMaxDistance, 100);
+    };
+
+    const handleBlur = () => {
+      handleEnd();
+    };
+
+    const handlePageHide = () => {
+      handleEnd();
+    };
+
+    // Attach pointer event listeners
+    base.addEventListener('pointerdown', handlePointerDown);
+    base.addEventListener('pointermove', handlePointerMove);
+    base.addEventListener('pointerup', handlePointerUp);
+    base.addEventListener('pointercancel', handlePointerCancel);
+    base.addEventListener('lostpointercapture', handleLostPointerCapture);
+
+    // Attach lifecycle listeners
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('orientationchange', handleOrientationChange);
-    window.addEventListener('resize', handleOrientationChange);
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('pagehide', handlePageHide);
 
     return () => {
-      base.removeEventListener('touchstart', handleTouchStart);
-      base.removeEventListener('touchmove', handleTouchMove);
-      base.removeEventListener('touchend', handleEnd);
-      base.removeEventListener('touchcancel', handleEnd);
-      base.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleEnd);
+      base.removeEventListener('pointerdown', handlePointerDown);
+      base.removeEventListener('pointermove', handlePointerMove);
+      base.removeEventListener('pointerup', handlePointerUp);
+      base.removeEventListener('pointercancel', handlePointerCancel);
+      base.removeEventListener('lostpointercapture', handleLostPointerCapture);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('orientationchange', handleOrientationChange);
-      window.removeEventListener('resize', handleOrientationChange);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('pagehide', handlePageHide);
     };
   }, [onMove]);
 

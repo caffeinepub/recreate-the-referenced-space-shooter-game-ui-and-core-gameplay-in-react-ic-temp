@@ -4,6 +4,7 @@ import Hud from '../game/ui/Hud';
 import Joystick from '../game/controls/Joystick';
 import ShootButton from '../game/controls/ShootButton';
 import TouchControlsDebugOverlay from '../game/ui/TouchControlsDebugOverlay';
+import TouchControlsHints from '../game/ui/TouchControlsHints';
 import RotateDeviceOverlay from '../components/RotateDeviceOverlay';
 import { useGameEngine } from '../game/useGameEngine';
 import { useKeyboardControls } from '../game/controls/useKeyboardControls';
@@ -12,6 +13,7 @@ import { useLandscapeOrientation } from '../hooks/useLandscapeOrientation';
 import { useIsTouchCapable } from '../hooks/useIsTouchCapable';
 import { useDynamicViewport } from '../hooks/useDynamicViewport';
 import { useInProgressRun } from '../game/persistence/useInProgressRun';
+import { useTouchControlsDomSanityCheck } from '../game/ui/useTouchControlsDomSanityCheck';
 import { getBooleanUrlParameter } from '../utils/urlParams';
 import type { GamePhase } from '../game/types';
 
@@ -32,6 +34,11 @@ interface GameScreenProps {
 export default function GameScreen({ onExit, onGameOver, resumeData }: GameScreenProps) {
   const [joystickInput, setJoystickInput] = useState({ x: 0, y: 0 });
   const [touchShooting, setTouchShooting] = useState(false);
+  const [touchControlsEnabled, setTouchControlsEnabled] = useState(true);
+
+  // Refs for DOM sanity check
+  const joystickWrapperRef = useRef<HTMLDivElement>(null);
+  const shootWrapperRef = useRef<HTMLDivElement>(null);
 
   const keyboardControls = useKeyboardControls();
   const controls = useCombinedControls({
@@ -77,26 +84,92 @@ export default function GameScreen({ onExit, onGameOver, resumeData }: GameScree
     setTouchShooting(shooting);
   }, []);
 
+  // Centralized reset function for touch controls
+  const resetTouchControls = useCallback(() => {
+    setJoystickInput({ x: 0, y: 0 });
+    setTouchShooting(false);
+  }, []);
+
+  // Toggle handler for pause menu
+  const handleTouchControlsToggle = useCallback((enabled: boolean) => {
+    setTouchControlsEnabled(enabled);
+    if (!enabled) {
+      resetTouchControls();
+    }
+  }, [resetTouchControls]);
+
+  // Show touch controls when:
+  // 1. Session toggle is enabled AND
+  // 2. (Touch capable OR mobile device OR force flag) AND
+  // 3. In landscape AND
+  // 4. Not paused AND
+  // 5. Not game over
+  const showTouchControls = touchControlsEnabled && 
+    (isTouchCapable || isMobile || forceTouchControls) && 
+    !isPortrait && 
+    !isPaused && 
+    !isGameOver;
+
+  // DOM sanity check for touch controls visibility
+  const controlsMetrics = useTouchControlsDomSanityCheck({
+    enabled: showTouchControls,
+    joystickRef: joystickWrapperRef,
+    shootRef: shootWrapperRef,
+    debugMode: debugControls,
+  });
+
   // Reset touch controls when they should be hidden
   useEffect(() => {
-    if (isPortrait || isPaused || isGameOver) {
-      setJoystickInput({ x: 0, y: 0 });
-      setTouchShooting(false);
+    if (!showTouchControls) {
+      resetTouchControls();
     }
-  }, [isPortrait, isPaused, isGameOver]);
+  }, [showTouchControls, resetTouchControls]);
+
+  // Reset touch controls on orientation change, resize, and visibility change
+  useEffect(() => {
+    const handleOrientationChange = () => {
+      resetTouchControls();
+    };
+
+    const handleResize = () => {
+      resetTouchControls();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        resetTouchControls();
+      }
+    };
+
+    const handlePageHide = () => {
+      resetTouchControls();
+    };
+
+    window.addEventListener('orientationchange', handleOrientationChange);
+    window.addEventListener('resize', handleResize);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('pagehide', handlePageHide);
+
+    return () => {
+      window.removeEventListener('orientationchange', handleOrientationChange);
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('pagehide', handlePageHide);
+    };
+  }, [resetTouchControls]);
 
   // Attempt orientation lock on mount for touch-capable devices
   useEffect(() => {
-    if (isTouchCapable) {
+    if (isTouchCapable || isMobile) {
       lockLandscape();
     }
 
     return () => {
-      if (isTouchCapable) {
+      if (isTouchCapable || isMobile) {
         unlockOrientation();
       }
     };
-  }, [isTouchCapable, lockLandscape, unlockOrientation]);
+  }, [isTouchCapable, isMobile, lockLandscape, unlockOrientation]);
 
   // Auto-save periodically and on key events
   useEffect(() => {
@@ -196,10 +269,6 @@ export default function GameScreen({ onExit, onGameOver, resumeData }: GameScree
     onExit();
   };
 
-  // Show touch controls when device is touch-capable and in landscape (not paused/game over)
-  // OR when forceTouchControls is enabled (for debugging)
-  const showTouchControls = (isTouchCapable || forceTouchControls) && !isPortrait && !isPaused && !isGameOver;
-
   return (
     <>
       {/* Rotate overlay for mobile portrait */}
@@ -218,37 +287,58 @@ export default function GameScreen({ onExit, onGameOver, resumeData }: GameScree
           isPaused={isPaused}
           levelCompleteMessage={levelCompleteMessage}
           phase={phase}
+          destroyedNormalObstacles={destroyedNormalObstacles}
           bossProgressPct={bossProgressPct}
           timeRemainingSeconds={timeRemainingSeconds}
           onPause={handlePause}
           onExit={handleExit}
+          touchControlsEnabled={touchControlsEnabled}
+          onTouchControlsToggle={handleTouchControlsToggle}
         />
 
-        {/* Touch Controls Overlay - SWAPPED: Shoot left, Joystick right */}
+        {/* Touch Controls Overlay - Joystick left, Shoot right */}
         {showTouchControls && (
-          <div className="touch-controls-overlay">
-            <div className="touch-control-left">
-              <ShootButton onShoot={handleShootChange} />
+          <>
+            <div className="touch-controls-overlay">
+              {/* Joystick - Bottom Left */}
+              <div 
+                ref={joystickWrapperRef}
+                className="touch-control-left"
+                data-control="joystick"
+              >
+                <Joystick onMove={handleJoystickMove} />
+              </div>
+
+              {/* Shoot Button - Bottom Right */}
+              <div 
+                ref={shootWrapperRef}
+                className="touch-control-right"
+                data-control="shoot"
+              >
+                <ShootButton onShoot={handleShootChange} />
+              </div>
             </div>
-            <div className="touch-control-right">
-              <Joystick onMove={handleJoystickMove} />
-            </div>
-          </div>
+
+            {/* Touch Controls Hints */}
+            <TouchControlsHints />
+          </>
         )}
 
-        {/* Debug Overlay (only when ?debugControls=1) */}
+        {/* Debug Overlay */}
         {debugControls && (
           <TouchControlsDebugOverlay
             isTouchCapable={isTouchCapable}
-            isPortrait={isPortrait}
             isMobile={isMobile}
+            isPortrait={isPortrait}
             isPaused={isPaused}
             isGameOver={isGameOver}
+            touchControlsEnabled={touchControlsEnabled}
             showTouchControls={showTouchControls}
             forceTouchControls={forceTouchControls}
             joystickX={joystickInput.x}
             joystickY={joystickInput.y}
             isShooting={touchShooting}
+            controlsMetrics={controlsMetrics}
           />
         )}
       </div>

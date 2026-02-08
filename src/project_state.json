@@ -1,45 +1,32 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project with on-screen joystick movement and shoot button controls",
+  "summary": "New project",
   "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Joystick and shoot button are not visible in production (Version 21)."
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-update-the-touch-controls-overlay-so-that-during-gameplay-when-touch-controls-are-shown-the-shoot-button-renders-on-the-bottom-left-and-the-joystick-renders-on-the-bottom-right-to-match-the-uploaded-reference-image",
-      "title": "Update the touch controls overlay so that, during gameplay when touch controls are shown, the SHOOT button renders on the bottom-left and the joystick renders on the bottom-right to match the uploaded reference image.",
+      "id": "feature-ensure-the-on-screen-touch-controls-overlay-joystick-bottom-left-and-shoot-button-bottom-right-is-visually-rendered-on-top-of-the-gameplay-canvas-when-showtouchcontrols-is-true-including-correct-positioning-sizing-safe-area-padding-and-z-index-so-the-controls-are-not-hidden-behind-the-canvas-hud",
+      "title": "Ensure the on-screen touch controls overlay (joystick bottom-left and SHOOT button bottom-right) is visually rendered on top of the gameplay canvas when `showTouchControls` is true, including correct positioning, sizing, safe-area padding, and z-index so the controls are not hidden behind the canvas/HUD.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-adjust-the-shoot-button-visuals-to-match-the-reference-image-more-closely-show-the-label-text-as-shoot-not-fire-and-ensure-the-overall-button-reads-as-a-bright-neon-magenta-pink-circular-control-with-clear-icon-label-contrast",
-      "title": "Adjust the shoot button visuals to match the reference image more closely: show the label text as \"SHOOT\" (not \"FIRE\") and ensure the overall button reads as a bright neon-magenta/pink circular control with clear icon+label contrast.",
+      "id": "feature-fix-any-css-class-issues-that-could-cause-the-joystick-or-shoot-button-to-be-present-in-the-dom-but-invisible-e-g-opacity-visibility-zero-size-incorrect-positioning-off-screen-incorrect-stacking-context-or-pointer-events-preventing-interaction-and-add-a-minimal-regression-check-to-prevent-reintroducing-invisible-controls",
+      "title": "Fix any CSS/class issues that could cause the joystick or shoot button to be present in the DOM but invisible (e.g., opacity/visibility, zero size, incorrect positioning off-screen, incorrect stacking context, or pointer-events preventing interaction) and add a minimal regression check to prevent reintroducing invisible controls.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
-    },
-    {
-      "id": "feature-adjust-the-joystick-visuals-to-match-the-reference-image-more-closely-ensure-the-joystick-reads-as-a-bright-neon-cyan-teal-circular-base-with-a-distinct-inner-knob-preserving-existing-drag-clamp-behavior",
-      "title": "Adjust the joystick visuals to match the reference image more closely: ensure the joystick reads as a bright neon-cyan/teal circular base with a distinct inner knob, preserving existing drag/clamp behavior.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
     }
   ],
-  "new_feature_requests": [
-    {
-      "id": "AR-1",
-      "summary": "Add on-screen controls: virtual joystick for movement and a shoot button (with adjustable size/location)",
-      "reqIds": [],
-      "status": "pending"
-    }
-  ],
-  "projectName": "Match on-screen joystick and shoot button layout/styling to reference image",
+  "new_feature_requests": [],
+  "projectName": "Fix invisible on-screen joystick and shoot button in production",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

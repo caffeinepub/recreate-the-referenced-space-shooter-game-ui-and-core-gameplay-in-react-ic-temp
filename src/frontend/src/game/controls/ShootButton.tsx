@@ -7,7 +7,7 @@ interface ShootButtonProps {
 
 export default function ShootButton({ onShoot }: ShootButtonProps) {
   const buttonRef = useRef<HTMLDivElement>(null);
-  const isShootingRef = useRef(false);
+  const activePointerRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!buttonRef.current) return;
@@ -15,72 +15,102 @@ export default function ShootButton({ onShoot }: ShootButtonProps) {
     const button = buttonRef.current;
 
     const startShooting = () => {
-      if (!isShootingRef.current) {
-        isShootingRef.current = true;
-        onShoot(true);
-      }
+      onShoot(true);
     };
 
     const stopShooting = () => {
-      if (isShootingRef.current) {
-        isShootingRef.current = false;
-        onShoot(false);
+      onShoot(false);
+    };
+
+    const handlePointerDown = (e: PointerEvent) => {
+      // Only respond if no pointer is active
+      if (activePointerRef.current !== null) return;
+      
+      e.preventDefault();
+      activePointerRef.current = e.pointerId;
+      button.setPointerCapture(e.pointerId);
+      startShooting();
+    };
+
+    const handlePointerUp = (e: PointerEvent) => {
+      // Only respond to the active pointer
+      if (activePointerRef.current !== e.pointerId) return;
+      
+      e.preventDefault();
+      if (button.hasPointerCapture(e.pointerId)) {
+        button.releasePointerCapture(e.pointerId);
       }
-    };
-
-    const handleTouchStart = (e: TouchEvent) => {
-      e.preventDefault();
-      startShooting();
-    };
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      e.preventDefault();
+      activePointerRef.current = null;
       stopShooting();
     };
 
-    const handleMouseDown = (e: MouseEvent) => {
-      e.preventDefault();
-      startShooting();
-    };
-
-    const handleMouseUp = () => {
+    const handlePointerCancel = (e: PointerEvent) => {
+      // Only respond to the active pointer
+      if (activePointerRef.current !== e.pointerId) return;
+      
+      activePointerRef.current = null;
       stopShooting();
     };
 
-    const handleMouseLeave = () => {
+    const handleLostPointerCapture = (e: PointerEvent) => {
+      // Only respond to the active pointer
+      if (activePointerRef.current !== e.pointerId) return;
+      
+      activePointerRef.current = null;
       stopShooting();
     };
 
-    // Reset on visibility/orientation changes
+    // Reset on visibility/orientation/resize/blur changes
     const handleVisibilityChange = () => {
       if (document.hidden) {
+        activePointerRef.current = null;
         stopShooting();
       }
     };
 
     const handleOrientationChange = () => {
+      activePointerRef.current = null;
       stopShooting();
     };
 
-    // Attach listeners
-    button.addEventListener('touchstart', handleTouchStart, { passive: false });
-    button.addEventListener('touchend', handleTouchEnd, { passive: false });
-    button.addEventListener('touchcancel', handleTouchEnd, { passive: false });
-    button.addEventListener('mousedown', handleMouseDown);
-    button.addEventListener('mouseup', handleMouseUp);
-    button.addEventListener('mouseleave', handleMouseLeave);
+    const handleResize = () => {
+      activePointerRef.current = null;
+      stopShooting();
+    };
+
+    const handleBlur = () => {
+      activePointerRef.current = null;
+      stopShooting();
+    };
+
+    const handlePageHide = () => {
+      activePointerRef.current = null;
+      stopShooting();
+    };
+
+    // Attach pointer event listeners
+    button.addEventListener('pointerdown', handlePointerDown);
+    button.addEventListener('pointerup', handlePointerUp);
+    button.addEventListener('pointercancel', handlePointerCancel);
+    button.addEventListener('lostpointercapture', handleLostPointerCapture);
+
+    // Attach lifecycle listeners
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('orientationchange', handleOrientationChange);
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('pagehide', handlePageHide);
 
     return () => {
-      button.removeEventListener('touchstart', handleTouchStart);
-      button.removeEventListener('touchend', handleTouchEnd);
-      button.removeEventListener('touchcancel', handleTouchEnd);
-      button.removeEventListener('mousedown', handleMouseDown);
-      button.removeEventListener('mouseup', handleMouseUp);
-      button.removeEventListener('mouseleave', handleMouseLeave);
+      button.removeEventListener('pointerdown', handlePointerDown);
+      button.removeEventListener('pointerup', handlePointerUp);
+      button.removeEventListener('pointercancel', handlePointerCancel);
+      button.removeEventListener('lostpointercapture', handleLostPointerCapture);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('orientationchange', handleOrientationChange);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('pagehide', handlePageHide);
     };
   }, [onShoot]);
 

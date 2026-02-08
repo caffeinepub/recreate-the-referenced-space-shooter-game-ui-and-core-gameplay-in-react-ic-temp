@@ -28,7 +28,7 @@ export const GameStats = IDL.Record({
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-  'clearInProgressRun' : IDL.Func([], [], []),
+  'clearInProgressRun' : IDL.Func([], [IDL.Bool], []),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getInProgressRun' : IDL.Func([], [IDL.Opt(InProgressRun)], ['query']),
@@ -41,11 +41,11 @@ export const idlService = IDL.Service({
   'hasInProgressRun' : IDL.Func([], [IDL.Bool], []),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'loadStats' : IDL.Func([], [IDL.Opt(GameStats)], ['query']),
-  'resetPlayerStats' : IDL.Func([IDL.Principal], [], []),
-  'resetStats' : IDL.Func([], [], []),
-  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-  'saveInProgressRun' : IDL.Func([InProgressRun], [], []),
-  'saveStats' : IDL.Func([IDL.Nat, IDL.Nat], [], []),
+  'resetPlayerStats' : IDL.Func([IDL.Principal], [IDL.Bool], []),
+  'resetStats' : IDL.Func([], [IDL.Bool], []),
+  'saveCallerUserProfile' : IDL.Func([UserProfile], [IDL.Bool], []),
+  'saveInProgressRun' : IDL.Func([InProgressRun], [IDL.Bool], []),
+  'saveStats' : IDL.Func([IDL.Nat, IDL.Nat], [IDL.Bool], []),
 });
 
 export const idlInitArgs = [];
@@ -71,7 +71,7 @@ export const idlFactory = ({ IDL }) => {
   return IDL.Service({
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-    'clearInProgressRun' : IDL.Func([], [], []),
+    'clearInProgressRun' : IDL.Func([], [IDL.Bool], []),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getInProgressRun' : IDL.Func([], [IDL.Opt(InProgressRun)], ['query']),
@@ -88,11 +88,11 @@ export const idlFactory = ({ IDL }) => {
     'hasInProgressRun' : IDL.Func([], [IDL.Bool], []),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'loadStats' : IDL.Func([], [IDL.Opt(GameStats)], ['query']),
-    'resetPlayerStats' : IDL.Func([IDL.Principal], [], []),
-    'resetStats' : IDL.Func([], [], []),
-    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
-    'saveInProgressRun' : IDL.Func([InProgressRun], [], []),
-    'saveStats' : IDL.Func([IDL.Nat, IDL.Nat], [], []),
+    'resetPlayerStats' : IDL.Func([IDL.Principal], [IDL.Bool], []),
+    'resetStats' : IDL.Func([], [IDL.Bool], []),
+    'saveCallerUserProfile' : IDL.Func([UserProfile], [IDL.Bool], []),
+    'saveInProgressRun' : IDL.Func([InProgressRun], [IDL.Bool], []),
+    'saveStats' : IDL.Func([IDL.Nat, IDL.Nat], [IDL.Bool], []),
   });
 };
 

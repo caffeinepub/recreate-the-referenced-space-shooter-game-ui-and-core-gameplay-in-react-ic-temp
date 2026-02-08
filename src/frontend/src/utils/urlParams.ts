@@ -37,7 +37,7 @@ export function getUrlParameter(paramName: string): string | null {
  * Accepts: 1, true, yes (case-insensitive) as truthy values
  *
  * @param paramName - The name of the parameter to extract
- * @returns true if parameter exists with truthy value, false otherwise
+ * @returns true if parameter exists and is truthy, false otherwise
  */
 export function getBooleanUrlParameter(paramName: string): boolean {
     const value = getUrlParameter(paramName);

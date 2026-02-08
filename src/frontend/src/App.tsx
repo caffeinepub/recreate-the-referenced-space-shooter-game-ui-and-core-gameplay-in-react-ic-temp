@@ -26,7 +26,7 @@ function App() {
   const [highScore, setHighScore] = useState(0);
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
 
-  const { stats: savedStats, isLoading: isLoadingStats, saveStatsMutation } = useSavedStats();
+  const { stats: savedStats, isLoading: isLoadingStats, isError: statsError, saveStatsMutation } = useSavedStats();
   const { hasRun, runData, clearRun } = useInProgressRun();
 
   useEffect(() => {
@@ -85,6 +85,7 @@ function App() {
             onContinueGame={handleContinueGame}
             hasSavedRun={hasRun}
             isLoadingStats={isLoadingStats}
+            statsError={statsError}
           />
         )}
         {gameState === 'playing' && (

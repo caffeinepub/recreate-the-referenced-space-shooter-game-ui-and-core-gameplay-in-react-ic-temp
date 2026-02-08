@@ -1,71 +1,53 @@
 {
   "kind": "build_request",
-  "title": "Match on-screen joystick and shoot button layout/styling to reference image",
-  "priority": "normal",
+  "title": "Fix invisible on-screen joystick and shoot button in production",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the touch controls overlay so that, during gameplay when touch controls are shown, the SHOOT button renders on the bottom-left and the joystick renders on the bottom-right to match the uploaded reference image.",
+      "text": "Ensure the on-screen touch controls overlay (joystick bottom-left and SHOOT button bottom-right) is visually rendered on top of the gameplay canvas when `showTouchControls` is true, including correct positioning, sizing, safe-area padding, and z-index so the controls are not hidden behind the canvas/HUD.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-1"
+          "msg-5"
         ],
         "quotes": [
-          "like this joystick and shoot button i need ."
+          "not visible joystick and shoot button"
         ]
       },
       "acceptanceCriteria": [
-        "When touch controls are visible, the left control is the shoot button and the right control is the joystick.",
-        "No changes to touch input behavior: joystick still drives movement and shoot button still toggles shooting state.",
-        "Controls remain anchored to the bottom corners and respect safe-area insets."
+        "On a touch-capable mobile device in landscape during active gameplay (not paused, not game over), the joystick and SHOOT button are visible without requiring any debug/force URL parameters.",
+        "Controls render above the game canvas and remain visible when interacting with the game (no accidental occlusion by other layers).",
+        "Controls respect safe-area insets (e.g., iPhone notch/home indicator) and remain tappable near screen edges."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Adjust the shoot button visuals to match the reference image more closely: show the label text as \"SHOOT\" (not \"FIRE\") and ensure the overall button reads as a bright neon-magenta/pink circular control with clear icon+label contrast.",
+      "text": "Fix any CSS/class issues that could cause the joystick or shoot button to be present in the DOM but invisible (e.g., opacity/visibility, zero size, incorrect positioning off-screen, incorrect stacking context, or pointer-events preventing interaction) and add a minimal regression check to prevent reintroducing invisible controls.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-1"
+          "msg-5"
         ],
         "quotes": [
-          "like this joystick and shoot button i need ."
+          "not visible joystick and shoot button"
         ]
       },
       "acceptanceCriteria": [
-        "The shoot button label reads exactly \"SHOOT\" in all caps.",
-        "Shoot button remains a circular control with strong neon-magenta/pink emphasis and is easily readable over the gameplay background.",
-        "Shoot press/release behavior continues to work for both touch and mouse input."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Adjust the joystick visuals to match the reference image more closely: ensure the joystick reads as a bright neon-cyan/teal circular base with a distinct inner knob, preserving existing drag/clamp behavior.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-1"
-        ],
-        "quotes": [
-          "like this joystick and shoot button i need ."
-        ]
-      },
-      "acceptanceCriteria": [
-        "Joystick remains a circular control with a clearly visible knob and strong neon-cyan/teal emphasis.",
-        "Joystick movement continues to clamp to the intended radius and returns to center on release, visibility change, resize, and orientation change.",
-        "Joystick remains usable and visible above the game canvas (no z-index/pointer-events regressions)."
+        "When `showTouchControls` is true, the joystick base and shoot button each have non-zero rendered size and are within the viewport bounds.",
+        "The joystick and shoot button are visibly distinguishable against the background (not fully transparent or clipped).",
+        "A simple manual test path exists to validate visibility (e.g., using `?debugControls=1` to confirm `showTouchControls: YES` and seeing the controls on-screen)."
       ]
     }
   ],
   "constraints": [
-    "Frontend immutable paths must not be modified: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
-    "Backend must remain single-actor; no additional backend services."
+    "Do not modify files under frontend/src/components/ui (read-only).",
+    "Do not modify immutable hook entrypoints (frontend/src/hooks/useInternetIdentity.ts / .tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx).",
+    "Backend remains single-actor; no backend changes are required for this visibility fix."
   ],
   "nonGoals": [
-    "Adding new gameplay mechanics or changing how movement/shooting works beyond presentation/layout changes.",
-    "Implementing third-party auth or external services.",
-    "Creating new backend persistence for control settings (size/location customization UI is out of scope unless explicitly requested)."
+    "Changing joystick/shoot gameplay behavior (movement mapping, firing logic, multitouch handling) unless required to resolve visibility.",
+    "Adding new authentication methods or external services."
   ],
   "imageRequirements": {
     "required": [],

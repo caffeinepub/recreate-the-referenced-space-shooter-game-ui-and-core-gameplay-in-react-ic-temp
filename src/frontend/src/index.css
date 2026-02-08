@@ -4,77 +4,117 @@
 
 @layer base {
   :root {
-    /* OKLCH Color System - Enhanced Neon Space Theme */
-    /* Store as space-separated channels for Tailwind compatibility */
-    --background: 0.10 0.02 240;
-    --foreground: 0.96 0.05 200;
+    /* OKLCH Color System with RGB/HEX Fallbacks */
+    
+    /* Primary - Neon Cyan */
+    --primary: #00d9ff; /* Fallback */
+    --primary: oklch(0.82 0.18 195);
+    --primary-foreground: #000814; /* Fallback */
+    --primary-foreground: oklch(0.15 0.02 240);
 
-    --card: 0.14 0.03 240;
-    --card-foreground: 0.96 0.05 200;
+    /* Secondary - Neon Purple */
+    --secondary: #a855f7; /* Fallback */
+    --secondary: oklch(0.65 0.24 295);
+    --secondary-foreground: #fafafa; /* Fallback */
+    --secondary-foreground: oklch(0.98 0.01 295);
 
-    --popover: 0.14 0.03 240;
-    --popover-foreground: 0.96 0.05 200;
+    /* Accent - Neon Magenta */
+    --accent: #ff006e; /* Fallback */
+    --accent: oklch(0.62 0.28 345);
+    --accent-foreground: #fafafa; /* Fallback */
+    --accent-foreground: oklch(0.98 0.01 345);
 
-    --primary: 0.75 0.20 195;
-    --primary-foreground: 0.10 0.02 240;
+    /* Muted */
+    --muted: #1e293b; /* Fallback */
+    --muted: oklch(0.25 0.02 240);
+    --muted-foreground: #94a3b8; /* Fallback */
+    --muted-foreground: oklch(0.68 0.02 240);
 
-    --secondary: 0.70 0.25 300;
-    --secondary-foreground: 0.96 0.05 200;
+    /* Background & Foreground */
+    --background: #000814; /* Fallback */
+    --background: oklch(0.10 0.02 240);
+    --foreground: #f8fafc; /* Fallback */
+    --foreground: oklch(0.98 0.01 240);
 
-    --muted: 0.25 0.03 240;
-    --muted-foreground: 0.65 0.05 200;
+    /* Card */
+    --card: #0f172a; /* Fallback */
+    --card: oklch(0.18 0.02 240);
+    --card-foreground: #f8fafc; /* Fallback */
+    --card-foreground: oklch(0.98 0.01 240);
 
-    --accent: 0.70 0.25 330;
-    --accent-foreground: 0.96 0.05 200;
+    /* Popover */
+    --popover: #0f172a; /* Fallback */
+    --popover: oklch(0.18 0.02 240);
+    --popover-foreground: #f8fafc; /* Fallback */
+    --popover-foreground: oklch(0.98 0.01 240);
 
-    --destructive: 0.55 0.25 20;
-    --destructive-foreground: 0.96 0.05 200;
+    /* Border & Input */
+    --border: #1e293b; /* Fallback */
+    --border: oklch(0.25 0.02 240);
+    --input: #1e293b; /* Fallback */
+    --input: oklch(0.25 0.02 240);
 
-    --border: 0.30 0.05 240;
-    --input: 0.30 0.05 240;
-    --ring: 0.75 0.20 195;
+    /* Ring */
+    --ring: #00d9ff; /* Fallback */
+    --ring: oklch(0.82 0.18 195);
 
+    /* Radius */
     --radius: 0.5rem;
 
-    /* Enhanced Neon colors */
-    --neon-cyan: 0.75 0.20 195;
-    --neon-purple: 0.70 0.25 300;
-    --neon-magenta: 0.70 0.25 330;
-    --neon-yellow: 0.85 0.20 90;
-    --neon-orange: 0.75 0.22 50;
+    /* Chart Colors */
+    --chart-1: #00d9ff; /* Fallback */
+    --chart-1: oklch(0.82 0.18 195);
+    --chart-2: #a855f7; /* Fallback */
+    --chart-2: oklch(0.65 0.24 295);
+    --chart-3: #ff006e; /* Fallback */
+    --chart-3: oklch(0.62 0.28 345);
+    --chart-4: #fbbf24; /* Fallback */
+    --chart-4: oklch(0.82 0.15 85);
+    --chart-5: #10b981; /* Fallback */
+    --chart-5: oklch(0.72 0.15 160);
 
-    /* Space theme */
-    --space-dark: 0.08 0.02 240;
-    --space-darker: 0.05 0.02 240;
-    --space-card: 0.12 0.03 240;
+    /* Destructive */
+    --destructive: #ef4444; /* Fallback */
+    --destructive: oklch(0.62 0.24 25);
+    --destructive-foreground: #fafafa; /* Fallback */
+    --destructive-foreground: oklch(0.98 0.01 25);
 
-    /* Dynamic viewport height for mobile */
-    --app-dvh: 100vh;
+    /* Success */
+    --success: #10b981; /* Fallback */
+    --success: oklch(0.72 0.15 160);
+    --success-foreground: #000814; /* Fallback */
+    --success-foreground: oklch(0.15 0.02 160);
 
-    /* Responsive sizing tokens - Menu */
-    --logo-size: clamp(80px, 20vw, 140px);
-    --title-size: clamp(2.5rem, 8vw, 4.5rem);
-    --menu-max-width: min(90vw, 28rem);
-    --menu-card-padding: clamp(0.875rem, 3vw, 1.25rem);
-    --menu-button-height: clamp(3rem, 12vw, 4rem);
-    --menu-button-text: clamp(1rem, 3.5vw, 1.25rem);
+    /* Warning */
+    --warning: #fbbf24; /* Fallback */
+    --warning: oklch(0.82 0.15 85);
+    --warning-foreground: #000814; /* Fallback */
+    --warning-foreground: oklch(0.15 0.02 85);
 
-    /* Responsive sizing tokens - HUD */
-    --hud-gap: clamp(0.5rem, 2vw, 0.75rem);
-    --hud-card-padding: clamp(0.5rem, 2vw, 0.75rem);
-    --hud-text-label: clamp(0.625rem, 2vw, 0.75rem);
-    --hud-text-value: clamp(1.125rem, 3.5vw, 1.5rem);
-    --hud-pause-size: clamp(2.5rem, 8vw, 3.5rem);
-    --hud-pause-icon: clamp(1.25rem, 4vw, 1.75rem);
-    --hud-progress-width: clamp(10rem, 40vw, 16rem);
-    --hud-progress-height: clamp(0.5rem, 2vw, 0.75rem);
-    --hud-boss-progress-width: clamp(12rem, 50vw, 20rem);
-    --hud-boss-progress-height: clamp(0.625rem, 2.5vw, 1rem);
+    /* Neon Colors for Game Elements */
+    --neon-cyan: #00d9ff; /* Fallback */
+    --neon-cyan: oklch(0.82 0.18 195);
+    --neon-purple: #a855f7; /* Fallback */
+    --neon-purple: oklch(0.65 0.24 295);
+    --neon-magenta: #ff006e; /* Fallback */
+    --neon-magenta: oklch(0.62 0.28 345);
+    --neon-yellow: #fbbf24; /* Fallback */
+    --neon-yellow: oklch(0.82 0.15 85);
+    --neon-orange: #fb923c; /* Fallback */
+    --neon-orange: oklch(0.75 0.15 55);
 
-    /* Responsive sizing tokens - Touch Controls */
-    --control-size: clamp(80px, 20vw, 120px);
-    --joystick-knob-size: clamp(40px, 10vw, 60px);
-    --shoot-icon-size: clamp(32px, 8vw, 48px);
+    /* Touch Control Sizing */
+    --control-size: 140px;
+    --joystick-knob-size: 60px;
+    --shoot-icon-size: 2.5rem;
+  }
+
+  .dark {
+    /* Dark mode uses same values for this neon theme */
+    --background: #000814;
+    --background: oklch(0.10 0.02 240);
+    --foreground: #f8fafc;
+    --foreground: oklch(0.98 0.01 240);
   }
 }
 
@@ -84,382 +124,547 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
 @layer utilities {
-  /* Glass card effects with enhanced styling */
-  .glass-card {
-    background: linear-gradient(
-      135deg,
-      oklch(0.15 0.03 240 / 0.7) 0%,
-      oklch(0.12 0.03 240 / 0.5) 100%
-    );
-    border: 2px solid oklch(0.30 0.05 240 / 0.4);
-    box-shadow: 
-      0 0 30px oklch(0.75 0.20 195 / 0.15),
-      inset 0 0 20px oklch(0.75 0.20 195 / 0.05);
-    backdrop-filter: blur(16px);
+  .text-balance {
+    text-wrap: balance;
   }
 
-  /* Fallback for browsers without OKLCH support */
-  @supports not (color: oklch(0 0 0)) {
-    .glass-card {
-      background: linear-gradient(
-        135deg,
-        rgba(20, 25, 45, 0.7) 0%,
-        rgba(15, 20, 35, 0.5) 100%
-      );
-      border: 2px solid rgba(50, 60, 90, 0.4);
-      box-shadow: 
-        0 0 30px rgba(0, 200, 255, 0.15),
-        inset 0 0 20px rgba(0, 200, 255, 0.05);
-    }
+  /* Neon glow utilities */
+  .glow-cyan {
+    text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+  }
+  .glow-purple {
+    text-shadow: 0 0 10px var(--neon-purple), 0 0 20px var(--neon-purple);
+  }
+  .glow-magenta {
+    text-shadow: 0 0 10px var(--neon-magenta), 0 0 20px var(--neon-magenta);
+  }
+}
+
+/* Game-specific styles */
+.gameplay-root {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--background);
+  /* Create isolated stacking context for predictable layering */
+  isolation: isolate;
+}
+
+/* HUD Styles */
+.hud-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.hud-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  pointer-events: auto;
+  background: linear-gradient(135deg, 
+    oklch(0.15 0.02 240 / 0.85) 0%, 
+    oklch(0.18 0.02 240 / 0.75) 100%);
+  border: 1px solid oklch(0.82 0.18 195 / 0.3);
+  box-shadow: 0 0 20px oklch(0.82 0.18 195 / 0.2),
+              inset 0 1px 0 oklch(1 0 0 / 0.1);
+}
+
+.hud-stat-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--neon-cyan);
+  filter: drop-shadow(0 0 8px var(--neon-cyan));
+}
+
+.hud-stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.hud-stat-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: oklch(0.68 0.02 240);
+}
+
+.hud-stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.hud-stat-timer .hud-stat-icon {
+  color: var(--neon-yellow);
+  filter: drop-shadow(0 0 8px var(--neon-yellow));
+}
+
+.hud-stat-timer .hud-stat-value {
+  color: var(--neon-yellow);
+  text-shadow: 0 0 10px var(--neon-yellow);
+}
+
+.hud-stat-phase .hud-stat-icon {
+  color: var(--neon-magenta);
+  filter: drop-shadow(0 0 8px var(--neon-magenta));
+}
+
+.hud-stat-phase .hud-stat-value {
+  color: var(--neon-magenta);
+  text-shadow: 0 0 10px var(--neon-magenta);
+}
+
+.hud-stat-level .hud-stat-icon {
+  color: var(--neon-purple);
+  filter: drop-shadow(0 0 8px var(--neon-purple));
+}
+
+.hud-stat-level .hud-stat-value {
+  color: var(--neon-purple);
+  text-shadow: 0 0 10px var(--neon-purple);
+}
+
+.hud-pause-button {
+  pointer-events: auto;
+  background: linear-gradient(135deg, 
+    oklch(0.15 0.02 240 / 0.85) 0%, 
+    oklch(0.18 0.02 240 / 0.75) 100%);
+  border: 1px solid oklch(0.82 0.18 195 / 0.3);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 20px oklch(0.82 0.18 195 / 0.2);
+  transition: all 0.2s;
+}
+
+.hud-pause-button:hover {
+  background: linear-gradient(135deg, 
+    oklch(0.18 0.02 240 / 0.95) 0%, 
+    oklch(0.22 0.02 240 / 0.85) 100%);
+  box-shadow: 0 0 30px oklch(0.82 0.18 195 / 0.4);
+}
+
+.hud-level-complete {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  pointer-events: none;
+}
+
+.hud-level-complete-card {
+  padding: 2rem 3rem;
+  text-align: center;
+  background: linear-gradient(135deg, 
+    oklch(0.15 0.02 240 / 0.95) 0%, 
+    oklch(0.18 0.02 240 / 0.90) 100%);
+  border: 2px solid var(--neon-cyan);
+  box-shadow: 0 0 40px oklch(0.82 0.18 195 / 0.4),
+              inset 0 1px 0 oklch(1 0 0 / 0.1);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 40px oklch(0.82 0.18 195 / 0.4),
+                inset 0 1px 0 oklch(1 0 0 / 0.1);
+  }
+  50% {
+    box-shadow: 0 0 60px oklch(0.82 0.18 195 / 0.6),
+                inset 0 1px 0 oklch(1 0 0 / 0.1);
+  }
+}
+
+.glass-card {
+  background: linear-gradient(135deg, 
+    oklch(0.15 0.02 240 / 0.85) 0%, 
+    oklch(0.18 0.02 240 / 0.75) 100%);
+  border: 1px solid oklch(0.82 0.18 195 / 0.2);
+  border-radius: var(--radius);
+  box-shadow: 0 0 20px oklch(0.82 0.18 195 / 0.1),
+              inset 0 1px 0 oklch(1 0 0 / 0.05);
+}
+
+/* Touch Controls Overlay - FIXED: Raised z-index above HUD and canvas */
+.touch-controls-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Raised from z-index: 5 to z-index: 15 to render above HUD (z-index: 10) */
+  z-index: 15;
+  padding-left: max(env(safe-area-inset-left), 1rem);
+  padding-right: max(env(safe-area-inset-right), 1rem);
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+  padding-top: max(env(safe-area-inset-top), 1rem);
+  /* Ensure visibility and prevent clipping */
+  overflow: visible;
+  opacity: 1;
+  visibility: visible;
+}
+
+.touch-control-left,
+.touch-control-right {
+  position: absolute;
+  bottom: 2rem;
+  pointer-events: auto;
+  /* Ensure controls are visible and not clipped */
+  opacity: 1;
+  visibility: visible;
+  /* Minimum size to ensure they're always rendered */
+  min-width: var(--control-size);
+  min-height: var(--control-size);
+}
+
+.touch-control-left {
+  left: 2rem;
+}
+
+.touch-control-right {
+  right: 2rem;
+}
+
+/* Touch Controls Hints */
+.touch-controls-hints {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 16;
+  animation: fade-in-out 4s ease-in-out forwards;
+}
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.touch-hint {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, 
+    oklch(0.15 0.02 240 / 0.95) 0%, 
+    oklch(0.18 0.02 240 / 0.90) 100%);
+  border: 2px solid var(--neon-cyan);
+  border-radius: 9999px;
+  box-shadow: 0 0 30px oklch(0.82 0.18 195 / 0.5),
+              inset 0 1px 0 oklch(1 0 0 / 0.1);
+  animation: pulse-hint 2s ease-in-out infinite;
+}
+
+@keyframes pulse-hint {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 30px oklch(0.82 0.18 195 / 0.5),
+                inset 0 1px 0 oklch(1 0 0 / 0.1);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px oklch(0.82 0.18 195 / 0.7),
+                inset 0 1px 0 oklch(1 0 0 / 0.1);
+  }
+}
+
+.touch-hint-left {
+  bottom: 2rem;
+  left: 2rem;
+  transform: translateX(-120%);
+}
+
+.touch-hint-right {
+  bottom: 2rem;
+  right: 2rem;
+  transform: translateX(120%);
+}
+
+.touch-hint-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 1rem 2rem;
+}
+
+.touch-hint-label,
+.touch-hint-label-center {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px var(--neon-cyan);
+  white-space: nowrap;
+}
+
+.touch-hint-label-center {
+  font-size: 1rem;
+}
+
+.touch-hint-arrow {
+  font-size: 1.5rem;
+  color: var(--neon-cyan);
+  filter: drop-shadow(0 0 8px var(--neon-cyan));
+  animation: arrow-bounce 1s ease-in-out infinite;
+}
+
+@keyframes arrow-bounce {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+.touch-hint-left .touch-hint-arrow {
+  animation: arrow-bounce-left 1s ease-in-out infinite;
+}
+
+@keyframes arrow-bounce-left {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-4px);
+  }
+}
+
+/* Joystick Styles */
+.joystick-container {
+  position: relative;
+  width: var(--control-size);
+  height: var(--control-size);
+  touch-action: none;
+  user-select: none;
+}
+
+.joystick-base {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, 
+    oklch(0.15 0.02 240 / 0.85) 0%, 
+    oklch(0.18 0.02 240 / 0.75) 100%);
+  border: 3px solid var(--neon-cyan);
+  box-shadow: 0 0 30px oklch(0.82 0.18 195 / 0.4),
+              inset 0 2px 8px oklch(0 0 0 / 0.3),
+              inset 0 -2px 8px oklch(1 0 0 / 0.05);
+}
+
+.joystick-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--joystick-knob-size);
+  height: var(--joystick-knob-size);
+  margin-left: calc(var(--joystick-knob-size) / -2);
+  margin-top: calc(var(--joystick-knob-size) / -2);
+  border-radius: 50%;
+  background: linear-gradient(135deg, 
+    var(--neon-cyan) 0%, 
+    oklch(0.72 0.16 195) 100%);
+  border: 2px solid oklch(1 0 0 / 0.3);
+  box-shadow: 0 0 20px var(--neon-cyan),
+              0 4px 12px oklch(0 0 0 / 0.4),
+              inset 0 2px 4px oklch(1 0 0 / 0.3),
+              inset 0 -2px 4px oklch(0 0 0 / 0.2);
+  transition: transform 0.1s ease-out;
+  cursor: grab;
+}
+
+.joystick-knob:active {
+  cursor: grabbing;
+  box-shadow: 0 0 30px var(--neon-cyan),
+              0 2px 8px oklch(0 0 0 / 0.5),
+              inset 0 2px 4px oklch(1 0 0 / 0.3),
+              inset 0 -2px 4px oklch(0 0 0 / 0.2);
+}
+
+/* Shoot Button Styles */
+.shoot-button {
+  width: var(--control-size);
+  height: var(--control-size);
+  border-radius: 50%;
+  background: linear-gradient(135deg, 
+    var(--neon-magenta) 0%, 
+    oklch(0.52 0.26 345) 100%);
+  border: 3px solid oklch(1 0 0 / 0.3);
+  box-shadow: 0 0 40px var(--neon-magenta),
+              0 4px 16px oklch(0 0 0 / 0.4),
+              inset 0 2px 8px oklch(1 0 0 / 0.3),
+              inset 0 -2px 8px oklch(0 0 0 / 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  touch-action: none;
+  user-select: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.shoot-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 50px var(--neon-magenta),
+              0 2px 12px oklch(0 0 0 / 0.5),
+              inset 0 2px 8px oklch(1 0 0 / 0.3),
+              inset 0 -2px 8px oklch(0 0 0 / 0.2);
+}
+
+.shoot-icon-glow {
+  filter: drop-shadow(0 0 8px oklch(0.75 0.25 330 / 0.8));
+}
+
+/* Debug Overlay */
+.touch-debug-overlay {
+  position: absolute;
+  top: 6rem;
+  right: 1rem;
+  max-width: 320px;
+  padding: 1rem;
+  background: linear-gradient(135deg, 
+    oklch(0.15 0.02 240 / 0.95) 0%, 
+    oklch(0.18 0.02 240 / 0.90) 100%);
+  border: 1px solid oklch(0.82 0.18 195 / 0.3);
+  border-radius: var(--radius);
+  box-shadow: 0 0 20px oklch(0.82 0.18 195 / 0.2);
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  :root {
+    --control-size: 120px;
+    --joystick-knob-size: 50px;
+    --shoot-icon-size: 2rem;
   }
 
-  .glass-card-hud {
-    background: linear-gradient(
-      135deg,
-      oklch(0.14 0.03 240 / 0.75) 0%,
-      oklch(0.10 0.03 240 / 0.6) 100%
-    );
-    border: 2px solid oklch(0.30 0.05 240 / 0.5);
-    box-shadow: 
-      0 0 25px oklch(0.75 0.20 195 / 0.2),
-      inset 0 0 15px oklch(0.75 0.20 195 / 0.08);
-    backdrop-filter: blur(20px);
+  .hud-top {
+    gap: 0.5rem;
+    padding: 0.75rem;
   }
 
-  @supports not (color: oklch(0 0 0)) {
-    .glass-card-hud {
-      background: linear-gradient(
-        135deg,
-        rgba(18, 23, 40, 0.75) 0%,
-        rgba(12, 17, 30, 0.6) 100%
-      );
-      border: 2px solid rgba(50, 60, 90, 0.5);
-      box-shadow: 
-        0 0 25px rgba(0, 200, 255, 0.2),
-        inset 0 0 15px rgba(0, 200, 255, 0.08);
-    }
+  .hud-stat {
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
   }
 
-  /* Enhanced neon shadow utilities */
-  .shadow-neon-cyan {
-    box-shadow: 0 0 30px oklch(0.75 0.20 195 / 0.5);
+  .hud-stat-icon {
+    font-size: 1.25rem;
   }
 
-  @supports not (color: oklch(0 0 0)) {
-    .shadow-neon-cyan {
-      box-shadow: 0 0 30px rgba(0, 200, 255, 0.5);
-    }
+  .hud-stat-label {
+    font-size: 0.5rem;
   }
 
-  .shadow-neon-cyan-lg {
-    box-shadow: 0 0 45px oklch(0.75 0.20 195 / 0.7);
-  }
-
-  @supports not (color: oklch(0 0 0)) {
-    .shadow-neon-cyan-lg {
-      box-shadow: 0 0 45px rgba(0, 200, 255, 0.7);
-    }
-  }
-
-  .shadow-neon-purple {
-    box-shadow: 0 0 30px oklch(0.70 0.25 300 / 0.5);
-  }
-
-  @supports not (color: oklch(0 0 0)) {
-    .shadow-neon-purple {
-      box-shadow: 0 0 30px rgba(180, 100, 255, 0.5);
-    }
-  }
-
-  .shadow-neon-purple-lg {
-    box-shadow: 0 0 45px oklch(0.70 0.25 300 / 0.7);
-  }
-
-  @supports not (color: oklch(0 0 0)) {
-    .shadow-neon-purple-lg {
-      box-shadow: 0 0 45px rgba(180, 100, 255, 0.7);
-    }
-  }
-
-  .shadow-neon-magenta {
-    box-shadow: 0 0 30px oklch(0.70 0.25 330 / 0.5);
-  }
-
-  @supports not (color: oklch(0 0 0)) {
-    .shadow-neon-magenta {
-      box-shadow: 0 0 30px rgba(255, 100, 200, 0.5);
-    }
-  }
-
-  .shadow-neon-magenta-lg {
-    box-shadow: 0 0 45px oklch(0.70 0.25 330 / 0.7);
-  }
-
-  @supports not (color: oklch(0 0 0)) {
-    .shadow-neon-magenta-lg {
-      box-shadow: 0 0 45px rgba(255, 100, 200, 0.7);
-    }
-  }
-
-  /* Enhanced drop shadow utilities */
-  .drop-shadow-neon-cyan {
-    filter: drop-shadow(0 0 20px oklch(0.75 0.20 195 / 0.7));
-  }
-
-  @supports not (color: oklch(0 0 0)) {
-    .drop-shadow-neon-cyan {
-      filter: drop-shadow(0 0 20px rgba(0, 200, 255, 0.7));
-    }
-  }
-
-  .drop-shadow-neon-purple {
-    filter: drop-shadow(0 0 20px oklch(0.70 0.25 300 / 0.7));
-  }
-
-  @supports not (color: oklch(0 0 0)) {
-    .drop-shadow-neon-purple {
-      filter: drop-shadow(0 0 20px rgba(180, 100, 255, 0.7));
-    }
-  }
-
-  .drop-shadow-neon-magenta {
-    filter: drop-shadow(0 0 20px oklch(0.70 0.25 330 / 0.7));
-  }
-
-  @supports not (color: oklch(0 0 0)) {
-    .drop-shadow-neon-magenta {
-      filter: drop-shadow(0 0 20px rgba(255, 100, 200, 0.7));
-    }
-  }
-
-  /* Gameplay root container */
-  .gameplay-root {
-    position: relative;
-    width: 100vw;
-    height: var(--app-dvh);
-    overflow: hidden;
-    background: oklch(0.05 0.02 240);
-  }
-
-  @supports not (color: oklch(0 0 0)) {
-    .gameplay-root {
-      background: rgb(8, 10, 18);
-    }
-  }
-
-  /* Touch controls overlay with proper z-index and safe areas */
-  .touch-controls-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 30;
-    pointer-events: none;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    padding-left: max(1rem, env(safe-area-inset-left));
-    padding-right: max(1rem, env(safe-area-inset-right));
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
-    padding-top: 0;
-    gap: 1rem;
+  .hud-stat-value {
+    font-size: 1rem;
   }
 
   .touch-control-left,
   .touch-control-right {
-    pointer-events: auto;
-    flex-shrink: 0;
+    bottom: 1.5rem;
   }
 
-  /* Enhanced joystick styling - Brighter neon-cyan/teal */
-  .joystick-base {
-    position: relative;
-    cursor: pointer;
-    user-select: none;
-    border-radius: 9999px;
-    border: 4px solid oklch(0.80 0.22 195 / 0.7);
-    background: linear-gradient(
-      135deg,
-      oklch(0.80 0.22 195 / 0.25) 0%,
-      oklch(0.75 0.20 195 / 0.15) 50%,
-      oklch(0.70 0.25 300 / 0.08) 100%
-    );
-    box-shadow: 
-      0 0 45px oklch(0.80 0.22 195 / 0.7),
-      inset 0 0 30px oklch(0.80 0.22 195 / 0.3);
-    backdrop-filter: blur(8px);
-    transition: all 0.2s ease;
+  .touch-control-left {
+    left: 1.5rem;
   }
 
-  @supports not (color: oklch(0 0 0)) {
-    .joystick-base {
-      border: 4px solid rgba(0, 220, 255, 0.7);
-      background: linear-gradient(
-        135deg,
-        rgba(0, 220, 255, 0.25) 0%,
-        rgba(0, 200, 255, 0.15) 50%,
-        rgba(180, 100, 255, 0.08) 100%
-      );
-      box-shadow: 
-        0 0 45px rgba(0, 220, 255, 0.7),
-        inset 0 0 30px rgba(0, 220, 255, 0.3);
-    }
+  .touch-control-right {
+    right: 1.5rem;
   }
 
-  .joystick-base:active {
-    border-color: oklch(0.85 0.24 195 / 0.9);
-    box-shadow: 
-      0 0 55px oklch(0.85 0.24 195 / 0.9),
-      inset 0 0 35px oklch(0.85 0.24 195 / 0.4);
+  .touch-hint-left,
+  .touch-hint-right {
+    bottom: 1.5rem;
   }
 
-  @supports not (color: oklch(0 0 0)) {
-    .joystick-base:active {
-      border-color: rgba(0, 240, 255, 0.9);
-      box-shadow: 
-        0 0 55px rgba(0, 240, 255, 0.9),
-        inset 0 0 35px rgba(0, 240, 255, 0.4);
-    }
+  .touch-hint-left {
+    left: 1.5rem;
   }
 
-  .joystick-knob {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    border-radius: 9999px;
-    border: 4px solid oklch(0.96 0.05 200 / 0.95);
-    background: linear-gradient(
-      135deg,
-      oklch(0.85 0.24 195) 0%,
-      oklch(0.80 0.22 195) 30%,
-      oklch(0.75 0.20 195) 60%,
-      oklch(0.70 0.25 300) 100%
-    );
-    box-shadow: 
-      0 0 35px oklch(0.85 0.24 195 / 1),
-      0 0 25px oklch(0.80 0.22 195 / 0.8),
-      inset 0 2px 10px oklch(0.96 0.05 200 / 0.4);
-    transition: transform 0.05s ease;
+  .touch-hint-right {
+    right: 1.5rem;
   }
 
-  @supports not (color: oklch(0 0 0)) {
-    .joystick-knob {
-      border: 4px solid rgba(240, 245, 255, 0.95);
-      background: linear-gradient(
-        135deg,
-        rgb(0, 240, 255) 0%,
-        rgb(0, 220, 255) 30%,
-        rgb(0, 200, 255) 60%,
-        rgb(180, 100, 255) 100%
-      );
-      box-shadow: 
-        0 0 35px rgba(0, 240, 255, 1),
-        0 0 25px rgba(0, 220, 255, 0.8),
-        inset 0 2px 10px rgba(240, 245, 255, 0.4);
-    }
+  .touch-hint-label {
+    font-size: 0.75rem;
   }
 
-  /* Enhanced shoot button styling - Brighter neon-magenta/pink */
-  .shoot-button {
-    position: relative;
-    cursor: pointer;
-    user-select: none;
-    border-radius: 9999px;
-    border: 4px solid oklch(0.75 0.28 330 / 0.8);
-    background: linear-gradient(
-      135deg,
-      oklch(0.75 0.28 330 / 0.35) 0%,
-      oklch(0.70 0.25 330 / 0.25) 40%,
-      oklch(0.70 0.25 300 / 0.15) 70%,
-      oklch(0.75 0.20 195 / 0.1) 100%
-    );
-    box-shadow: 
-      0 0 50px oklch(0.75 0.28 330 / 0.8),
-      inset 0 0 35px oklch(0.75 0.28 330 / 0.35);
-    backdrop-filter: blur(8px);
-    transition: all 0.15s ease;
+  .touch-hint-arrow {
+    font-size: 1.25rem;
+  }
+}
+
+/* Landscape-specific adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+  :root {
+    --control-size: 100px;
+    --joystick-knob-size: 42px;
+    --shoot-icon-size: 1.75rem;
   }
 
-  @supports not (color: oklch(0 0 0)) {
-    .shoot-button {
-      border: 4px solid rgba(255, 120, 220, 0.8);
-      background: linear-gradient(
-        135deg,
-        rgba(255, 120, 220, 0.35) 0%,
-        rgba(255, 100, 200, 0.25) 40%,
-        rgba(180, 100, 255, 0.15) 70%,
-        rgba(0, 200, 255, 0.1) 100%
-      );
-      box-shadow: 
-        0 0 50px rgba(255, 120, 220, 0.8),
-        inset 0 0 35px rgba(255, 120, 220, 0.35);
-    }
+  .hud-top {
+    padding: 0.5rem;
+    gap: 0.5rem;
   }
 
-  .shoot-button:active {
-    transform: scale(0.95);
-    border-color: oklch(0.80 0.30 330 / 1);
-    box-shadow: 
-      0 0 60px oklch(0.80 0.30 330 / 1),
-      inset 0 0 40px oklch(0.80 0.30 330 / 0.45);
+  .hud-stat {
+    padding: 0.375rem 0.625rem;
   }
 
-  @supports not (color: oklch(0 0 0)) {
-    .shoot-button:active {
-      border-color: rgba(255, 140, 230, 1);
-      box-shadow: 
-        0 0 60px rgba(255, 140, 230, 1),
-        inset 0 0 40px rgba(255, 140, 230, 0.45);
-    }
+  .touch-control-left,
+  .touch-control-right {
+    bottom: 1rem;
   }
 
-  /* Shoot button icon glow - Enhanced */
-  .shoot-icon-glow {
-    filter: drop-shadow(0 0 15px oklch(0.75 0.28 330 / 1));
+  .touch-control-left {
+    left: 1rem;
   }
 
-  @supports not (color: oklch(0 0 0)) {
-    .shoot-icon-glow {
-      filter: drop-shadow(0 0 15px rgba(255, 120, 220, 1));
-    }
+  .touch-control-right {
+    right: 1rem;
   }
 
-  /* Menu and HUD card enhancements */
-  .menu-card {
-    transition: all 0.3s ease;
+  .touch-hint {
+    padding: 0.5rem 1rem;
   }
 
-  .menu-button {
-    transition: all 0.2s ease;
+  .touch-hint-label {
+    font-size: 0.625rem;
   }
 
-  .hud-card {
-    transition: all 0.2s ease;
-  }
-
-  /* Debug overlay styling */
-  .touch-debug-overlay {
-    position: absolute;
-    top: max(1rem, env(safe-area-inset-top));
-    right: max(1rem, env(safe-area-inset-right));
-    z-index: 9999;
-    padding: 0.75rem 1rem;
-    background: oklch(0.10 0.02 240 / 0.95);
-    border: 2px solid oklch(0.75 0.20 195 / 0.5);
-    border-radius: 0.5rem;
-    box-shadow: 0 0 25px oklch(0.75 0.20 195 / 0.4);
-    backdrop-filter: blur(12px);
-    pointer-events: none;
-  }
-
-  @supports not (color: oklch(0 0 0)) {
-    .touch-debug-overlay {
-      background: rgba(12, 15, 25, 0.95);
-      border: 2px solid rgba(0, 200, 255, 0.5);
-      box-shadow: 0 0 25px rgba(0, 200, 255, 0.4);
-    }
+  .touch-hint-arrow {
+    font-size: 1rem;
   }
 }

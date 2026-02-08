@@ -27,7 +27,7 @@ export type UserRole = { 'admin' : null } |
 export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'clearInProgressRun' : ActorMethod<[], undefined>,
+  'clearInProgressRun' : ActorMethod<[], boolean>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getInProgressRun' : ActorMethod<[], [] | [InProgressRun]>,
@@ -36,11 +36,11 @@ export interface _SERVICE {
   'hasInProgressRun' : ActorMethod<[], boolean>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'loadStats' : ActorMethod<[], [] | [GameStats]>,
-  'resetPlayerStats' : ActorMethod<[Principal], undefined>,
-  'resetStats' : ActorMethod<[], undefined>,
-  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
-  'saveInProgressRun' : ActorMethod<[InProgressRun], undefined>,
-  'saveStats' : ActorMethod<[bigint, bigint], undefined>,
+  'resetPlayerStats' : ActorMethod<[Principal], boolean>,
+  'resetStats' : ActorMethod<[], boolean>,
+  'saveCallerUserProfile' : ActorMethod<[UserProfile], boolean>,
+  'saveInProgressRun' : ActorMethod<[InProgressRun], boolean>,
+  'saveStats' : ActorMethod<[bigint, bigint], boolean>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

@@ -27,7 +27,7 @@ export enum UserRole {
 }
 export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    clearInProgressRun(): Promise<void>;
+    clearInProgressRun(): Promise<boolean>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getInProgressRun(): Promise<InProgressRun | null>;
@@ -36,9 +36,9 @@ export interface backendInterface {
     hasInProgressRun(): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     loadStats(): Promise<GameStats | null>;
-    resetPlayerStats(player: Principal): Promise<void>;
-    resetStats(): Promise<void>;
-    saveCallerUserProfile(profile: UserProfile): Promise<void>;
-    saveInProgressRun(run: InProgressRun): Promise<void>;
-    saveStats(highScore: bigint, lastCompletedLevel: bigint): Promise<void>;
+    resetPlayerStats(player: Principal): Promise<boolean>;
+    resetStats(): Promise<boolean>;
+    saveCallerUserProfile(profile: UserProfile): Promise<boolean>;
+    saveInProgressRun(run: InProgressRun): Promise<boolean>;
+    saveStats(highScore: bigint, lastCompletedLevel: bigint): Promise<boolean>;
 }

@@ -1,7 +1,8 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import LoginButton from '@/components/LoginButton';
-import { Play, Gamepad2, Keyboard } from 'lucide-react';
+import { Play, Gamepad2, Keyboard, AlertCircle } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface MenuScreenProps {
   highScore: number;
@@ -9,9 +10,10 @@ interface MenuScreenProps {
   onContinueGame: () => void;
   hasSavedRun: boolean;
   isLoadingStats: boolean;
+  statsError?: boolean;
 }
 
-export default function MenuScreen({ highScore, onStartGame, onContinueGame, hasSavedRun, isLoadingStats }: MenuScreenProps) {
+export default function MenuScreen({ highScore, onStartGame, onContinueGame, hasSavedRun, isLoadingStats, statsError }: MenuScreenProps) {
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       {/* Background */}
@@ -77,9 +79,23 @@ export default function MenuScreen({ highScore, onStartGame, onContinueGame, has
               />
               <span className="text-base font-bold uppercase tracking-wide text-foreground/90 sm:text-lg">High Score</span>
             </div>
-            <span className="text-2xl font-black tabular-nums text-neon-magenta drop-shadow-[0_0_15px_oklch(0.70_0.25_330/0.9)] sm:text-3xl">
-              {isLoadingStats ? '...' : highScore.toLocaleString()}
-            </span>
+            <div className="flex items-center gap-2">
+              {statsError && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <AlertCircle className="h-4 w-4 text-destructive/70" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Stats unavailable</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              <span className="text-2xl font-black tabular-nums text-neon-magenta drop-shadow-[0_0_15px_oklch(0.70_0.25_330/0.9)] sm:text-3xl">
+                {isLoadingStats ? '...' : statsError ? '—' : highScore.toLocaleString()}
+              </span>
+            </div>
           </div>
         </Card>
 

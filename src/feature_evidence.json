@@ -2,8 +2,8 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-touch-controls-overlay-so-that-during-gameplay-when-touch-controls-are-shown-the-shoot-button-renders-on-the-bottom-left-and-the-joystick-renders-on-the-bottom-right-to-match-the-uploaded-reference-image",
-      "featureTitle": "Update the touch controls overlay so that, during gameplay when touch controls are shown, the SHOOT button renders on the bottom-left and the joystick renders on the bottom-right to match the uploaded reference image.",
+      "featureId": "feature-ensure-the-on-screen-touch-controls-overlay-joystick-bottom-left-and-shoot-button-bottom-right-is-visually-rendered-on-top-of-the-gameplay-canvas-when-showtouchcontrols-is-true-including-correct-positioning-sizing-safe-area-padding-and-z-index-so-the-controls-are-not-hidden-behind-the-canvas-hud",
+      "featureTitle": "Ensure the on-screen touch controls overlay (joystick bottom-left and SHOOT button bottom-right) is visually rendered on top of the gameplay canvas when `showTouchControls` is true, including correct positioning, sizing, safe-area padding, and z-index so the controls are not hidden behind the canvas/HUD.",
       "files": [
         "frontend/src/index.css",
         "frontend/src/screens/GameScreen.tsx"
@@ -22,11 +22,13 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-adjust-the-shoot-button-visuals-to-match-the-reference-image-more-closely-show-the-label-text-as-shoot-not-fire-and-ensure-the-overall-button-reads-as-a-bright-neon-magenta-pink-circular-control-with-clear-icon-label-contrast",
-      "featureTitle": "Adjust the shoot button visuals to match the reference image more closely: show the label text as \"SHOOT\" (not \"FIRE\") and ensure the overall button reads as a bright neon-magenta/pink circular control with clear icon+label contrast.",
+      "featureId": "feature-fix-any-css-class-issues-that-could-cause-the-joystick-or-shoot-button-to-be-present-in-the-dom-but-invisible-e-g-opacity-visibility-zero-size-incorrect-positioning-off-screen-incorrect-stacking-context-or-pointer-events-preventing-interaction-and-add-a-minimal-regression-check-to-prevent-reintroducing-invisible-controls",
+      "featureTitle": "Fix any CSS/class issues that could cause the joystick or shoot button to be present in the DOM but invisible (e.g., opacity/visibility, zero size, incorrect positioning off-screen, incorrect stacking context, or pointer-events preventing interaction) and add a minimal regression check to prevent reintroducing invisible controls.",
       "files": [
-        "frontend/src/game/controls/ShootButton.tsx",
-        "frontend/src/index.css"
+        "frontend/src/game/ui/TouchControlsDebugOverlay.tsx",
+        "frontend/src/game/ui/useTouchControlsDomSanityCheck.ts",
+        "frontend/src/index.css",
+        "frontend/src/screens/GameScreen.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -38,25 +40,6 @@
       ],
       "testIds": [
         "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-adjust-the-joystick-visuals-to-match-the-reference-image-more-closely-ensure-the-joystick-reads-as-a-bright-neon-cyan-teal-circular-base-with-a-distinct-inner-knob-preserving-existing-drag-clamp-behavior",
-      "featureTitle": "Adjust the joystick visuals to match the reference image more closely: ensure the joystick reads as a bright neon-cyan/teal circular base with a distinct inner knob, preserving existing drag/clamp behavior.",
-      "files": [
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
       ],
       "confidence": "high"
     }

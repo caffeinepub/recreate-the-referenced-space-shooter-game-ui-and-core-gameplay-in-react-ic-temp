@@ -1,52 +1,60 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-08T06:11:03.208Z",
-  "summary": "The diff implements the requested touch-control layout/styling changes (shoot label to “SHOOT”, neon styling tokens, and described swapped control positions), but also includes several additional UI/theme/debug and utility changes not requested by the BuildRequest.",
+  "generatedAt": "2026-02-08T07:01:00.559Z",
+  "summary": "REQ-1/REQ-2 appear to be addressed via CSS layering/safe-area adjustments (index.css), touch-controls wrapper refs + show/hide logic in GameScreen, canvas pointer-events changes to avoid intercepting touches, and a new DOM sanity-check hook + enhanced debug overlay/URL param parsing for regression validation. However, the diff also includes multiple UI/UX and control-behavior changes not requested for a visibility-only fix.",
   "missing_requirements": [],
   "hallucinated_features": [
     {
-      "description": "Added debug/force flags via URL parameters (e.g., debugControls, forceTouchControls) and related logic.",
-      "reason": "BuildRequest is limited to touch control layout/styling; it does not request new debug modes or URL-parameter overrides.",
+      "description": "Major visual/theme refactor (OKLCH neon color system, design tokens, glow utilities) beyond touch-controls visibility fix",
+      "reason": "BuildRequest only asked to make joystick/shoot controls visible/stacked correctly and add a minimal regression check; broad theme refactors were not requested.",
       "evidence": [
-        "frontend/src/screens/GameScreen.tsx",
-        "frontend/src/utils/urlParams.ts"
-      ]
-    },
-    {
-      "description": "Expanded URL parameter utilities and sessionStorage persistence helpers (storeSessionParameter/getPersistedUrlParameter/etc.).",
-      "reason": "Not part of requested control layout/styling updates.",
-      "evidence": [
-        "frontend/src/utils/urlParams.ts"
-      ]
-    },
-    {
-      "description": "Broader UI redesign beyond touch controls (menu redesign, HUD refresh, theme system/glass-card effects, neon design tokens).",
-      "reason": "BuildRequest scope is touch controls overlay layout/styling only; menu/HUD redesign is outside stated non-goals (“no new gameplay mechanics… beyond presentation/layout changes” applies to controls, not whole UI).",
-      "evidence": [
-        "frontend-file-summaries.txt",
-        "frontend/src/index.css"
-      ]
-    },
-    {
-      "description": "Canvas renderer changes (devicePixelRatio-aware sizing, neon border, pointer-events disabled on canvas).",
-      "reason": "Not requested; touch control styling/layout can be done without altering the renderer/canvas behavior.",
-      "evidence": [
+        "frontend/src/index.css",
         "frontend-file-summaries.txt"
       ]
     },
     {
-      "description": "Touch shooting behavior augmented with additional resets on visibility/orientation change.",
-      "reason": "REQ-1/REQ-2 specify no behavior changes beyond presentation; adding new reset triggers is a behavioral change (even if beneficial).",
+      "description": "HUD redesign and addition of a pause-menu/session toggle (Switch) to enable/disable touch controls",
+      "reason": "REQ-1/REQ-2 do not request adding a user-facing toggle or redesigning HUD styling; only visibility layering and minimal regression check were requested.",
       "evidence": [
-        "frontend/src/game/controls/ShootButton.tsx"
+        "frontend-file-summaries.txt (frontend/src/game/ui/Hud.tsx summary)"
+      ]
+    },
+    {
+      "description": "Joystick and shoot button control logic changes (pointerId tracking, setPointerCapture, multitouch reliability, lifecycle resets)",
+      "reason": "Non-goal explicitly discourages changing gameplay behavior/multitouch handling unless required for visibility; diff summary indicates substantial input-handling changes.",
+      "evidence": [
+        "frontend-file-summaries.txt (frontend/src/game/controls/Joystick.tsx summary)",
+        "frontend-file-summaries.txt (frontend/src/game/controls/ShootButton.tsx summary)"
+      ]
+    },
+    {
+      "description": "GameCanvas rendering changes (devicePixelRatio sizing, optimized render loop, neon border drawn each frame)",
+      "reason": "Not required for touch controls visibility; only layering/visibility/pointer-event interaction adjustments would be in-scope.",
+      "evidence": [
+        "frontend-file-summaries.txt (frontend/src/game/render/GameCanvas.tsx summary)"
+      ]
+    },
+    {
+      "description": "Menu screen redesign and other UI polish unrelated to touch controls visibility",
+      "reason": "Out of scope for a production hotfix focused on invisible joystick/shoot button.",
+      "evidence": [
+        "frontend-file-summaries.txt (frontend/src/screens/MenuScreen.tsx summary)"
+      ]
+    },
+    {
+      "description": "Tailwind configuration expansion (neon palette, shadows, animations, design tokens)",
+      "reason": "Not requested by REQ-1/REQ-2; appears to be general styling work.",
+      "evidence": [
+        "frontend-file-summaries.txt (frontend/tailwind.config.js summary)"
       ]
     }
   ],
   "confidence": 0.66,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/game/controls/ShootButton.tsx",
+    "frontend/src/game/ui/TouchControlsDebugOverlay.tsx",
+    "frontend/src/game/ui/useTouchControlsDomSanityCheck.ts",
     "frontend/src/index.css",
     "frontend/src/screens/GameScreen.tsx",
     "frontend/src/utils/urlParams.ts",

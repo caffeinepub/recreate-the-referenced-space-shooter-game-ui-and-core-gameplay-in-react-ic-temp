@@ -1,68 +1,57 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Touch controls overlay layout + neon styling updates (shoot left, joystick right)",
+  "title": "Make touch joystick & shoot button reliably visible above gameplay in production",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Swap touch controls overlay positions so SHOOT is bottom-left and joystick is bottom-right, preserving input behavior and safe-area anchoring.",
+      "summary": "Render the touch-controls overlay above the canvas/HUD with correct safe-area padding, positioning, sizing, and stacking so joystick and SHOOT are visible during gameplay when showTouchControls is true.",
       "acceptanceCriteria": [
-        "When touch controls are visible, the left control is the shoot button and the right control is the joystick.",
-        "No changes to touch input behavior: joystick still drives movement and shoot button still toggles shooting state.",
-        "Controls remain anchored to the bottom corners and respect safe-area insets."
+        "On a touch-capable mobile device in landscape during active gameplay (not paused, not game over), the joystick and SHOOT button are visible without requiring any debug/force URL parameters.",
+        "Controls render above the game canvas and remain visible when interacting with the game (no accidental occlusion by other layers).",
+        "Controls respect safe-area insets (e.g., iPhone notch/home indicator) and remain tappable near screen edges."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/screens/GameScreen.tsx",
-          "operation": "modify",
-          "description": "Swap the rendered placement of <ShootButton> and <Joystick> within the touch controls overlay so SHOOT appears in the bottom-left container and the joystick appears in the bottom-right container, without changing callbacks/wiring (joystick -> movement, shoot -> shooting state)."
-        },
-        {
           "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Adjust .touch-controls-overlay / .touch-control-left / .touch-control-right styling as needed to ensure both controls remain anchored to the bottom corners and continue to respect env(safe-area-inset-*) padding after the left/right swap (no pointer-events/z-index regressions)."
+          "description": "Harden touch-controls overlay layering and layout: raise the stacking order above the canvas/HUD, ensure a predictable stacking context (e.g., isolate the gameplay root), and adjust safe-area-aware offsets so bottom-left joystick and bottom-right SHOOT remain on-screen and tappable across mobile landscape and small-height layouts."
+        },
+        {
+          "path": "frontend/src/screens/GameScreen.tsx",
+          "operation": "modify",
+          "description": "Adjust touch-controls overlay DOM placement/wrappers so the overlay is guaranteed to render above the canvas and HUD (stacking context safe), and add stable wrapper elements for left/right controls to support safe-area-aware positioning and later visibility checks."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Update the shoot button label and styling to a brighter neon-magenta/pink circular control with high-contrast icon+label.",
+      "summary": "Eliminate CSS/stacking/positioning issues that can make controls present but invisible, and add a minimal regression check + manual debug path to detect invisible/off-screen controls early.",
       "acceptanceCriteria": [
-        "The shoot button label reads exactly \"SHOOT\" in all caps.",
-        "Shoot button remains a circular control with strong neon-magenta/pink emphasis and is easily readable over the gameplay background.",
-        "Shoot press/release behavior continues to work for both touch and mouse input."
+        "When `showTouchControls` is true, the joystick base and shoot button each have non-zero rendered size and are within the viewport bounds.",
+        "The joystick and shoot button are visibly distinguishable against the background (not fully transparent or clipped).",
+        "A simple manual test path exists to validate visibility (e.g., using `?debugControls=1` to confirm `showTouchControls: YES` and seeing the controls on-screen)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/game/controls/ShootButton.tsx",
-          "operation": "modify",
-          "description": "Change the displayed label text from \"FIRE\" to \"SHOOT\" and tune icon/label colors (and any related class usage) for clearer contrast while preserving the existing touch/mouse press+release logic and state toggling."
-        },
-        {
           "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Refine .shoot-button and .shoot-icon-glow styles to more closely match the reference: stronger neon-magenta/pink emphasis for the circular button, and high-contrast icon+label styling for readability over the game canvas."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Update joystick visuals to a brighter neon-cyan/teal base with a distinct inner knob while preserving current drag/clamp and reset behavior.",
-      "acceptanceCriteria": [
-        "Joystick remains a circular control with a clearly visible knob and strong neon-cyan/teal emphasis.",
-        "Joystick movement continues to clamp to the intended radius and returns to center on release, visibility change, resize, and orientation change.",
-        "Joystick remains usable and visible above the game canvas (no z-index/pointer-events regressions)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/game/controls/Joystick.tsx",
-          "operation": "modify",
-          "description": "Adjust joystick markup/classes only as needed to support the updated visual treatment (e.g., clearer knob layering/highlights) while keeping the existing drag/clamp calculations and reset handling intact."
+          "description": "Audit and fix any styles that can hide controls while still rendering in the DOM (e.g., unintended opacity/visibility, clipping due to overflow, off-screen absolute positioning, insufficient z-index, or stacking-context pitfalls). Ensure controls keep a non-zero size and maintain visible contrast against the game background."
         },
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/game/ui/useTouchControlsDomSanityCheck.ts",
+          "operation": "create",
+          "description": "Add a small, development-focused DOM sanity check utility/hook that, when showTouchControls is true (and/or when ?debugControls=1 is enabled), measures the joystick/shoot wrappers via getBoundingClientRect and logs a clear warning if size is zero or if elements are outside the viewport bounds."
+        },
+        {
+          "path": "frontend/src/screens/GameScreen.tsx",
           "operation": "modify",
-          "description": "Refine .joystick-base and .joystick-knob styling to better match the reference: brighter neon-cyan/teal circular base and a more distinct inner knob, ensuring the control remains visually above the canvas and retains correct pointer/touch interaction."
+          "description": "Wire the new touch-controls DOM sanity check into gameplay rendering: attach refs/data attributes to joystick/shoot wrappers and invoke the check whenever showTouchControls becomes true. Preserve the existing manual debug path via ?debugControls=1 and keep gameplay behavior unchanged."
+        },
+        {
+          "path": "frontend/src/game/ui/TouchControlsDebugOverlay.tsx",
+          "operation": "modify",
+          "description": "Enhance the debug overlay (shown via ?debugControls=1) to include a concise visibility section that can display measured joystick/shoot sizes/viewport-in-bounds status (fed from GameScreen), helping validate that controls are not invisible due to CSS/layout regressions."
         }
       ]
     }
