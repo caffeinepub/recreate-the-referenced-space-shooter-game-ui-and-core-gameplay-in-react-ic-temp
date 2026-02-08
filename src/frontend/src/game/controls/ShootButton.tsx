@@ -69,12 +69,8 @@ export default function ShootButton({ onShoot }: ShootButtonProps) {
     button.addEventListener('mousedown', handleMouseDown);
     button.addEventListener('mouseup', handleMouseUp);
     button.addEventListener('mouseleave', handleMouseLeave);
-
-    // Global listeners for release detection
-    document.addEventListener('mouseup', handleMouseUp);
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('orientationchange', handleOrientationChange);
-    window.addEventListener('resize', handleOrientationChange);
 
     return () => {
       button.removeEventListener('touchstart', handleTouchStart);
@@ -83,43 +79,43 @@ export default function ShootButton({ onShoot }: ShootButtonProps) {
       button.removeEventListener('mousedown', handleMouseDown);
       button.removeEventListener('mouseup', handleMouseUp);
       button.removeEventListener('mouseleave', handleMouseLeave);
-      document.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('orientationchange', handleOrientationChange);
-      window.removeEventListener('resize', handleOrientationChange);
     };
   }, [onShoot]);
 
   return (
     <div
       ref={buttonRef}
-      className="relative cursor-pointer select-none rounded-full bg-gradient-to-br from-neon-magenta via-neon-purple to-neon-cyan shadow-neon-magenta-xl transition-all active:scale-95"
+      className="shoot-button flex items-center justify-center"
       style={{ 
         width: 'var(--control-size)',
         height: 'var(--control-size)',
         touchAction: 'none'
       }}
     >
-      {/* Outer glow ring */}
-      <div className="absolute inset-0 rounded-full border-2 border-neon-magenta/50 sm:border-3 md:border-4" />
-      
-      {/* Inner content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center gap-1">
         <Zap 
-          className="text-white drop-shadow-neon-cyan"
+          className="shoot-icon-glow"
           style={{ 
             width: 'var(--shoot-icon-size)',
-            height: 'var(--shoot-icon-size)'
+            height: 'var(--shoot-icon-size)',
+            color: 'oklch(0.96 0.05 200)',
+            strokeWidth: 2.5
           }}
-          fill="currentColor"
+          fill="oklch(0.75 0.25 330)"
         />
-        <span className="mt-0.5 text-[0.5rem] font-bold text-white drop-shadow-neon-magenta sm:text-xs">
+        <span 
+          className="shoot-icon-glow font-bold tracking-wider"
+          style={{ 
+            fontSize: 'clamp(0.625rem, 2vw, 0.875rem)',
+            color: 'oklch(0.96 0.05 200)',
+            textShadow: '0 0 8px oklch(0.75 0.25 330 / 0.8)'
+          }}
+        >
           SHOOT
         </span>
       </div>
-
-      {/* Inner highlight */}
-      <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white/20 to-transparent pointer-events-none sm:inset-3 md:inset-4" />
     </div>
   );
 }

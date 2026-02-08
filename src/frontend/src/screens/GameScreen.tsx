@@ -3,12 +3,16 @@ import GameCanvas from '../game/render/GameCanvas';
 import Hud from '../game/ui/Hud';
 import Joystick from '../game/controls/Joystick';
 import ShootButton from '../game/controls/ShootButton';
+import TouchControlsDebugOverlay from '../game/ui/TouchControlsDebugOverlay';
 import RotateDeviceOverlay from '../components/RotateDeviceOverlay';
 import { useGameEngine } from '../game/useGameEngine';
 import { useKeyboardControls } from '../game/controls/useKeyboardControls';
 import { useCombinedControls } from '../game/controls/useCombinedControls';
 import { useLandscapeOrientation } from '../hooks/useLandscapeOrientation';
+import { useIsTouchCapable } from '../hooks/useIsTouchCapable';
+import { useDynamicViewport } from '../hooks/useDynamicViewport';
 import { useInProgressRun } from '../game/persistence/useInProgressRun';
+import { getBooleanUrlParameter } from '../utils/urlParams';
 import type { GamePhase } from '../game/types';
 
 interface GameScreenProps {
@@ -37,8 +41,11 @@ export default function GameScreen({ onExit, onGameOver, resumeData }: GameScree
   });
 
   const { isMobile, isPortrait, lockLandscape, unlockOrientation } = useLandscapeOrientation();
+  const isTouchCapable = useIsTouchCapable();
+  useDynamicViewport();
   const { saveRun } = useInProgressRun();
   const saveIntervalRef = useRef<number | undefined>(undefined);
+  const gameOverTimeoutRef = useRef<number | undefined>(undefined);
 
   const {
     score,
@@ -56,18 +63,40 @@ export default function GameScreen({ onExit, onGameOver, resumeData }: GameScree
     initializeFromSnapshot,
   } = useGameEngine({ controls, resumeData });
 
-  // Attempt orientation lock on mount
+  // Check for debug mode and force flags
+  const debugControls = getBooleanUrlParameter('debugControls');
+  const forceTouchControls = getBooleanUrlParameter('forceTouchControls');
+
+  // Joystick callback
+  const handleJoystickMove = useCallback((x: number, y: number) => {
+    setJoystickInput({ x, y });
+  }, []);
+
+  // Shoot button callback
+  const handleShootChange = useCallback((shooting: boolean) => {
+    setTouchShooting(shooting);
+  }, []);
+
+  // Reset touch controls when they should be hidden
   useEffect(() => {
-    if (isMobile) {
+    if (isPortrait || isPaused || isGameOver) {
+      setJoystickInput({ x: 0, y: 0 });
+      setTouchShooting(false);
+    }
+  }, [isPortrait, isPaused, isGameOver]);
+
+  // Attempt orientation lock on mount for touch-capable devices
+  useEffect(() => {
+    if (isTouchCapable) {
       lockLandscape();
     }
 
     return () => {
-      if (isMobile) {
+      if (isTouchCapable) {
         unlockOrientation();
       }
     };
-  }, [isMobile, lockLandscape, unlockOrientation]);
+  }, [isTouchCapable, lockLandscape, unlockOrientation]);
 
   // Auto-save periodically and on key events
   useEffect(() => {
@@ -117,12 +146,21 @@ export default function GameScreen({ onExit, onGameOver, resumeData }: GameScree
     };
   }, [score, level, progress, isPaused, isGameOver, phase, destroyedNormalObstacles, bossProgressPct, timeRemainingSeconds, saveRun]);
 
-  // Handle game over
-  if (isGameOver && gameState.isGameOver) {
-    setTimeout(() => {
-      onGameOver(score, level);
-    }, 100);
-  }
+  // Handle game over with delay to show explosion VFX
+  useEffect(() => {
+    if (isGameOver && gameState.isGameOver) {
+      // Delay game over transition to allow explosion VFX to be visible
+      gameOverTimeoutRef.current = window.setTimeout(() => {
+        onGameOver(score, level);
+      }, 500);
+    }
+
+    return () => {
+      if (gameOverTimeoutRef.current) {
+        clearTimeout(gameOverTimeoutRef.current);
+      }
+    };
+  }, [isGameOver, gameState.isGameOver, score, level, onGameOver]);
 
   const handlePause = () => {
     togglePause();
@@ -158,57 +196,62 @@ export default function GameScreen({ onExit, onGameOver, resumeData }: GameScree
     onExit();
   };
 
-  const handleJoystickMove = useCallback((x: number, y: number) => {
-    setJoystickInput({ x, y });
-  }, []);
-
-  const handleShoot = useCallback((shooting: boolean) => {
-    setTouchShooting(shooting);
-  }, []);
-
-  // Show controls during active play (not paused)
-  const showControls = !isPaused;
-
-  // Show rotate overlay on mobile portrait
-  const showRotateOverlay = isMobile && isPortrait;
+  // Show touch controls when device is touch-capable and in landscape (not paused/game over)
+  // OR when forceTouchControls is enabled (for debugging)
+  const showTouchControls = (isTouchCapable || forceTouchControls) && !isPortrait && !isPaused && !isGameOver;
 
   return (
-    <div className="gameplay-root relative w-full overflow-hidden bg-space-dark">
-      {/* Game Canvas */}
-      <GameCanvas gameState={gameState} />
+    <>
+      {/* Rotate overlay for mobile portrait */}
+      <RotateDeviceOverlay show={isMobile && isPortrait} />
 
-      {/* HUD Overlay */}
-      <Hud
-        score={score}
-        level={level}
-        progress={progress}
-        isPaused={isPaused}
-        levelCompleteMessage={levelCompleteMessage}
-        phase={phase}
-        bossProgressPct={bossProgressPct}
-        timeRemainingSeconds={timeRemainingSeconds}
-        onPause={handlePause}
-        onExit={handleExit}
-      />
+      {/* Gameplay container */}
+      <div className="gameplay-root">
+        {/* Game Canvas */}
+        <GameCanvas gameState={gameState} />
 
-      {/* Touch Controls Overlay */}
-      <div
-        className="touch-controls-overlay"
-        style={{ opacity: showControls ? 1 : 0 }}
-      >
-        {/* Joystick */}
-        <div className="touch-control-left">
-          <Joystick onMove={handleJoystickMove} />
-        </div>
+        {/* HUD */}
+        <Hud
+          score={score}
+          level={level}
+          progress={progress}
+          isPaused={isPaused}
+          levelCompleteMessage={levelCompleteMessage}
+          phase={phase}
+          bossProgressPct={bossProgressPct}
+          timeRemainingSeconds={timeRemainingSeconds}
+          onPause={handlePause}
+          onExit={handleExit}
+        />
 
-        {/* Shoot Button */}
-        <div className="touch-control-right">
-          <ShootButton onShoot={handleShoot} />
-        </div>
+        {/* Touch Controls Overlay - SWAPPED: Shoot left, Joystick right */}
+        {showTouchControls && (
+          <div className="touch-controls-overlay">
+            <div className="touch-control-left">
+              <ShootButton onShoot={handleShootChange} />
+            </div>
+            <div className="touch-control-right">
+              <Joystick onMove={handleJoystickMove} />
+            </div>
+          </div>
+        )}
+
+        {/* Debug Overlay (only when ?debugControls=1) */}
+        {debugControls && (
+          <TouchControlsDebugOverlay
+            isTouchCapable={isTouchCapable}
+            isPortrait={isPortrait}
+            isMobile={isMobile}
+            isPaused={isPaused}
+            isGameOver={isGameOver}
+            showTouchControls={showTouchControls}
+            forceTouchControls={forceTouchControls}
+            joystickX={joystickInput.x}
+            joystickY={joystickInput.y}
+            isShooting={touchShooting}
+          />
+        )}
       </div>
-
-      {/* Rotate Device Overlay */}
-      <RotateDeviceOverlay show={showRotateOverlay} />
-    </div>
+    </>
   );
 }

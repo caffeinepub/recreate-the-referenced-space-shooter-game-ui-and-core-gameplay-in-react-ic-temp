@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { GameState } from '../types';
+import { drawPlayerShip } from './drawPlayerShip';
 
 interface GameCanvasProps {
   gameState: GameState;
@@ -7,61 +8,98 @@ interface GameCanvasProps {
 
 export default function GameCanvas({ gameState }: GameCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const gameStateRef = useRef<GameState>(gameState);
+  const animationFrameRef = useRef<number | null>(null);
+
+  // Update ref when gameState changes
+  useEffect(() => {
+    gameStateRef.current = gameState;
+  }, [gameState]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      
+      ctx.scale(dpr, dpr);
+      
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
     };
 
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    
+    const handleResize = () => {
+      resizeCanvas();
+    };
+    
+    const handleOrientationChange = () => {
+      setTimeout(resizeCanvas, 100);
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleOrientationChange);
+    window.visualViewport?.addEventListener('resize', handleResize);
 
     const render = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const state = gameStateRef.current;
+      const canvasWidth = canvas.getBoundingClientRect().width;
+      const canvasHeight = canvas.getBoundingClientRect().height;
 
-      // Draw player ship (vector-based)
-      const player = gameState.player;
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+      // Draw playfield border (subtle neon frame)
       ctx.save();
-      ctx.translate(player.x, player.y);
-      ctx.rotate(player.rotation);
-
-      // Ship body (triangle pointing right in local coords)
-      ctx.beginPath();
-      ctx.moveTo(player.radius, 0);
-      ctx.lineTo(-player.radius * 0.6, -player.radius * 0.5);
-      ctx.lineTo(-player.radius * 0.6, player.radius * 0.5);
-      ctx.closePath();
-      ctx.fillStyle = '#00ffff';
-      ctx.fill();
-      ctx.strokeStyle = '#00ffff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Glow effect
+      ctx.strokeStyle = '#00c8ff';
+      ctx.lineWidth = 3;
       ctx.shadowBlur = 15;
-      ctx.shadowColor = '#00ffff';
-      ctx.fill();
+      ctx.shadowColor = '#00c8ff';
+      
+      // Draw border rectangle with rounded corners
+      const borderInset = 10;
+      const borderRadius = 8;
+      const x = borderInset;
+      const y = borderInset;
+      const width = canvasWidth - borderInset * 2;
+      const height = canvasHeight - borderInset * 2;
+      
+      ctx.beginPath();
+      ctx.moveTo(x + borderRadius, y);
+      ctx.lineTo(x + width - borderRadius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + borderRadius);
+      ctx.lineTo(x + width, y + height - borderRadius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - borderRadius, y + height);
+      ctx.lineTo(x + borderRadius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - borderRadius);
+      ctx.lineTo(x, y + borderRadius);
+      ctx.quadraticCurveTo(x, y, x + borderRadius, y);
+      ctx.closePath();
+      ctx.stroke();
+      
       ctx.shadowBlur = 0;
-
       ctx.restore();
 
+      // Draw player ship (vector-only, no image)
+      const player = state.player;
+      drawPlayerShip(ctx, player.x, player.y, player.rotation, player.radius);
+
       // Draw bullets (flame shape)
-      gameState.bullets.forEach((bullet) => {
+      state.bullets.forEach((bullet) => {
         ctx.save();
         ctx.translate(bullet.x, bullet.y);
         
-        // Calculate rotation from velocity
         const angle = Math.atan2(bullet.vy, bullet.vx);
         ctx.rotate(angle);
 
-        // Flame shape pointing right in local coords
         const flameLength = bullet.radius * 3;
         const flameWidth = bullet.radius * 1.5;
 
@@ -88,8 +126,8 @@ export default function GameCanvas({ gameState }: GameCanvasProps) {
         ctx.restore();
       });
 
-      // Draw enemies
-      gameState.enemies.forEach((enemy) => {
+      // Draw enemies (no color flash on hit)
+      state.enemies.forEach((enemy) => {
         ctx.save();
         ctx.translate(enemy.x, enemy.y);
         ctx.rotate(enemy.rotation);
@@ -147,7 +185,7 @@ export default function GameCanvas({ gameState }: GameCanvasProps) {
       });
 
       // Draw explosions
-      gameState.explosions.forEach((explosion) => {
+      state.explosions.forEach((explosion) => {
         const elapsed = Date.now() - explosion.startTime;
         const progress = elapsed / explosion.duration;
         const radius = 30 + progress * 50;
@@ -174,7 +212,7 @@ export default function GameCanvas({ gameState }: GameCanvasProps) {
       });
 
       // Draw sparks
-      gameState.sparks.forEach((spark) => {
+      state.sparks.forEach((spark) => {
         const elapsed = Date.now() - spark.startTime;
         const progress = elapsed / spark.duration;
         const alpha = 1 - progress;
@@ -201,21 +239,31 @@ export default function GameCanvas({ gameState }: GameCanvasProps) {
         ctx.restore();
       });
 
-      requestAnimationFrame(render);
+      animationFrameRef.current = requestAnimationFrame(render);
     };
 
     render();
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleOrientationChange);
+      window.visualViewport?.removeEventListener('resize', handleResize);
     };
-  }, [gameState]);
+  }, []);
 
   return (
     <canvas
       ref={canvasRef}
       className="absolute inset-0 z-0 bg-space-dark"
-      style={{ width: '100%', height: '100%' }}
+      style={{ 
+        width: '100%', 
+        height: '100%',
+        touchAction: 'none',
+        pointerEvents: 'none'
+      }}
     />
   );
 }

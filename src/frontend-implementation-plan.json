@@ -1,194 +1,68 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Giant obstacle phase, phase-based HUD progress, and per-level countdown timer",
+  "title": "Touch controls overlay layout + neon styling updates (shoot left, joystick right)",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Change level progression to require destroying 5 * level normal obstacles before spawning a single giant obstacle.",
+      "summary": "Swap touch controls overlay positions so SHOOT is bottom-left and joystick is bottom-right, preserving input behavior and safe-area anchoring.",
       "acceptanceCriteria": [
-        "On Level 1, exactly 5 normal obstacles must be destroyed before any giant obstacle can spawn.",
-        "On Level 2, exactly 10 normal obstacles must be destroyed before any giant obstacle can spawn.",
-        "On Level N, exactly 5*N normal obstacles must be destroyed before any giant obstacle can spawn.",
-        "Normal obstacles continue spawning/behaving as before until the normal-obstacle quota is met."
+        "When touch controls are visible, the left control is the shoot button and the right control is the joystick.",
+        "No changes to touch input behavior: joystick still drives movement and shoot button still toggles shooting state.",
+        "Controls remain anchored to the bottom corners and respect safe-area insets."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/game/useGameEngine.ts",
+          "path": "frontend/src/screens/GameScreen.tsx",
           "operation": "modify",
-          "description": "Replace score-based level-up gating with quota-based progression for normal obstacles: track destroyedNormalObstacles, compute requiredNormalObstacles = 5 * level, and only transition out of the normal-obstacle phase once the quota is met (while keeping normal obstacle spawn behavior unchanged until quota completion)."
+          "description": "Swap the rendered placement of <ShootButton> and <Joystick> within the touch controls overlay so SHOOT appears in the bottom-left container and the joystick appears in the bottom-right container, without changing callbacks/wiring (joystick -> movement, shoot -> shooting state)."
         },
         {
-          "path": "frontend/src/game/types.ts",
+          "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Extend game state/types to represent quota-based progression (e.g., destroyedNormalObstacles, requiredNormalObstacles, and a phase indicator) so the engine and HUD can consume consistent values."
+          "description": "Adjust .touch-controls-overlay / .touch-control-left / .touch-control-right styling as needed to ensure both controls remain anchored to the bottom corners and continue to respect env(safe-area-inset-*) padding after the left/right swap (no pointer-events/z-index regressions)."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add a giant obstacle (boss) phase with its own hit-based progress bar; defeat triggers explosion VFX and an English \"Level Completed\" message, then starts the next level with fresh state.",
+      "summary": "Update the shoot button label and styling to a brighter neon-magenta/pink circular control with high-contrast icon+label.",
       "acceptanceCriteria": [
-        "After the normal obstacle quota is reached, one (and only one) giant obstacle spawns.",
-        "The giant obstacle requires multiple hits to defeat; it cannot be removed on first hit.",
-        "A dedicated giant-obstacle progress bar increases with hits and reaches 100% when defeated.",
-        "On giant obstacle defeat, an explosion VFX is shown and the UI displays an English level completion message (e.g., \"Level Completed\").",
-        "After level completion, the next level starts with a fresh normal obstacle quota and no giant obstacle active."
+        "The shoot button label reads exactly \"SHOOT\" in all caps.",
+        "Shoot button remains a circular control with strong neon-magenta/pink emphasis and is easily readable over the gameplay background.",
+        "Shoot press/release behavior continues to work for both touch and mouse input."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/game/useGameEngine.ts",
+          "path": "frontend/src/game/controls/ShootButton.tsx",
           "operation": "modify",
-          "description": "Implement boss phase state machine: when normal quota is met, spawn exactly one giant obstacle entity; route bullet collisions to increment boss progress per hit; prevent boss removal until progress reaches 100%; on defeat, trigger explosion VFX, set an English level completion message (e.g., \"Level Completed\"), advance to the next level, and reset quota/boss/timer state for the new level."
+          "description": "Change the displayed label text from \"FIRE\" to \"SHOOT\" and tune icon/label colors (and any related class usage) for clearer contrast while preserving the existing touch/mouse press+release logic and state toggling."
         },
         {
-          "path": "frontend/src/game/types.ts",
+          "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Add/extend types to represent the giant obstacle (boss) and its progress (e.g., boss entity fields and bossProgressPct) in GameState so rendering and persistence can access it."
-        },
-        {
-          "path": "frontend/src/game/render/GameCanvas.tsx",
-          "operation": "modify",
-          "description": "Render the giant obstacle distinctly from normal obstacles (larger visual) and ensure boss defeat triggers an explosion VFX consistent with existing explosion rendering."
-        },
-        {
-          "path": "frontend/src/game/ui/Hud.tsx",
-          "operation": "modify",
-          "description": "Ensure the level completion message shown after boss defeat is English (e.g., exactly \"Level Completed\" or similar) and remains wired to the engine-provided levelCompleteMessage."
+          "description": "Refine .shoot-button and .shoot-icon-glow styles to more closely match the reference: stronger neon-magenta/pink emphasis for the circular button, and high-contrast icon+label styling for readability over the game canvas."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Make the HUD progress bar phase-aware: normal quota progress during normal phase, smaller boss progress bar during giant obstacle phase.",
+      "summary": "Update joystick visuals to a brighter neon-cyan/teal base with a distinct inner knob while preserving current drag/clamp and reset behavior.",
       "acceptanceCriteria": [
-        "During normal-obstacle phase, the HUD progress bar reflects destroyedNormalObstacles / requiredNormalObstacles as a percentage.",
-        "During giant-obstacle phase, the HUD shows a smaller-sized progress bar representing the giant obstacle’s progress/health.",
-        "The level completion message remains in English and is displayed after the giant obstacle is defeated."
+        "Joystick remains a circular control with a clearly visible knob and strong neon-cyan/teal emphasis.",
+        "Joystick movement continues to clamp to the intended radius and returns to center on release, visibility change, resize, and orientation change.",
+        "Joystick remains usable and visible above the game canvas (no z-index/pointer-events regressions)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/game/ui/Hud.tsx",
+          "path": "frontend/src/game/controls/Joystick.tsx",
           "operation": "modify",
-          "description": "Update HUD props and rendering to support two progress modes: compute/display normal quota progress during normal phase and display boss progress during boss phase using a smaller-sized Progress bar (reuse existing shadcn-ui Progress composition; do not edit files under frontend/src/components/ui). Verify the component's usage instructions before implementing."
+          "description": "Adjust joystick markup/classes only as needed to support the updated visual treatment (e.g., clearer knob layering/highlights) while keeping the existing drag/clamp calculations and reset handling intact."
         },
         {
           "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Add new HUD sizing tokens (e.g., a smaller progress width/height for boss phase) using the existing CSS variable system so the boss progress bar can be visually smaller without introducing new global stylesheet paths."
-        },
-        {
-          "path": "frontend/src/game/useGameEngine.ts",
-          "operation": "modify",
-          "description": "Expose phase, destroyedNormalObstacles, requiredNormalObstacles, and bossProgressPct to the UI layer so Hud can render the correct progress behavior based on the active phase."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Add a per-level countdown timer (30s for Level 1; 35s for Levels 2+), updating live and pausing/resuming with the game's pause state.",
-      "acceptanceCriteria": [
-        "A timer is visible in the HUD and updates at least once per second during active gameplay.",
-        "Level 1 starts with 30 seconds available; Level 2 starts with 35 seconds available; Level 3 starts with 35 seconds available.",
-        "The timer does not decrement while the game is paused (pause overlay shown).",
-        "When a level completes, the timer resets for the next level according to the configured time limit."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/game/useGameEngine.ts",
-          "operation": "modify",
-          "description": "Add timer state (timeRemainingSeconds) driven by a 1Hz tick that decrements only when gameplay is active (not paused, not game over, not in level-complete transition). Initialize per level (Level 1: 30; Levels 2+: 35), and reset when advancing to the next level."
-        },
-        {
-          "path": "frontend/src/game/ui/Hud.tsx",
-          "operation": "modify",
-          "description": "Display the countdown timer prominently in the HUD (English labels), updating based on timeRemainingSeconds provided by the engine."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "If needed for layout, extend existing HUD sizing variables to accommodate the timer display while keeping the current responsive sizing system."
-        },
-        {
-          "path": "frontend/src/screens/GameScreen.tsx",
-          "operation": "modify",
-          "description": "Wire the engine-provided timer value into the HUD and ensure pause/resume interactions continue to use the engine pause state (so timer pausing is consistent)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Trigger game over when the countdown timer hits 0 before level completion, using the existing game-over flow (including clearing saved in-progress run).",
-      "acceptanceCriteria": [
-        "If the timer reaches 0 and the level has not been completed, the game transitions to game over using the existing game-over handling.",
-        "If the level is completed before time reaches 0, no timer-based game over occurs."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/game/useGameEngine.ts",
-          "operation": "modify",
-          "description": "When timeRemainingSeconds reaches 0 and the level is not completed, set game over state (isGameOver / gameState.isGameOver) so GameScreen/App transition through the existing game-over path."
-        },
-        {
-          "path": "frontend/src/screens/GameScreen.tsx",
-          "operation": "modify",
-          "description": "Ensure timer-based game over triggers the same onGameOver callback path as collision-based game over (no new screens/routes), so App clears the saved run as it already does."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Ensure bullet impacts generate spark/explosion VFX on both normal obstacles and the giant obstacle, including non-lethal boss hits.",
-      "acceptanceCriteria": [
-        "Bullet hits on normal obstacles show spark/explosion VFX at the impact point.",
-        "Bullet hits on the giant obstacle show spark/explosion VFX at the impact point even if the giant obstacle remains alive."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/game/useGameEngine.ts",
-          "operation": "modify",
-          "description": "Ensure collision handling creates on-hit spark/explosion feedback for (a) normal obstacles (keep existing behavior) and (b) the giant obstacle on every hit, even when boss progress is not yet 100%; reserve the larger explosion for boss defeat."
-        },
-        {
-          "path": "frontend/src/game/render/GameCanvas.tsx",
-          "operation": "modify",
-          "description": "Confirm existing spark/explosion render paths visually support boss hit feedback; adjust rendering only as needed to make boss-hit VFX clearly visible at the impact point."
-        }
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "summary": "Extend localStorage in-progress run persistence to resume the new quota/boss/timer flow; bump version and clear incompatible saves.",
-      "acceptanceCriteria": [
-        "Saved runs include the new timer/phase/quota/boss-progress fields needed to resume gameplay consistently.",
-        "Old saved runs from the previous version are detected as incompatible and are cleared (same behavior pattern as existing version validation).",
-        "Using \"CONTINUE\" restores the timer and the correct phase (normal vs giant obstacle) along with progress bars."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/game/persistence/inProgressRunStorage.ts",
-          "operation": "modify",
-          "description": "Bump the local saved-run CURRENT_VERSION and extend the stored payload to include: destroyedNormalObstacles (or equivalent), phase (normal vs boss), bossProgressPct, and timeRemainingSeconds; keep the existing version validation behavior that clears incompatible saves."
-        },
-        {
-          "path": "frontend/src/game/persistence/useInProgressRun.ts",
-          "operation": "modify",
-          "description": "Update the LocalRunData shape to include the new fields and ensure load/save round-trips them via localStorage; keep backend save limited to existing backend InProgressRun fields while preserving the richer local resume state."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Extend ResumeData to include the new timer/phase/quota/boss-progress fields and pass them through when continuing a run."
-        },
-        {
-          "path": "frontend/src/screens/GameScreen.tsx",
-          "operation": "modify",
-          "description": "Include the new timer/phase/quota/boss-progress fields in auto-save and pause/exit saves, and pass expanded resumeData through to useGameEngine so CONTINUE restores the correct phase and HUD progress behavior."
-        },
-        {
-          "path": "frontend/src/game/useGameEngine.ts",
-          "operation": "modify",
-          "description": "Accept expanded resumeData (timer/phase/quota/bossProgress) and initialize internal refs/state accordingly so the resumed run continues consistently from the saved phase."
+          "description": "Refine .joystick-base and .joystick-knob styling to better match the reference: brighter neon-cyan/teal circular base and a more distinct inner knob, ensuring the control remains visually above the canvas and retains correct pointer/touch interaction."
         }
       ]
     }

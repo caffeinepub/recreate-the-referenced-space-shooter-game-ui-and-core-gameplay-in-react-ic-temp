@@ -48,6 +48,36 @@ function getTimeLimitForLevel(level: number): number {
   return level === 1 ? 30 : 35;
 }
 
+function createExplosion(x: number, y: number): Explosion {
+  return {
+    id: `explosion-${Date.now()}-${Math.random()}`,
+    x,
+    y,
+    startTime: Date.now(),
+    duration: 600
+  };
+}
+
+function createSparks(x: number, y: number, count: number = 8): Spark[] {
+  const sparks: Spark[] = [];
+  for (let i = 0; i < count; i++) {
+    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+    const speed = 100 + Math.random() * 150;
+    sparks.push({
+      id: `spark-${Date.now()}-${Math.random()}-${i}`,
+      x,
+      y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      angle,
+      length: 15 + Math.random() * 10,
+      startTime: Date.now(),
+      duration: 400
+    });
+  }
+  return sparks;
+}
+
 export function useGameEngine({ controls, resumeData }: UseGameEngineProps) {
   const [score, setScore] = useState(resumeData?.score ?? 0);
   const [level, setLevel] = useState(resumeData?.level ?? 1);
@@ -244,6 +274,10 @@ export function useGameEngine({ controls, resumeData }: UseGameEngineProps) {
 
         // Game over if timer reaches 0
         if (newTime === 0) {
+          // Create explosion at player position before game over
+          state.explosions.push(createExplosion(state.player.x, state.player.y));
+          state.sparks.push(...createSparks(state.player.x, state.player.y, 12));
+          
           setIsGameOver(true);
           state.isGameOver = true;
           animationId = requestAnimationFrame(gameLoop);
@@ -478,12 +512,19 @@ export function useGameEngine({ controls, resumeData }: UseGameEngineProps) {
         }
       }
 
-      // Player-enemy collision (Game Over)
+      // Player-enemy collision (Game Over with explosion VFX)
       for (const enemy of state.enemies) {
         const dx = enemy.x - state.player.x;
         const dy = enemy.y - state.player.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < state.player.radius + enemy.radius) {
+          // Create explosion and sparks at collision point
+          const collisionX = (state.player.x + enemy.x) / 2;
+          const collisionY = (state.player.y + enemy.y) / 2;
+          
+          state.explosions.push(createExplosion(collisionX, collisionY));
+          state.sparks.push(...createSparks(collisionX, collisionY, 16));
+          
           setIsGameOver(true);
           state.isGameOver = true;
           animationId = requestAnimationFrame(gameLoop);
@@ -506,135 +547,102 @@ export function useGameEngine({ controls, resumeData }: UseGameEngineProps) {
           if (distance < bullet.radius + enemy.radius) {
             bulletsToRemove.add(bullet.id);
 
-            // Create spark particles at collision point
-            const sparkCount = 6 + Math.floor(Math.random() * 4);
-            for (let i = 0; i < sparkCount; i++) {
-              const angle = (Math.PI * 2 * i) / sparkCount + (Math.random() - 0.5) * 0.5;
-              const speed = 100 + Math.random() * 150;
-              const spark: Spark = {
-                id: `spark-${Date.now()}-${Math.random()}-${i}`,
-                x: bullet.x,
-                y: bullet.y,
-                vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed,
-                startTime: currentTime,
-                duration: 200 + Math.random() * 150,
-                angle: angle,
-                length: 8 + Math.random() * 12
-              };
-              state.sparks.push(spark);
-            }
+            // Create spark particles at collision point (no color flash)
+            state.sparks.push(...createSparks(bullet.x, bullet.y, 6));
 
             if (enemy.isBoss) {
-              // Boss hit
+              // Boss takes damage
               enemy.health -= 1;
               bossHealthRef.current = enemy.health;
-              const bossPct = ((BOSS_CONFIG.maxHealth - enemy.health) / BOSS_CONFIG.maxHealth) * 100;
-              state.bossProgressPct = bossPct;
-              setBossProgressPct(bossPct);
+              const healthPct = (enemy.health / (enemy.maxHealth || BOSS_CONFIG.maxHealth)) * 100;
+              state.bossProgressPct = healthPct;
+              setBossProgressPct(healthPct);
 
               if (enemy.health <= 0) {
-                // Boss defeated
                 enemiesToRemove.add(enemy.id);
+                // Boss defeated - create larger explosion
+                state.explosions.push(createExplosion(enemy.x, enemy.y));
+                state.sparks.push(...createSparks(enemy.x, enemy.y, 20));
+                
+                const bossScore = 100;
+                const newScore = currentScore + bossScore;
+                state.score = newScore;
+                setScore(newScore);
+                scoreRef.current = newScore;
 
-                // Large explosion
-                const explosion: Explosion = {
-                  id: `explosion-${Date.now()}-${Math.random()}`,
-                  x: enemy.x,
-                  y: enemy.y,
-                  startTime: currentTime,
-                  duration: 800
-                };
-                state.explosions.push(explosion);
+                // Level complete
+                const nextLevel = currentLevel + 1;
+                state.level = nextLevel;
+                state.phase = 'normal';
+                state.destroyedNormalObstacles = 0;
+                state.requiredNormalObstacles = nextLevel * 5;
+                state.progress = 0;
+                state.bossProgressPct = 0;
+                state.timeRemainingSeconds = getTimeLimitForLevel(nextLevel);
+                state.levelCompleteMessage = `Level ${currentLevel} Complete!`;
 
-                // Level completed
-                const message = 'Level Completed';
-                setLevelCompleteMessage(message);
-                state.levelCompleteMessage = message;
+                setLevel(nextLevel);
+                setPhase('normal');
+                setDestroyedNormalObstacles(0);
+                setRequiredNormalObstacles(nextLevel * 5);
+                setProgress(0);
+                setBossProgressPct(0);
+                setTimeRemainingSeconds(getTimeLimitForLevel(nextLevel));
+                setLevelCompleteMessage(`Level ${currentLevel} Complete!`);
 
-                // Advance to next level after delay
+                levelRef.current = nextLevel;
+                phaseRef.current = 'normal';
+                destroyedNormalObstaclesRef.current = 0;
+
                 setTimeout(() => {
-                  const nextLevel = currentLevel + 1;
-                  setLevel(nextLevel);
-                  levelRef.current = nextLevel;
-                  setPhase('normal');
-                  phaseRef.current = 'normal';
-                  state.phase = 'normal';
-                  setDestroyedNormalObstacles(0);
-                  destroyedNormalObstaclesRef.current = 0;
-                  state.destroyedNormalObstacles = 0;
-                  setRequiredNormalObstacles(nextLevel * 5);
-                  state.requiredNormalObstacles = nextLevel * 5;
-                  setBossProgressPct(0);
-                  state.bossProgressPct = 0;
-                  bossHealthRef.current = 0;
-                  setProgress(0);
-                  state.progress = 0;
-                  
-                  // Reset timer for new level
-                  const newTimeLimit = getTimeLimitForLevel(nextLevel);
-                  setTimeRemainingSeconds(newTimeLimit);
-                  state.timeRemainingSeconds = newTimeLimit;
-                  lastTimerTickRef.current = currentTime;
-
-                  setLevelCompleteMessage(null);
                   state.levelCompleteMessage = null;
+                  setLevelCompleteMessage(null);
                 }, 2000);
               }
             } else {
-              // Normal enemy hit
+              // Normal enemy destroyed
               enemiesToRemove.add(enemy.id);
-
-              // Explosion
-              const explosion: Explosion = {
-                id: `explosion-${Date.now()}-${Math.random()}`,
-                x: enemy.x,
-                y: enemy.y,
-                startTime: currentTime,
-                duration: 500
-              };
-              state.explosions.push(explosion);
-
-              // Award score
-              const points = ENEMY_SIZE_CONFIG[enemy.size].score;
-              const newScore = currentScore + points;
+              state.explosions.push(createExplosion(enemy.x, enemy.y));
+              
+              const enemyScore = ENEMY_SIZE_CONFIG[enemy.size].score;
+              const newScore = currentScore + enemyScore;
+              state.score = newScore;
               setScore(newScore);
               scoreRef.current = newScore;
 
-              // Increment destroyed count
+              // Update progress
               const newDestroyed = currentDestroyed + 1;
+              state.destroyedNormalObstacles = newDestroyed;
               setDestroyedNormalObstacles(newDestroyed);
               destroyedNormalObstaclesRef.current = newDestroyed;
-              state.destroyedNormalObstacles = newDestroyed;
 
-              // Update progress bar (normal phase only)
-              if (currentPhase === 'normal') {
-                const progressPct = (newDestroyed / state.requiredNormalObstacles) * 100;
-                setProgress(progressPct);
-                state.progress = progressPct;
-              }
+              const newProgress = Math.min(100, (newDestroyed / state.requiredNormalObstacles) * 100);
+              state.progress = newProgress;
+              setProgress(newProgress);
             }
           }
         });
       });
 
+      // Remove marked bullets and enemies
       state.bullets = state.bullets.filter(b => !bulletsToRemove.has(b.id));
       state.enemies = state.enemies.filter(e => !enemiesToRemove.has(e.id));
 
       // Update explosions
       state.explosions = state.explosions.filter((explosion) => {
-        return currentTime - explosion.startTime < explosion.duration;
+        const elapsed = Date.now() - explosion.startTime;
+        return elapsed < explosion.duration;
       });
 
       // Update sparks
       state.sparks = state.sparks.filter((spark) => {
-        if (currentTime - spark.startTime >= spark.duration) {
-          return false;
-        }
-        spark.x += spark.vx * deltaTime;
-        spark.y += spark.vy * deltaTime;
-        spark.vx *= 0.98;
-        spark.vy *= 0.98;
+        const elapsed = Date.now() - spark.startTime;
+        if (elapsed >= spark.duration) return false;
+
+        const deltaSeconds = deltaTime;
+        spark.x += spark.vx * deltaSeconds;
+        spark.y += spark.vy * deltaSeconds;
+        
         return true;
       });
 
@@ -657,12 +665,11 @@ export function useGameEngine({ controls, resumeData }: UseGameEngineProps) {
     levelCompleteMessage,
     phase,
     destroyedNormalObstacles,
-    requiredNormalObstacles,
     bossProgressPct,
     timeRemainingSeconds,
     gameState: gameStateRef.current,
     togglePause,
     restartGame,
-    initializeFromSnapshot
+    initializeFromSnapshot,
   };
 }

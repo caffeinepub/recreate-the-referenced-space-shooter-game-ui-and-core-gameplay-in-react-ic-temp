@@ -1,68 +1,32 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Arcade shooter with obstacle-hit progression: bullets create spark explosions on impact; each level requires destroying a multiple-of-5 count of normal obstacles, then spawning a giant obstacle with its own progress bar that must be filled to defeat it and complete the level; each level includes a live countdown timer with increasing time limits.",
-  "architectural_notes": [
-    "Level design: require destroying 5*level normal obstacles before spawning a giant obstacle gate.",
-    "Giant obstacle is invulnerable until its own progress bar is filled via player hits; on completion, play explosion and show Level Completed UI.",
-    "Add level timer that counts down in real time and increases by level (exact scaling to be confirmed from spec)."
-  ],
+  "summary": "New project with on-screen joystick movement and shoot button controls",
+  "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-update-level-progression-to-require-destroying-a-fixed-count-of-normal-obstacles-per-level-level-1-5-level-2-10-level-3-15-and-generally-5-level-only-after-the-required-normal-obstacle-count-is-destroyed-should-a-single-giant-obstacle-spawn",
-      "title": "Update level progression to require destroying a fixed count of normal obstacles per level (Level 1: 5, Level 2: 10, Level 3: 15, and generally 5 * level). Only after the required normal obstacle count is destroyed should a single giant obstacle spawn.",
+      "id": "feature-update-the-touch-controls-overlay-so-that-during-gameplay-when-touch-controls-are-shown-the-shoot-button-renders-on-the-bottom-left-and-the-joystick-renders-on-the-bottom-right-to-match-the-uploaded-reference-image",
+      "title": "Update the touch controls overlay so that, during gameplay when touch controls are shown, the SHOOT button renders on the bottom-left and the joystick renders on the bottom-right to match the uploaded reference image.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-a-giant-obstacle-boss-phase-after-the-normal-obstacle-quota-is-met-spawn-exactly-one-giant-obstacle-with-its-own-health-progress-mechanic-the-giant-obstacle-must-not-be-destroyed-until-the-player-fills-the-giant-obstacle-s-progress-bar-via-hits-when-the-giant-obstacle-progress-bar-reaches-100-the-giant-obstacle-should-explode-and-the-level-should-be-marked-completed",
-      "title": "Implement a giant obstacle (boss) phase: after the normal obstacle quota is met, spawn exactly one giant obstacle with its own health/progress mechanic. The giant obstacle must not be destroyed until the player fills the giant obstacle’s progress bar via hits. When the giant obstacle progress bar reaches 100%, the giant obstacle should explode and the level should be marked completed.",
+      "id": "feature-adjust-the-shoot-button-visuals-to-match-the-reference-image-more-closely-show-the-label-text-as-shoot-not-fire-and-ensure-the-overall-button-reads-as-a-bright-neon-magenta-pink-circular-control-with-clear-icon-label-contrast",
+      "title": "Adjust the shoot button visuals to match the reference image more closely: show the label text as \"SHOOT\" (not \"FIRE\") and ensure the overall button reads as a bright neon-magenta/pink circular control with clear icon+label contrast.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-revise-the-hud-progress-bar-behavior-to-reflect-the-current-phase-during-the-normal-obstacle-phase-show-progress-toward-the-required-normal-obstacle-count-during-the-giant-obstacle-phase-show-the-giant-obstacle-progress-bar-as-a-smaller-sized-progress-bar-per-user-request",
-      "title": "Revise the HUD progress bar behavior to reflect the current phase: during the normal-obstacle phase, show progress toward the required normal obstacle count; during the giant obstacle phase, show the giant obstacle progress bar as a smaller-sized progress bar (per user request).",
+      "id": "feature-adjust-the-joystick-visuals-to-match-the-reference-image-more-closely-ensure-the-joystick-reads-as-a-bright-neon-cyan-teal-circular-base-with-a-distinct-inner-knob-preserving-existing-drag-clamp-behavior",
+      "title": "Adjust the joystick visuals to match the reference image more closely: ensure the joystick reads as a bright neon-cyan/teal circular base with a distinct inner knob, preserving existing drag/clamp behavior.",
       "reqIds": [
         "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-per-level-countdown-timer-that-runs-live-second-by-second-during-gameplay-level-1-time-limit-must-be-30-seconds-level-2-time-limit-must-be-35-seconds-level-3-time-limit-must-be-35-seconds-for-subsequent-levels-continue-using-35-seconds-unless-otherwise-specified-the-timer-must-pause-when-the-game-is-paused-and-resume-when-unpaused",
-      "title": "Add a per-level countdown timer that runs live second-by-second during gameplay. Level 1 time limit must be 30 seconds; Level 2 time limit must be 35 seconds; Level 3 time limit must be 35 seconds; for subsequent levels, continue using 35 seconds unless otherwise specified. The timer must pause when the game is paused and resume when unpaused.",
-      "reqIds": [
-        "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-define-and-implement-the-failure-condition-when-the-countdown-timer-reaches-0-before-the-level-is-completed-end-the-run-as-a-game-over-and-return-to-the-existing-game-over-flow-including-clearing-any-saved-in-progress-run-as-currently-done-on-game-over",
-      "title": "Define and implement the failure condition when the countdown timer reaches 0 before the level is completed: end the run as a game over and return to the existing game-over flow (including clearing any saved in-progress run as currently done on game over).",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-ensure-bullet-impacts-generate-a-spark-explosion-vfx-when-bullets-hit-obstacles-normal-obstacles-and-the-giant-obstacle-including-on-hit-feedback-even-when-the-giant-obstacle-is-not-destroyed-by-the-hit",
-      "title": "Ensure bullet impacts generate a spark/explosion VFX when bullets hit obstacles (normal obstacles and the giant obstacle), including on-hit feedback even when the giant obstacle is not destroyed by the hit.",
-      "reqIds": [
-        "REQ-6"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-in-progress-run-persistence-localstorage-to-include-enough-state-to-resume-the-new-level-flow-normal-obstacle-quota-progress-whether-the-giant-obstacle-phase-is-active-giant-obstacle-progress-and-remaining-timer-bump-the-local-saved-run-version-and-clear-incompatible-old-saves-automatically",
-      "title": "Update in-progress run persistence (localStorage) to include enough state to resume the new level flow (normal-obstacle quota progress, whether the giant obstacle phase is active, giant obstacle progress, and remaining timer). Bump the local saved-run version and clear incompatible old saves automatically.",
-      "reqIds": [
-        "REQ-7"
       ],
       "version": 1
     }
@@ -70,24 +34,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Add spark/explosion VFX when bullets hit obstacles",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Implement level progression: destroy N normal obstacles (multiples of 5 per level) then spawn a giant obstacle with its own progress bar; defeating giant obstacle triggers explosion and 'Level Completed' display",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Add per-level countdown timer (live second-by-second) with increasing time limits (e.g., Level 1: 30s, Level 2: 35s, Level 3: 35s as specified, etc.)",
+      "summary": "Add on-screen controls: virtual joystick for movement and a shoot button (with adjustable size/location)",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Add giant obstacle phase and per-level countdown timer",
+  "projectName": "Match on-screen joystick and shoot button layout/styling to reference image",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

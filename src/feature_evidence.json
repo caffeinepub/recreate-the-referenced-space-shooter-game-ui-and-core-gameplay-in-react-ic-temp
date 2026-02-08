@@ -2,11 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-level-progression-to-require-destroying-a-fixed-count-of-normal-obstacles-per-level-level-1-5-level-2-10-level-3-15-and-generally-5-level-only-after-the-required-normal-obstacle-count-is-destroyed-should-a-single-giant-obstacle-spawn",
-      "featureTitle": "Update level progression to require destroying a fixed count of normal obstacles per level (Level 1: 5, Level 2: 10, Level 3: 15, and generally 5 * level). Only after the required normal obstacle count is destroyed should a single giant obstacle spawn.",
+      "featureId": "feature-update-the-touch-controls-overlay-so-that-during-gameplay-when-touch-controls-are-shown-the-shoot-button-renders-on-the-bottom-left-and-the-joystick-renders-on-the-bottom-right-to-match-the-uploaded-reference-image",
+      "featureTitle": "Update the touch controls overlay so that, during gameplay when touch controls are shown, the SHOOT button renders on the bottom-left and the joystick renders on the bottom-right to match the uploaded reference image.",
       "files": [
-        "frontend/src/game/types.ts",
-        "frontend/src/game/useGameEngine.ts"
+        "frontend/src/index.css",
+        "frontend/src/screens/GameScreen.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -22,13 +22,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-implement-a-giant-obstacle-boss-phase-after-the-normal-obstacle-quota-is-met-spawn-exactly-one-giant-obstacle-with-its-own-health-progress-mechanic-the-giant-obstacle-must-not-be-destroyed-until-the-player-fills-the-giant-obstacle-s-progress-bar-via-hits-when-the-giant-obstacle-progress-bar-reaches-100-the-giant-obstacle-should-explode-and-the-level-should-be-marked-completed",
-      "featureTitle": "Implement a giant obstacle (boss) phase: after the normal obstacle quota is met, spawn exactly one giant obstacle with its own health/progress mechanic. The giant obstacle must not be destroyed until the player fills the giant obstacle’s progress bar via hits. When the giant obstacle progress bar reaches 100%, the giant obstacle should explode and the level should be marked completed.",
+      "featureId": "feature-adjust-the-shoot-button-visuals-to-match-the-reference-image-more-closely-show-the-label-text-as-shoot-not-fire-and-ensure-the-overall-button-reads-as-a-bright-neon-magenta-pink-circular-control-with-clear-icon-label-contrast",
+      "featureTitle": "Adjust the shoot button visuals to match the reference image more closely: show the label text as \"SHOOT\" (not \"FIRE\") and ensure the overall button reads as a bright neon-magenta/pink circular control with clear icon+label contrast.",
       "files": [
-        "frontend/src/game/render/GameCanvas.tsx",
-        "frontend/src/game/types.ts",
-        "frontend/src/game/ui/Hud.tsx",
-        "frontend/src/game/useGameEngine.ts"
+        "frontend/src/game/controls/ShootButton.tsx",
+        "frontend/src/index.css"
       ],
       "components": [
         "authorization@4.0.0",
@@ -44,11 +42,9 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-revise-the-hud-progress-bar-behavior-to-reflect-the-current-phase-during-the-normal-obstacle-phase-show-progress-toward-the-required-normal-obstacle-count-during-the-giant-obstacle-phase-show-the-giant-obstacle-progress-bar-as-a-smaller-sized-progress-bar-per-user-request",
-      "featureTitle": "Revise the HUD progress bar behavior to reflect the current phase: during the normal-obstacle phase, show progress toward the required normal obstacle count; during the giant obstacle phase, show the giant obstacle progress bar as a smaller-sized progress bar (per user request).",
+      "featureId": "feature-adjust-the-joystick-visuals-to-match-the-reference-image-more-closely-ensure-the-joystick-reads-as-a-bright-neon-cyan-teal-circular-base-with-a-distinct-inner-knob-preserving-existing-drag-clamp-behavior",
+      "featureTitle": "Adjust the joystick visuals to match the reference image more closely: ensure the joystick reads as a bright neon-cyan/teal circular base with a distinct inner knob, preserving existing drag/clamp behavior.",
       "files": [
-        "frontend/src/game/ui/Hud.tsx",
-        "frontend/src/game/useGameEngine.ts",
         "frontend/src/index.css"
       ],
       "components": [
@@ -61,91 +57,6 @@
       ],
       "testIds": [
         "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-per-level-countdown-timer-that-runs-live-second-by-second-during-gameplay-level-1-time-limit-must-be-30-seconds-level-2-time-limit-must-be-35-seconds-level-3-time-limit-must-be-35-seconds-for-subsequent-levels-continue-using-35-seconds-unless-otherwise-specified-the-timer-must-pause-when-the-game-is-paused-and-resume-when-unpaused",
-      "featureTitle": "Add a per-level countdown timer that runs live second-by-second during gameplay. Level 1 time limit must be 30 seconds; Level 2 time limit must be 35 seconds; Level 3 time limit must be 35 seconds; for subsequent levels, continue using 35 seconds unless otherwise specified. The timer must pause when the game is paused and resume when unpaused.",
-      "files": [
-        "frontend/src/game/ui/Hud.tsx",
-        "frontend/src/game/useGameEngine.ts",
-        "frontend/src/index.css",
-        "frontend/src/screens/GameScreen.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-define-and-implement-the-failure-condition-when-the-countdown-timer-reaches-0-before-the-level-is-completed-end-the-run-as-a-game-over-and-return-to-the-existing-game-over-flow-including-clearing-any-saved-in-progress-run-as-currently-done-on-game-over",
-      "featureTitle": "Define and implement the failure condition when the countdown timer reaches 0 before the level is completed: end the run as a game over and return to the existing game-over flow (including clearing any saved in-progress run as currently done on game over).",
-      "files": [
-        "frontend/src/game/useGameEngine.ts",
-        "frontend/src/screens/GameScreen.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-ensure-bullet-impacts-generate-a-spark-explosion-vfx-when-bullets-hit-obstacles-normal-obstacles-and-the-giant-obstacle-including-on-hit-feedback-even-when-the-giant-obstacle-is-not-destroyed-by-the-hit",
-      "featureTitle": "Ensure bullet impacts generate a spark/explosion VFX when bullets hit obstacles (normal obstacles and the giant obstacle), including on-hit feedback even when the giant obstacle is not destroyed by the hit.",
-      "files": [
-        "frontend/src/game/render/GameCanvas.tsx",
-        "frontend/src/game/useGameEngine.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-6"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-in-progress-run-persistence-localstorage-to-include-enough-state-to-resume-the-new-level-flow-normal-obstacle-quota-progress-whether-the-giant-obstacle-phase-is-active-giant-obstacle-progress-and-remaining-timer-bump-the-local-saved-run-version-and-clear-incompatible-old-saves-automatically",
-      "featureTitle": "Update in-progress run persistence (localStorage) to include enough state to resume the new level flow (normal-obstacle quota progress, whether the giant obstacle phase is active, giant obstacle progress, and remaining timer). Bump the local saved-run version and clear incompatible old saves automatically.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/game/persistence/inProgressRunStorage.ts",
-        "frontend/src/game/persistence/useInProgressRun.ts",
-        "frontend/src/game/useGameEngine.ts",
-        "frontend/src/screens/GameScreen.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-7"
       ],
       "confidence": "high"
     }

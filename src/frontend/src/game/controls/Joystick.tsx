@@ -86,26 +86,22 @@ export default function Joystick({ onMove }: JoystickProps) {
 
     // Attach listeners
     base.addEventListener('touchstart', handleTouchStart, { passive: false });
+    base.addEventListener('touchmove', handleTouchMove, { passive: false });
+    base.addEventListener('touchend', handleEnd, { passive: false });
+    base.addEventListener('touchcancel', handleEnd, { passive: false });
     base.addEventListener('mousedown', handleMouseDown);
-    
-    // Global listeners for move and end events
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('touchend', handleEnd);
-    document.addEventListener('touchcancel', handleEnd);
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleEnd);
-    
-    // Lifecycle listeners
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('orientationchange', handleOrientationChange);
     window.addEventListener('resize', handleOrientationChange);
 
     return () => {
       base.removeEventListener('touchstart', handleTouchStart);
+      base.removeEventListener('touchmove', handleTouchMove);
+      base.removeEventListener('touchend', handleEnd);
+      base.removeEventListener('touchcancel', handleEnd);
       base.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleEnd);
-      document.removeEventListener('touchcancel', handleEnd);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleEnd);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
@@ -117,37 +113,41 @@ export default function Joystick({ onMove }: JoystickProps) {
   return (
     <div
       ref={baseRef}
-      className="relative cursor-pointer select-none"
+      className="joystick-base"
       style={{ 
         width: 'var(--control-size)',
         height: 'var(--control-size)',
         touchAction: 'none'
       }}
     >
-      {/* Base - Outer ring with neon glow */}
-      <div className="absolute inset-0 rounded-full border-2 border-neon-cyan bg-gradient-to-br from-neon-cyan/10 to-neon-purple/10 shadow-neon-cyan-lg backdrop-blur-sm pointer-events-none sm:border-3 md:border-4">
-        {/* Inner ring */}
-        <div className="absolute inset-2 rounded-full border border-neon-cyan/40 sm:inset-3 sm:border-2 md:inset-4" />
-        {/* Center dot */}
-        <div className="absolute left-1/2 top-1/2 h-1 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neon-cyan shadow-neon-cyan sm:h-1.5 sm:w-1.5 md:h-2 md:w-2" />
-        {/* Directional indicators */}
-        <div className="absolute left-1/2 top-1 h-1 w-1 -translate-x-1/2 rounded-full bg-neon-cyan/50 sm:h-1.5 sm:w-1.5 md:top-2 md:h-2 md:w-2" />
-        <div className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-neon-cyan/50 sm:h-1.5 sm:w-1.5 md:bottom-2 md:h-2 md:w-2" />
-        <div className="absolute left-1 top-1/2 h-1 w-1 -translate-y-1/2 rounded-full bg-neon-cyan/50 sm:h-1.5 sm:w-1.5 md:left-2 md:h-2 md:w-2" />
-        <div className="absolute right-1 top-1/2 h-1 w-1 -translate-y-1/2 rounded-full bg-neon-cyan/50 sm:h-1.5 sm:w-1.5 md:right-2 md:h-2 md:w-2" />
+      {/* Center dot indicator */}
+      <div className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neon-cyan/40" />
+      
+      {/* Directional guides (subtle) */}
+      <div className="pointer-events-none absolute inset-0">
+        {[0, 90, 180, 270].map((angle) => (
+          <div
+            key={angle}
+            className="absolute left-1/2 top-1/2 h-[2px] w-[25%] origin-left bg-gradient-to-r from-neon-cyan/30 to-transparent"
+            style={{
+              transform: `translate(-50%, -50%) rotate(${angle}deg)`
+            }}
+          />
+        ))}
       </div>
 
-      {/* Knob - Glowing gradient sphere */}
+      {/* Knob */}
       <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-neon-magenta via-neon-purple to-neon-cyan shadow-neon-magenta-xl transition-transform pointer-events-none"
+        className="joystick-knob"
         style={{
           width: 'var(--joystick-knob-size)',
           height: 'var(--joystick-knob-size)',
           transform: `translate(calc(-50% + ${knobPosition.x}px), calc(-50% + ${knobPosition.y}px))`,
+          touchAction: 'none'
         }}
       >
-        {/* Inner glow */}
-        <div className="absolute inset-1 rounded-full bg-gradient-to-br from-white/40 to-transparent" />
+        {/* Inner highlight */}
+        <div className="absolute inset-1 rounded-full bg-gradient-to-br from-white/50 to-transparent" />
       </div>
     </div>
   );
