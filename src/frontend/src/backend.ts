@@ -89,6 +89,12 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface InProgressRun {
+    timeElapsed: bigint;
+    livesRemaining: bigint;
+    currentLevel: bigint;
+    currentScore: bigint;
+}
 export interface GameStats {
     highScore: bigint;
     lastCompletedLevel: bigint;
@@ -104,18 +110,22 @@ export enum UserRole {
 export interface backendInterface {
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
+    clearInProgressRun(): Promise<void>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
+    getInProgressRun(): Promise<InProgressRun | null>;
     getPlayerStats(player: Principal): Promise<GameStats | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
+    hasInProgressRun(): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     loadStats(): Promise<GameStats | null>;
     resetPlayerStats(player: Principal): Promise<void>;
     resetStats(): Promise<void>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    saveInProgressRun(run: InProgressRun): Promise<void>;
     saveStats(highScore: bigint, lastCompletedLevel: bigint): Promise<void>;
 }
-import type { GameStats as _GameStats, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
+import type { GameStats as _GameStats, InProgressRun as _InProgressRun, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _initializeAccessControlWithSecret(arg0: string): Promise<void> {
@@ -143,6 +153,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n1(this._uploadFile, this._downloadFile, arg1));
+            return result;
+        }
+    }
+    async clearInProgressRun(): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.clearInProgressRun();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.clearInProgressRun();
             return result;
         }
     }
@@ -174,18 +198,32 @@ export class Backend implements backendInterface {
             return from_candid_UserRole_n4(this._uploadFile, this._downloadFile, result);
         }
     }
-    async getPlayerStats(arg0: Principal): Promise<GameStats | null> {
+    async getInProgressRun(): Promise<InProgressRun | null> {
         if (this.processError) {
             try {
-                const result = await this.actor.getPlayerStats(arg0);
+                const result = await this.actor.getInProgressRun();
                 return from_candid_opt_n6(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getPlayerStats(arg0);
+            const result = await this.actor.getInProgressRun();
             return from_candid_opt_n6(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getPlayerStats(arg0: Principal): Promise<GameStats | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getPlayerStats(arg0);
+                return from_candid_opt_n7(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getPlayerStats(arg0);
+            return from_candid_opt_n7(this._uploadFile, this._downloadFile, result);
         }
     }
     async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
@@ -200,6 +238,20 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.getUserProfile(arg0);
             return from_candid_opt_n3(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async hasInProgressRun(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.hasInProgressRun();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.hasInProgressRun();
+            return result;
         }
     }
     async isCallerAdmin(): Promise<boolean> {
@@ -220,14 +272,14 @@ export class Backend implements backendInterface {
         if (this.processError) {
             try {
                 const result = await this.actor.loadStats();
-                return from_candid_opt_n6(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n7(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.loadStats();
-            return from_candid_opt_n6(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n7(this._uploadFile, this._downloadFile, result);
         }
     }
     async resetPlayerStats(arg0: Principal): Promise<void> {
@@ -272,6 +324,20 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async saveInProgressRun(arg0: InProgressRun): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.saveInProgressRun(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.saveInProgressRun(arg0);
+            return result;
+        }
+    }
     async saveStats(arg0: bigint, arg1: bigint): Promise<void> {
         if (this.processError) {
             try {
@@ -293,7 +359,10 @@ function from_candid_UserRole_n4(_uploadFile: (file: ExternalBlob) => Promise<Ui
 function from_candid_opt_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_GameStats]): GameStats | null {
+function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_InProgressRun]): InProgressRun | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_GameStats]): GameStats | null {
     return value.length === 0 ? null : value[0];
 }
 function from_candid_variant_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {

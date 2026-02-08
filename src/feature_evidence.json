@@ -2,10 +2,9 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-visible-spark-vfx-at-the-impact-point-whenever-a-bullet-hits-an-obstacle-in-addition-to-the-existing-explosion-blast-effect",
-      "featureTitle": "Add a visible spark VFX at the impact point whenever a bullet hits an obstacle, in addition to the existing explosion/blast effect.",
+      "featureId": "feature-update-level-progression-to-require-destroying-a-fixed-count-of-normal-obstacles-per-level-level-1-5-level-2-10-level-3-15-and-generally-5-level-only-after-the-required-normal-obstacle-count-is-destroyed-should-a-single-giant-obstacle-spawn",
+      "featureTitle": "Update level progression to require destroying a fixed count of normal obstacles per level (Level 1: 5, Level 2: 10, Level 3: 15, and generally 5 * level). Only after the required normal obstacle count is destroyed should a single giant obstacle spawn.",
       "files": [
-        "frontend/src/game/render/GameCanvas.tsx",
         "frontend/src/game/types.ts",
         "frontend/src/game/useGameEngine.ts"
       ],
@@ -18,16 +17,17 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-37"
+        "REQ-1"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-render-obstacles-in-different-colors-not-only-based-on-size-so-multiple-obstacles-on-screen-can-have-visibly-different-neon-colors",
-      "featureTitle": "Render obstacles in different colors (not only based on size), so multiple obstacles on screen can have visibly different neon colors.",
+      "featureId": "feature-implement-a-giant-obstacle-boss-phase-after-the-normal-obstacle-quota-is-met-spawn-exactly-one-giant-obstacle-with-its-own-health-progress-mechanic-the-giant-obstacle-must-not-be-destroyed-until-the-player-fills-the-giant-obstacle-s-progress-bar-via-hits-when-the-giant-obstacle-progress-bar-reaches-100-the-giant-obstacle-should-explode-and-the-level-should-be-marked-completed",
+      "featureTitle": "Implement a giant obstacle (boss) phase: after the normal obstacle quota is met, spawn exactly one giant obstacle with its own health/progress mechanic. The giant obstacle must not be destroyed until the player fills the giant obstacle’s progress bar via hits. When the giant obstacle progress bar reaches 100%, the giant obstacle should explode and the level should be marked completed.",
       "files": [
         "frontend/src/game/render/GameCanvas.tsx",
         "frontend/src/game/types.ts",
+        "frontend/src/game/ui/Hud.tsx",
         "frontend/src/game/useGameEngine.ts"
       ],
       "components": [
@@ -39,16 +39,78 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-38"
+        "REQ-2"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-bullet-visuals-so-bullets-appear-as-a-consistent-size-fire-flame-shaped-projectile-instead-of-varying-sizes-while-keeping-bullet-gameplay-behavior-functional",
-      "featureTitle": "Update bullet visuals so bullets appear as a consistent-size, fire/flame-shaped projectile (instead of varying sizes), while keeping bullet gameplay behavior functional.",
+      "featureId": "feature-revise-the-hud-progress-bar-behavior-to-reflect-the-current-phase-during-the-normal-obstacle-phase-show-progress-toward-the-required-normal-obstacle-count-during-the-giant-obstacle-phase-show-the-giant-obstacle-progress-bar-as-a-smaller-sized-progress-bar-per-user-request",
+      "featureTitle": "Revise the HUD progress bar behavior to reflect the current phase: during the normal-obstacle phase, show progress toward the required normal obstacle count; during the giant obstacle phase, show the giant obstacle progress bar as a smaller-sized progress bar (per user request).",
+      "files": [
+        "frontend/src/game/ui/Hud.tsx",
+        "frontend/src/game/useGameEngine.ts",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-per-level-countdown-timer-that-runs-live-second-by-second-during-gameplay-level-1-time-limit-must-be-30-seconds-level-2-time-limit-must-be-35-seconds-level-3-time-limit-must-be-35-seconds-for-subsequent-levels-continue-using-35-seconds-unless-otherwise-specified-the-timer-must-pause-when-the-game-is-paused-and-resume-when-unpaused",
+      "featureTitle": "Add a per-level countdown timer that runs live second-by-second during gameplay. Level 1 time limit must be 30 seconds; Level 2 time limit must be 35 seconds; Level 3 time limit must be 35 seconds; for subsequent levels, continue using 35 seconds unless otherwise specified. The timer must pause when the game is paused and resume when unpaused.",
+      "files": [
+        "frontend/src/game/ui/Hud.tsx",
+        "frontend/src/game/useGameEngine.ts",
+        "frontend/src/index.css",
+        "frontend/src/screens/GameScreen.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-define-and-implement-the-failure-condition-when-the-countdown-timer-reaches-0-before-the-level-is-completed-end-the-run-as-a-game-over-and-return-to-the-existing-game-over-flow-including-clearing-any-saved-in-progress-run-as-currently-done-on-game-over",
+      "featureTitle": "Define and implement the failure condition when the countdown timer reaches 0 before the level is completed: end the run as a game over and return to the existing game-over flow (including clearing any saved in-progress run as currently done on game over).",
+      "files": [
+        "frontend/src/game/useGameEngine.ts",
+        "frontend/src/screens/GameScreen.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-bullet-impacts-generate-a-spark-explosion-vfx-when-bullets-hit-obstacles-normal-obstacles-and-the-giant-obstacle-including-on-hit-feedback-even-when-the-giant-obstacle-is-not-destroyed-by-the-hit",
+      "featureTitle": "Ensure bullet impacts generate a spark/explosion VFX when bullets hit obstacles (normal obstacles and the giant obstacle), including on-hit feedback even when the giant obstacle is not destroyed by the hit.",
       "files": [
         "frontend/src/game/render/GameCanvas.tsx",
-        "frontend/src/game/types.ts",
         "frontend/src/game/useGameEngine.ts"
       ],
       "components": [
@@ -60,7 +122,30 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-39"
+        "REQ-6"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-in-progress-run-persistence-localstorage-to-include-enough-state-to-resume-the-new-level-flow-normal-obstacle-quota-progress-whether-the-giant-obstacle-phase-is-active-giant-obstacle-progress-and-remaining-timer-bump-the-local-saved-run-version-and-clear-incompatible-old-saves-automatically",
+      "featureTitle": "Update in-progress run persistence (localStorage) to include enough state to resume the new level flow (normal-obstacle quota progress, whether the giant obstacle phase is active, giant obstacle progress, and remaining timer). Bump the local saved-run version and clear incompatible old saves automatically.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/game/persistence/inProgressRunStorage.ts",
+        "frontend/src/game/persistence/useInProgressRun.ts",
+        "frontend/src/game/useGameEngine.ts",
+        "frontend/src/screens/GameScreen.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
       ],
       "confidence": "high"
     }

@@ -14,6 +14,12 @@ export interface GameStats {
   'highScore' : bigint,
   'lastCompletedLevel' : bigint,
 }
+export interface InProgressRun {
+  'timeElapsed' : bigint,
+  'livesRemaining' : bigint,
+  'currentLevel' : bigint,
+  'currentScore' : bigint,
+}
 export interface UserProfile { 'name' : string }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
@@ -21,15 +27,19 @@ export type UserRole = { 'admin' : null } |
 export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'clearInProgressRun' : ActorMethod<[], undefined>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getInProgressRun' : ActorMethod<[], [] | [InProgressRun]>,
   'getPlayerStats' : ActorMethod<[Principal], [] | [GameStats]>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'hasInProgressRun' : ActorMethod<[], boolean>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'loadStats' : ActorMethod<[], [] | [GameStats]>,
   'resetPlayerStats' : ActorMethod<[Principal], undefined>,
   'resetStats' : ActorMethod<[], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'saveInProgressRun' : ActorMethod<[InProgressRun], undefined>,
   'saveStats' : ActorMethod<[bigint, bigint], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;

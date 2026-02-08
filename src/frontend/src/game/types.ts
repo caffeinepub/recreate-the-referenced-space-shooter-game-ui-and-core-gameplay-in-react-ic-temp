@@ -1,6 +1,7 @@
 export type BulletSize = 'small' | 'medium' | 'large';
 export type BulletShape = 'circle' | 'diamond' | 'capsule' | 'flame';
 export type EnemySize = 'small' | 'medium' | 'large';
+export type GamePhase = 'normal' | 'boss';
 
 export interface Player {
   x: number;
@@ -32,6 +33,8 @@ export interface Enemy {
   size: EnemySize;
   radius: number;
   color: string;
+  isBoss?: boolean;
+  maxHealth?: number;
 }
 
 export interface Explosion {
@@ -66,6 +69,11 @@ export interface GameState {
   isPaused: boolean;
   isGameOver: boolean;
   levelCompleteMessage: string | null;
+  phase: GamePhase;
+  destroyedNormalObstacles: number;
+  requiredNormalObstacles: number;
+  bossProgressPct: number;
+  timeRemainingSeconds: number;
 }
 
 export interface Controls {

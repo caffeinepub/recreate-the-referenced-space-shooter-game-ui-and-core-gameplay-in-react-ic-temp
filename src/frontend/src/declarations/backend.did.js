@@ -14,6 +14,12 @@ export const UserRole = IDL.Variant({
   'guest' : IDL.Null,
 });
 export const UserProfile = IDL.Record({ 'name' : IDL.Text });
+export const InProgressRun = IDL.Record({
+  'timeElapsed' : IDL.Nat,
+  'livesRemaining' : IDL.Nat,
+  'currentLevel' : IDL.Nat,
+  'currentScore' : IDL.Nat,
+});
 export const GameStats = IDL.Record({
   'highScore' : IDL.Nat,
   'lastCompletedLevel' : IDL.Nat,
@@ -22,19 +28,23 @@ export const GameStats = IDL.Record({
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'clearInProgressRun' : IDL.Func([], [], []),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getInProgressRun' : IDL.Func([], [IDL.Opt(InProgressRun)], ['query']),
   'getPlayerStats' : IDL.Func([IDL.Principal], [IDL.Opt(GameStats)], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
       ['query'],
     ),
+  'hasInProgressRun' : IDL.Func([], [IDL.Bool], []),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
   'loadStats' : IDL.Func([], [IDL.Opt(GameStats)], ['query']),
   'resetPlayerStats' : IDL.Func([IDL.Principal], [], []),
   'resetStats' : IDL.Func([], [], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'saveInProgressRun' : IDL.Func([InProgressRun], [], []),
   'saveStats' : IDL.Func([IDL.Nat, IDL.Nat], [], []),
 });
 
@@ -47,6 +57,12 @@ export const idlFactory = ({ IDL }) => {
     'guest' : IDL.Null,
   });
   const UserProfile = IDL.Record({ 'name' : IDL.Text });
+  const InProgressRun = IDL.Record({
+    'timeElapsed' : IDL.Nat,
+    'livesRemaining' : IDL.Nat,
+    'currentLevel' : IDL.Nat,
+    'currentScore' : IDL.Nat,
+  });
   const GameStats = IDL.Record({
     'highScore' : IDL.Nat,
     'lastCompletedLevel' : IDL.Nat,
@@ -55,8 +71,10 @@ export const idlFactory = ({ IDL }) => {
   return IDL.Service({
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'clearInProgressRun' : IDL.Func([], [], []),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getInProgressRun' : IDL.Func([], [IDL.Opt(InProgressRun)], ['query']),
     'getPlayerStats' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(GameStats)],
@@ -67,11 +85,13 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(UserProfile)],
         ['query'],
       ),
+    'hasInProgressRun' : IDL.Func([], [IDL.Bool], []),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
     'loadStats' : IDL.Func([], [IDL.Opt(GameStats)], ['query']),
     'resetPlayerStats' : IDL.Func([IDL.Principal], [], []),
     'resetStats' : IDL.Func([], [], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'saveInProgressRun' : IDL.Func([InProgressRun], [], []),
     'saveStats' : IDL.Func([IDL.Nat, IDL.Nat], [], []),
   });
 };

@@ -1,74 +1,158 @@
 {
   "kind": "build_request",
-  "title": "Add spark hit VFX, varied obstacle colors, and fire-shaped equal-size bullets",
+  "title": "Add giant obstacle phase and per-level countdown timer",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-37",
-      "text": "Add a visible spark VFX at the impact point whenever a bullet hits an obstacle, in addition to the existing explosion/blast effect.",
+      "id": "REQ-1",
+      "text": "Update level progression to require destroying a fixed count of normal obstacles per level (Level 1: 5, Level 2: 10, Level 3: 15, and generally 5 * level). Only after the required normal obstacle count is destroyed should a single giant obstacle spawn.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-4"
         ],
         "quotes": [
-          "bullets hit to obstacles then it should get spark."
+          "on every level player should hit mulitples of 5 obstacles... in level player must hit 5 obstacles then giant obstacle should come... in second leel player must hit 10 obstacles... for 3 rd level player must hit 15 and so on"
         ]
       },
       "acceptanceCriteria": [
-        "When a bullet collides with an obstacle, a short-lived spark effect is rendered at (or very near) the collision location immediately on hit.",
-        "The spark effect is visually distinct from the existing explosion ring/glow (e.g., multiple small bright streaks/particles that quickly fade).",
-        "Sparks automatically expire and are removed from the game state after a brief duration (no unbounded growth of VFX entities)."
+        "On Level 1, exactly 5 normal obstacles must be destroyed before any giant obstacle can spawn.",
+        "On Level 2, exactly 10 normal obstacles must be destroyed before any giant obstacle can spawn.",
+        "On Level N, exactly 5*N normal obstacles must be destroyed before any giant obstacle can spawn.",
+        "Normal obstacles continue spawning/behaving as before until the normal-obstacle quota is met."
       ]
     },
     {
-      "id": "REQ-38",
-      "text": "Render obstacles in different colors (not only based on size), so multiple obstacles on screen can have visibly different neon colors.",
+      "id": "REQ-2",
+      "text": "Implement a giant obstacle (boss) phase: after the normal obstacle quota is met, spawn exactly one giant obstacle with its own health/progress mechanic. The giant obstacle must not be destroyed until the player fills the giant obstacle’s progress bar via hits. When the giant obstacle progress bar reaches 100%, the giant obstacle should explode and the level should be marked completed.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-4"
         ],
         "quotes": [
-          "and obstacles should be in different color."
+          "after filled the progress bar there should be giant obstacle with progress bar with small in size. that giant obstacle will not die until player hit that giant obstacle and filled it's progress bar when it is filled with progress bar then giant obstacle also get explosion then after it should display level completed"
         ]
       },
       "acceptanceCriteria": [
-        "At runtime, multiple obstacles on-screen can appear in different colors simultaneously.",
-        "Obstacle colors remain consistent for each obstacle for its lifetime (do not flicker every frame).",
-        "Obstacle size behavior and scoring rules remain unchanged."
+        "After the normal obstacle quota is reached, one (and only one) giant obstacle spawns.",
+        "The giant obstacle requires multiple hits to defeat; it cannot be removed on first hit.",
+        "A dedicated giant-obstacle progress bar increases with hits and reaches 100% when defeated.",
+        "On giant obstacle defeat, an explosion VFX is shown and the UI displays an English level completion message (e.g., \"Level Completed\").",
+        "After level completion, the next level starts with a fresh normal obstacle quota and no giant obstacle active."
       ]
     },
     {
-      "id": "REQ-39",
-      "text": "Update bullet visuals so bullets appear as a consistent-size, fire/flame-shaped projectile (instead of varying sizes), while keeping bullet gameplay behavior functional.",
+      "id": "REQ-3",
+      "text": "Revise the HUD progress bar behavior to reflect the current phase: during the normal-obstacle phase, show progress toward the required normal obstacle count; during the giant obstacle phase, show the giant obstacle progress bar as a smaller-sized progress bar (per user request).",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-4"
         ],
         "quotes": [
-          "and bullets size should be equal like fire in shape."
+          "after filled the progress bar there should be giant obstacle with progress bar with small in size"
         ]
       },
       "acceptanceCriteria": [
-        "All bullets render at the same apparent size (no small/medium/large visible size differences).",
-        "Bullets render with a fire/flame-like shape (e.g., teardrop/flame silhouette with glow), oriented along the bullet travel direction.",
-        "Bullet collision behavior continues to work correctly against obstacles, and bullets still originate from the player ship’s nose and travel in the ship’s facing direction."
+        "During normal-obstacle phase, the HUD progress bar reflects destroyedNormalObstacles / requiredNormalObstacles as a percentage.",
+        "During giant-obstacle phase, the HUD shows a smaller-sized progress bar representing the giant obstacle’s progress/health.",
+        "The level completion message remains in English and is displayed after the giant obstacle is defeated."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Add a per-level countdown timer that runs live second-by-second during gameplay. Level 1 time limit must be 30 seconds; Level 2 time limit must be 35 seconds; Level 3 time limit must be 35 seconds; for subsequent levels, continue using 35 seconds unless otherwise specified. The timer must pause when the game is paused and resume when unpaused.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "and also it should add the timer for every level to complete the task with in the time. in first there should be 30 seconds of timer. that should be live running second by second. in level 2 there should be 35 seconds of timer. in level 3 (35 seocnds) and so on"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A timer is visible in the HUD and updates at least once per second during active gameplay.",
+        "Level 1 starts with 30 seconds available; Level 2 starts with 35 seconds available; Level 3 starts with 35 seconds available.",
+        "The timer does not decrement while the game is paused (pause overlay shown).",
+        "When a level completes, the timer resets for the next level according to the configured time limit."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Define and implement the failure condition when the countdown timer reaches 0 before the level is completed: end the run as a game over and return to the existing game-over flow (including clearing any saved in-progress run as currently done on game over).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "complete the task with in the time"
+        ]
+      },
+      "acceptanceCriteria": [
+        "If the timer reaches 0 and the level has not been completed, the game transitions to game over using the existing game-over handling.",
+        "If the level is completed before time reaches 0, no timer-based game over occurs."
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Ensure bullet impacts generate a spark/explosion VFX when bullets hit obstacles (normal obstacles and the giant obstacle), including on-hit feedback even when the giant obstacle is not destroyed by the hit.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "when bullets hit to obstacle it should get spark like explosion"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Bullet hits on normal obstacles show spark/explosion VFX at the impact point.",
+        "Bullet hits on the giant obstacle show spark/explosion VFX at the impact point even if the giant obstacle remains alive."
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Update in-progress run persistence (localStorage) to include enough state to resume the new level flow (normal-obstacle quota progress, whether the giant obstacle phase is active, giant obstacle progress, and remaining timer). Bump the local saved-run version and clear incompatible old saves automatically.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Saved runs include the new timer/phase/quota/boss-progress fields needed to resume gameplay consistently.",
+        "Old saved runs from the previous version are detected as incompatible and are cleared (same behavior pattern as existing version validation).",
+        "Using \"CONTINUE\" restores the timer and the correct phase (normal vs giant obstacle) along with progress bars."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui or any paths listed as immutable in SYSTEM_CONTEXT.",
-    "Keep backend as a single Motoko actor; no backend changes are required for these visual updates."
+    "Use English for any user-facing text.",
+    "Do not edit files under frontend/src/components/ui (compose them instead).",
+    "Do not edit immutable hook/entry files: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx.",
+    "Backend must remain a single Motoko actor in backend/main.mo; only add migration if backend stable state is changed."
   ],
   "nonGoals": [
-    "Do not change scoring values, enemy size distribution, or level progression rules.",
-    "Do not add new authentication or persistence features.",
-    "Do not introduce new generated image assets for these effects; implement VFX and shapes via code rendering in the canvas."
+    "Adding third-party auth providers (only Internet Identity is supported).",
+    "Adding real-time multiplayer or WebSocket-based features.",
+    "Adding external databases or non-Motoko backend services.",
+    "Changing the overall control scheme (joystick/keyboard/shoot button) unless required to support the timer/level progression changes."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

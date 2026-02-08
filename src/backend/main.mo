@@ -4,6 +4,8 @@ import Runtime "mo:core/Runtime";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 
+
+
 actor {
   // Initialize the access control system
   let accessControlState = AccessControl.initState();
@@ -20,9 +22,18 @@ actor {
     lastCompletedLevel : Nat;
   };
 
+  // In-Progress Run State
+  public type InProgressRun = {
+    currentScore : Nat;
+    currentLevel : Nat;
+    livesRemaining : Nat;
+    timeElapsed : Nat;
+  };
+
   // Storage
   let userProfiles = Map.empty<Principal, UserProfile>();
   let playerStats = Map.empty<Principal, GameStats>();
+  let inProgressRuns = Map.empty<Principal, InProgressRun>();
 
   // User Profile Functions (required by frontend)
   
@@ -50,8 +61,9 @@ actor {
   // Game Stats Functions
 
   public query ({ caller }) func loadStats() : async ?GameStats {
-    // Users can only load their own stats
-    // Guests are allowed to check if they have stats (will return null)
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can load game stats");
+    };
     playerStats.get(caller);
   };
 
@@ -64,7 +76,6 @@ actor {
   };
 
   public shared ({ caller }) func saveStats(highScore : Nat, lastCompletedLevel : Nat) : async () {
-    // Only authenticated users can save stats (not guests)
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can save game stats");
     };
@@ -77,11 +88,11 @@ actor {
   };
 
   public shared ({ caller }) func resetStats() : async () {
-    // Users can reset their own stats
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can reset their stats");
     };
     playerStats.remove(caller);
+    inProgressRuns.remove(caller); // Reset in-progress runs too
   };
 
   public shared ({ caller }) func resetPlayerStats(player : Principal) : async () {
@@ -90,5 +101,39 @@ actor {
       Runtime.trap("Unauthorized: Only admins can reset other players' stats");
     };
     playerStats.remove(player);
+    inProgressRuns.remove(player); // Reset their in-progress runs too
+  };
+
+  // In-Progress Run Functions
+
+  public query ({ caller }) func getInProgressRun() : async ?InProgressRun {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can access in-progress runs");
+    };
+    inProgressRuns.get(caller);
+  };
+
+  public shared ({ caller }) func saveInProgressRun(run : InProgressRun) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can save in-progress runs");
+    };
+    inProgressRuns.add(caller, run);
+  };
+
+  public shared ({ caller }) func clearInProgressRun() : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can clear in-progress runs");
+    };
+    inProgressRuns.remove(caller);
+  };
+
+  public shared ({ caller }) func hasInProgressRun() : async Bool {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can check in-progress runs");
+    };
+    switch (inProgressRuns.get(caller)) {
+      case (null) { false };
+      case (_) { true };
+    };
   };
 };

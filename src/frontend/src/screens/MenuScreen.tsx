@@ -1,14 +1,17 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import LoginButton from '@/components/LoginButton';
+import { Play } from 'lucide-react';
 
 interface MenuScreenProps {
   highScore: number;
   onStartGame: () => void;
+  onContinueGame: () => void;
+  hasSavedRun: boolean;
   isLoadingStats: boolean;
 }
 
-export default function MenuScreen({ highScore, onStartGame, isLoadingStats }: MenuScreenProps) {
+export default function MenuScreen({ highScore, onStartGame, onContinueGame, hasSavedRun, isLoadingStats }: MenuScreenProps) {
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       {/* Background */}
@@ -68,6 +71,22 @@ export default function MenuScreen({ highScore, onStartGame, isLoadingStats }: M
             </span>
           </div>
         </Card>
+
+        {/* Continue Button (only if saved run exists) */}
+        {hasSavedRun && (
+          <Button
+            onClick={onContinueGame}
+            className="neon-button mb-3 w-full bg-gradient-to-r from-neon-cyan to-neon-purple font-black tracking-wide text-white shadow-neon-cyan transition-all hover:scale-105 hover:shadow-neon-cyan-lg"
+            style={{ 
+              maxWidth: 'var(--menu-max-width)',
+              height: 'var(--menu-button-height)',
+              fontSize: 'var(--menu-button-text)'
+            }}
+          >
+            <Play className="mr-2 h-5 w-5" />
+            CONTINUE
+          </Button>
+        )}
 
         {/* Start Button */}
         <Button
