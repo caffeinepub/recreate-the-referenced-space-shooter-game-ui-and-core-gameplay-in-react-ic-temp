@@ -1,40 +1,40 @@
 import { useState, useEffect } from 'react';
+import { ThemeProvider } from 'next-themes';
 import MenuScreen from './screens/MenuScreen';
 import GameScreen from './screens/GameScreen';
 import { useSavedStats } from './game/persistence/useSavedStats';
-import { ThemeProvider } from 'next-themes';
-import { Toaster } from '@/components/ui/sonner';
+import { useDynamicViewport } from './hooks/useDynamicViewport';
 
-export type GameState = 'menu' | 'playing';
+type GameState = 'menu' | 'playing';
 
 function App() {
+  useDynamicViewport();
+  
   const [gameState, setGameState] = useState<GameState>('menu');
   const [highScore, setHighScore] = useState(0);
-  const { stats, isLoading, saveStatsMutation } = useSavedStats();
 
-  // Load high score from backend on mount
+  const { stats: savedStats, isLoading: isLoadingStats, saveStatsMutation } = useSavedStats();
+
   useEffect(() => {
-    if (stats) {
-      setHighScore(Number(stats.highScore));
+    if (savedStats) {
+      setHighScore(Number(savedStats.highScore));
     }
-  }, [stats]);
+  }, [savedStats]);
 
   const handleStartGame = () => {
     setGameState('playing');
   };
 
-  const handleExitToMenu = () => {
+  const handleExitGame = () => {
     setGameState('menu');
   };
 
   const handleGameOver = (finalScore: number, finalLevel: number) => {
-    // Update high score if beaten
     if (finalScore > highScore) {
       setHighScore(finalScore);
-      // Save to backend (non-blocking)
       saveStatsMutation.mutate({
         highScore: BigInt(finalScore),
-        lastCompletedLevel: BigInt(finalLevel)
+        lastCompletedLevel: BigInt(finalLevel),
       });
     }
     setGameState('menu');
@@ -42,22 +42,18 @@ function App() {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-      <div className="min-h-screen w-full overflow-hidden">
+      <div className="min-h-screen w-full">
         {gameState === 'menu' && (
           <MenuScreen
             highScore={highScore}
             onStartGame={handleStartGame}
-            isLoadingStats={isLoading}
+            isLoadingStats={isLoadingStats}
           />
         )}
         {gameState === 'playing' && (
-          <GameScreen
-            onExitToMenu={handleExitToMenu}
-            onGameOver={handleGameOver}
-          />
+          <GameScreen onExit={handleExitGame} onGameOver={handleGameOver} />
         )}
       </div>
-      <Toaster />
     </ThemeProvider>
   );
 }

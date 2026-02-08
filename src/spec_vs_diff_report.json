@@ -1,54 +1,39 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T16:14:03.794Z",
-  "summary": "Joystick and Shoot button UIs appear to be converted from image-based to code-rendered neon/glow designs with touch/mouse handling preserved. Player ship rendering in the canvas appears replaced with Canvas 2D vector drawing (no image usage visible). However, the diff also introduces additional, non-requested rendering/viewport behavior changes (e.g., visualViewport resizing and a visible canvas border) and broad styling/theme utility additions that were not explicitly requested.",
+  "generatedAt": "2026-02-07T16:40:54.661Z",
+  "summary": "The diff appears to implement all three requested visual updates: spark VFX on bullet–obstacle hits (with lifetime/cleanup fields), per-obstacle consistent neon colors, and fixed-size flame-shaped bullets oriented to travel direction. The diff also includes additional unrelated rendering/canvas behavior changes that were not requested.",
   "missing_requirements": [],
   "hallucinated_features": [
     {
-      "description": "Changed canvas sizing logic to use window.visualViewport (and added listeners) beyond just replacing the player ship image rendering.",
-      "reason": "REQ-28 only asks to replace the ship image with code-rendered drawing while preserving rotation and performance; viewport sizing changes are not requested.",
+      "description": "Canvas resizing behavior updated to use `window.visualViewport` and additional resize/orientation listeners for mobile support.",
+      "reason": "Not requested by REQ-37/38/39; this is an extra behavior change unrelated to sparks, obstacle colors, or bullet shape/size.",
       "evidence": [
         "frontend/src/game/render/GameCanvas.tsx"
       ]
     },
     {
-      "description": "Added drawing of a visible neon border rectangle around the entire canvas.",
-      "reason": "Not requested by REQ-28/29; request scope was limited to joystick, shoot button, and player ship visuals, and explicitly said not to redesign other visuals/layout.",
+      "description": "Player ship rendering appears to have been (re)implemented as a more detailed neon vector graphic (body, cockpit, engine glow, wing details).",
+      "reason": "BuildRequest only asked for spark VFX, obstacle colors, and bullet visuals; ship visual redesign is outside scope.",
       "evidence": [
         "frontend/src/game/render/GameCanvas.tsx"
       ]
     },
     {
-      "description": "Modified bullet rendering to include size-based color variations (small/medium/large) with glow settings shown in the render loop.",
-      "reason": "Not requested; non-goals include not changing bullets. Even if only visual, it extends beyond the requested three elements (joystick/shoot/ship).",
+      "description": "New/expanded bullet typing supports multiple shapes (`circle|diamond|capsule|flame`) and still retains bullet size categories in types/config despite the request focusing only on consistent flame visuals.",
+      "reason": "REQ-39 only requires consistent-size flame-shaped rendering; introducing additional shape variants/types was not requested (even if not exposed).",
       "evidence": [
-        "frontend/src/game/render/GameCanvas.tsx"
-      ]
-    },
-    {
-      "description": "Added/expanded global CSS utilities for gameplay overlay positioning, dynamic viewport height variable, and multiple neon shadow utilities.",
-      "reason": "Not explicitly requested; scope was limited to replacing joystick/shoot/ship visuals. These changes may support the new visuals but are additional features beyond the explicit requirements.",
-      "evidence": [
-        "frontend/src/index.css"
-      ]
-    },
-    {
-      "description": "Extended Tailwind theme with a neon color palette, custom shadows, and animations.",
-      "reason": "Not explicitly requested in the BuildRequest; it goes beyond directly replacing the specific image-based elements.",
-      "evidence": [
-        "frontend/tailwind.config.js"
+        "frontend/src/game/types.ts",
+        "frontend/src/game/useGameEngine.ts"
       ]
     }
   ],
-  "confidence": 0.7,
+  "confidence": 0.72,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/game/controls/Joystick.tsx",
-    "frontend/src/game/controls/ShootButton.tsx",
     "frontend/src/game/render/GameCanvas.tsx",
-    "frontend/src/index.css",
-    "frontend/tailwind.config.js",
+    "frontend/src/game/types.ts",
+    "frontend/src/game/useGameEngine.ts",
     "project_state.json"
   ]
 }

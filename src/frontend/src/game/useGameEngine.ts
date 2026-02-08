@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import type { GameState, Controls, Bullet, Enemy, BulletSize, EnemySize, Explosion } from './types';
+import type { GameState, Controls, Bullet, Enemy, BulletSize, BulletShape, EnemySize, Explosion, Spark } from './types';
 
 interface UseGameEngineProps {
   controls: Controls;
 }
 
 const BULLET_SIZE_CONFIG = {
-  small: { radius: 3, speed: 600 },
+  small: { radius: 5, speed: 600 },
   medium: { radius: 5, speed: 500 },
-  large: { radius: 7, speed: 400 }
+  large: { radius: 5, speed: 400 }
 };
 
 const ENEMY_SIZE_CONFIG = {
@@ -16,6 +16,16 @@ const ENEMY_SIZE_CONFIG = {
   medium: { radius: 25, score: 10 },
   large: { radius: 35, score: 15 }
 };
+
+const ENEMY_COLORS = [
+  '#00ffff', // cyan
+  '#ff00ff', // magenta
+  '#ffff00', // yellow
+  '#00ff88', // green-cyan
+  '#ff0088', // pink
+  '#88ff00', // lime
+  '#ff8800', // orange
+];
 
 const PLAYER_RADIUS = 30;
 const POINTS_PER_LEVEL = 100;
@@ -39,6 +49,7 @@ export function useGameEngine({ controls }: UseGameEngineProps) {
     bullets: [],
     enemies: [],
     explosions: [],
+    sparks: [],
     score: 0,
     level: 1,
     progress: 0,
@@ -50,6 +61,9 @@ export function useGameEngine({ controls }: UseGameEngineProps) {
   const lastShotTimeRef = useRef(0);
   const lastEnemySpawnRef = useRef(0);
   const shootingRef = useRef(false);
+  const controlsRef = useRef(controls);
+  const scoreRef = useRef(0);
+  const levelRef = useRef(1);
 
   const togglePause = useCallback(() => {
     setIsPaused((prev) => !prev);
@@ -67,6 +81,7 @@ export function useGameEngine({ controls }: UseGameEngineProps) {
       bullets: [],
       enemies: [],
       explosions: [],
+      sparks: [],
       score: 0,
       level: 1,
       progress: 0,
@@ -83,11 +98,24 @@ export function useGameEngine({ controls }: UseGameEngineProps) {
     lastShotTimeRef.current = 0;
     lastEnemySpawnRef.current = 0;
     shootingRef.current = false;
+    scoreRef.current = 0;
+    levelRef.current = 1;
   }, []);
 
+  // Update refs when controls change
   useEffect(() => {
+    controlsRef.current = controls;
     shootingRef.current = controls.shoot;
-  }, [controls.shoot]);
+  }, [controls]);
+
+  // Update refs when score/level change
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score]);
+
+  useEffect(() => {
+    levelRef.current = level;
+  }, [level]);
 
   useEffect(() => {
     let animationId: number;
@@ -103,15 +131,18 @@ export function useGameEngine({ controls }: UseGameEngineProps) {
       }
 
       const state = gameStateRef.current;
+      const currentControls = controlsRef.current;
+      const currentScore = scoreRef.current;
+      const currentLevel = levelRef.current;
       const playerSpeed = 300;
       const canvasWidth = window.innerWidth;
       const canvasHeight = window.innerHeight;
 
       // Update player position
-      if (controls.x !== 0 || controls.y !== 0) {
-        const magnitude = Math.sqrt(controls.x * controls.x + controls.y * controls.y);
-        const normalizedX = controls.x / magnitude;
-        const normalizedY = controls.y / magnitude;
+      if (currentControls.x !== 0 || currentControls.y !== 0) {
+        const magnitude = Math.sqrt(currentControls.x * currentControls.x + currentControls.y * currentControls.y);
+        const normalizedX = currentControls.x / magnitude;
+        const normalizedY = currentControls.y / magnitude;
 
         state.player.x += normalizedX * playerSpeed * deltaTime;
         state.player.y += normalizedY * playerSpeed * deltaTime;
@@ -120,34 +151,32 @@ export function useGameEngine({ controls }: UseGameEngineProps) {
         state.player.x = Math.max(state.player.radius, Math.min(canvasWidth - state.player.radius, state.player.x));
         state.player.y = Math.max(state.player.radius, Math.min(canvasHeight - state.player.radius, state.player.y));
 
-        // Update rotation
-        state.player.rotation = Math.atan2(normalizedY, normalizedX) + Math.PI / 2;
+        // Update rotation - ship nose points in direction of movement
+        state.player.rotation = Math.atan2(normalizedY, normalizedX);
       }
 
       // Continuous shooting while button held
       if (shootingRef.current && currentTime - lastShotTimeRef.current > 150) {
-        // Determine bullet size (cycle through sizes)
-        const bulletCount = state.bullets.length;
-        let bulletSize: BulletSize;
-        const sizeIndex = bulletCount % 3;
-        if (sizeIndex === 0) bulletSize = 'small';
-        else if (sizeIndex === 1) bulletSize = 'medium';
-        else bulletSize = 'large';
+        // All bullets now use flame shape and consistent size
+        const bulletSize: BulletSize = 'medium';
+        const bulletShape: BulletShape = 'flame';
 
         const config = BULLET_SIZE_CONFIG[bulletSize];
         
         // Spawn bullet from ship's nose
+        // Ship nose points in the direction of rotation (right in local coords)
         const noseDistance = state.player.radius + 10;
-        const noseX = state.player.x + Math.sin(state.player.rotation) * noseDistance;
-        const noseY = state.player.y - Math.cos(state.player.rotation) * noseDistance;
+        const noseX = state.player.x + Math.cos(state.player.rotation) * noseDistance;
+        const noseY = state.player.y + Math.sin(state.player.rotation) * noseDistance;
 
         const bullet: Bullet = {
           id: `bullet-${Date.now()}-${Math.random()}`,
           x: noseX,
           y: noseY,
-          vx: Math.sin(state.player.rotation) * config.speed,
-          vy: -Math.cos(state.player.rotation) * config.speed,
+          vx: Math.cos(state.player.rotation) * config.speed,
+          vy: Math.sin(state.player.rotation) * config.speed,
           size: bulletSize,
+          shape: bulletShape,
           radius: config.radius
         };
         state.bullets.push(bullet);
@@ -167,7 +196,7 @@ export function useGameEngine({ controls }: UseGameEngineProps) {
       });
 
       // Spawn enemies
-      const spawnInterval = Math.max(500, 2000 - level * 100);
+      const spawnInterval = Math.max(500, 2000 - currentLevel * 100);
       if (currentTime - lastEnemySpawnRef.current > spawnInterval) {
         const side = Math.floor(Math.random() * 4);
         let x = 0, y = 0, vx = 0, vy = 0;
@@ -181,29 +210,32 @@ export function useGameEngine({ controls }: UseGameEngineProps) {
 
         const enemyRadius = ENEMY_SIZE_CONFIG[enemySize].radius;
 
+        // Assign a random neon color to this enemy
+        const enemyColor = ENEMY_COLORS[Math.floor(Math.random() * ENEMY_COLORS.length)];
+
         switch (side) {
           case 0: // Top
             x = Math.random() * canvasWidth;
             y = -enemyRadius;
             vx = (Math.random() - 0.5) * 100;
-            vy = 50 + level * 10;
+            vy = 50 + currentLevel * 10;
             break;
           case 1: // Right
             x = canvasWidth + enemyRadius;
             y = Math.random() * canvasHeight;
-            vx = -(50 + level * 10);
+            vx = -(50 + currentLevel * 10);
             vy = (Math.random() - 0.5) * 100;
             break;
           case 2: // Bottom
             x = Math.random() * canvasWidth;
             y = canvasHeight + enemyRadius;
             vx = (Math.random() - 0.5) * 100;
-            vy = -(50 + level * 10);
+            vy = -(50 + currentLevel * 10);
             break;
           case 3: // Left
             x = -enemyRadius;
             y = Math.random() * canvasHeight;
-            vx = 50 + level * 10;
+            vx = 50 + currentLevel * 10;
             vy = (Math.random() - 0.5) * 100;
             break;
         }
@@ -217,7 +249,8 @@ export function useGameEngine({ controls }: UseGameEngineProps) {
           rotation: 0,
           health: 1,
           size: enemySize,
-          radius: enemyRadius
+          radius: enemyRadius,
+          color: enemyColor
         };
         state.enemies.push(enemy);
         lastEnemySpawnRef.current = currentTime;
@@ -326,10 +359,30 @@ export function useGameEngine({ controls }: UseGameEngineProps) {
             };
             state.explosions.push(explosion);
 
+            // Create spark particles at collision point
+            const sparkCount = 6 + Math.floor(Math.random() * 4);
+            for (let i = 0; i < sparkCount; i++) {
+              const angle = (Math.PI * 2 * i) / sparkCount + (Math.random() - 0.5) * 0.5;
+              const speed = 100 + Math.random() * 150;
+              const spark: Spark = {
+                id: `spark-${Date.now()}-${Math.random()}-${i}`,
+                x: bullet.x,
+                y: bullet.y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                startTime: currentTime,
+                duration: 200 + Math.random() * 150,
+                angle: angle,
+                length: 8 + Math.random() * 12
+              };
+              state.sparks.push(spark);
+            }
+
             // Award score based on enemy size
             const points = ENEMY_SIZE_CONFIG[enemy.size].score;
-            const newScore = score + points;
+            const newScore = currentScore + points;
             setScore(newScore);
+            scoreRef.current = newScore;
 
             // Update progress (0-100%)
             const newProgress = (newScore % POINTS_PER_LEVEL) / POINTS_PER_LEVEL * 100;
@@ -339,6 +392,7 @@ export function useGameEngine({ controls }: UseGameEngineProps) {
             if (newScore > 0 && newScore % POINTS_PER_LEVEL === 0) {
               const newLevel = Math.floor(newScore / POINTS_PER_LEVEL) + 1;
               setLevel(newLevel);
+              levelRef.current = newLevel;
               const message = `Level ${newLevel - 1} completed`;
               setLevelCompleteMessage(message);
               state.levelCompleteMessage = message;
@@ -361,6 +415,19 @@ export function useGameEngine({ controls }: UseGameEngineProps) {
         return currentTime - explosion.startTime < explosion.duration;
       });
 
+      // Update sparks
+      state.sparks = state.sparks.filter((spark) => {
+        if (currentTime - spark.startTime >= spark.duration) {
+          return false;
+        }
+        spark.x += spark.vx * deltaTime;
+        spark.y += spark.vy * deltaTime;
+        // Apply slight deceleration
+        spark.vx *= 0.98;
+        spark.vy *= 0.98;
+        return true;
+      });
+
       animationId = requestAnimationFrame(gameLoop);
     };
 
@@ -369,7 +436,7 @@ export function useGameEngine({ controls }: UseGameEngineProps) {
     return () => {
       cancelAnimationFrame(animationId);
     };
-  }, [controls.x, controls.y, isPaused, isGameOver, score, level]);
+  }, [isPaused, isGameOver]);
 
   return {
     score,

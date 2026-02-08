@@ -1,93 +1,71 @@
 {
   "kind": "build_request",
-  "title": "Replace image-based joystick, shoot button, and player ship with code-rendered neon designs",
+  "title": "Add spark hit VFX, varied obstacle colors, and fire-shaped equal-size bullets",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-26",
-      "text": "Replace the on-screen Joystick UI to be fully code-rendered (no <img> assets), while keeping the existing joystick input behavior and event lifecycle intact.",
+      "id": "REQ-37",
+      "text": "Add a visible spark VFX at the impact point whenever a bullet hits an obstacle, in addition to the existing explosion/blast effect.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-4"
         ],
         "quotes": [
-          "shoot button, joystick and player should not be image. it should be design by coding. and it should look attractive and bright"
+          "bullets hit to obstacles then it should get spark."
         ]
       },
       "acceptanceCriteria": [
-        "frontend/src/game/controls/Joystick.tsx no longer renders joystick-base/knob images from /assets/generated (no <img> usage for the joystick UI).",
-        "The joystick still reports normalized x/y movement in the same range as before and resets to (0,0) on end/visibility/orientation/resize changes.",
-        "The joystick remains visually bright/attractive with a neon/glow look consistent with the current UI theme.",
-        "The joystick remains usable with both touch and mouse input and continues to prevent browser scrolling while interacting (touchAction/PreventDefault behavior preserved)."
+        "When a bullet collides with an obstacle, a short-lived spark effect is rendered at (or very near) the collision location immediately on hit.",
+        "The spark effect is visually distinct from the existing explosion ring/glow (e.g., multiple small bright streaks/particles that quickly fade).",
+        "Sparks automatically expire and are removed from the game state after a brief duration (no unbounded growth of VFX entities)."
       ]
     },
     {
-      "id": "REQ-27",
-      "text": "Replace the on-screen SHOOT button UI to be fully code-rendered (no icon image assets), while keeping the existing press/hold/release behavior and event coverage intact.",
+      "id": "REQ-38",
+      "text": "Render obstacles in different colors (not only based on size), so multiple obstacles on screen can have visibly different neon colors.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-4"
         ],
         "quotes": [
-          "shoot button, joystick and player should not be image. it should be design by coding. and it should look attractive and bright"
+          "and obstacles should be in different color."
         ]
       },
       "acceptanceCriteria": [
-        "frontend/src/game/controls/ShootButton.tsx no longer renders any <img> (e.g., no /assets/generated/icon-bolt...).",
-        "Press-and-hold shooting continues to work: onShootStart fires once per press; onShootEnd fires on release/cancel/leave to avoid stuck shooting.",
-        "Button visuals are bright and attractive (neon/glow, clear label), and remain readable at typical mobile sizes.",
-        "Button remains functional with both touch and mouse events."
+        "At runtime, multiple obstacles on-screen can appear in different colors simultaneously.",
+        "Obstacle colors remain consistent for each obstacle for its lifetime (do not flicker every frame).",
+        "Obstacle size behavior and scoring rules remain unchanged."
       ]
     },
     {
-      "id": "REQ-28",
-      "text": "Replace the player ship rendering in the gameplay canvas to be fully code-rendered (no ship image asset), preserving rotation behavior and overall readability at different player radii.",
+      "id": "REQ-39",
+      "text": "Update bullet visuals so bullets appear as a consistent-size, fire/flame-shaped projectile (instead of varying sizes), while keeping bullet gameplay behavior functional.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-4"
         ],
         "quotes": [
-          "shoot button, joystick and player should not be image. it should be design by coding. and it should look attractive and bright"
+          "and bullets size should be equal like fire in shape."
         ]
       },
       "acceptanceCriteria": [
-        "frontend/src/game/render/GameCanvas.tsx no longer loads or draws /assets/generated/player-ship.dim_256x256.png (no ship Image() usage).",
-        "The player ship is drawn via Canvas 2D code (e.g., vector/shape-based) with a bright neon/glow appearance consistent with the game theme.",
-        "Ship rotation continues to visually match the player rotation value during gameplay.",
-        "No regression to gameplay rendering performance (no obvious stutter introduced by the new drawing routine)."
-      ]
-    },
-    {
-      "id": "REQ-29",
-      "text": "Remove dependencies on generated image assets for the joystick, shoot button icon, and player ship, without affecting other existing generated assets (e.g., space background, logo mark, trophy icon).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "shoot button, joystick and player should not be image. it should be design by coding. and it should look attractive and bright"
-        ]
-      },
-      "acceptanceCriteria": [
-        "No runtime console errors for missing joystick/shoot/player image assets during gameplay.",
-        "Menu screen and other UI that uses generated assets (background, logo, trophy) remains unchanged and continues to render correctly.",
-        "Gameplay screen continues to render touch controls above the canvas (existing overlay stacking behavior remains)."
+        "All bullets render at the same apparent size (no small/medium/large visible size differences).",
+        "Bullets render with a fire/flame-like shape (e.g., teardrop/flame silhouette with glow), oriented along the bullet travel direction.",
+        "Bullet collision behavior continues to work correctly against obstacles, and bullets still originate from the player ship’s nose and travel in the ship’s facing direction."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui (read-only).",
-    "Do not edit frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, or frontend/src/main.tsx (immutable paths).",
-    "Keep the gameplay controls logic/behavior the same; change only visual rendering for joystick, shoot button, and player ship as requested."
+    "Do not edit files under frontend/src/components/ui or any paths listed as immutable in SYSTEM_CONTEXT.",
+    "Keep backend as a single Motoko actor; no backend changes are required for these visual updates."
   ],
   "nonGoals": [
-    "Do not change enemy, bullet, scoring, level progression, or collision rules.",
-    "Do not remove or redesign the existing space background, HUD layout, menu layout, or authentication UI.",
-    "Do not introduce new backend APIs or modify Motoko canister state for this request."
+    "Do not change scoring values, enemy size distribution, or level progression rules.",
+    "Do not add new authentication or persistence features.",
+    "Do not introduce new generated image assets for these effects; implement VFX and shapes via code rendering in the canvas."
   ],
   "imageRequirements": {
     "required": [],

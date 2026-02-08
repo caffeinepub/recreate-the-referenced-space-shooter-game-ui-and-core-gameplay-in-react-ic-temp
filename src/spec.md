@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Replace the joystick UI, shoot button UI, and player ship visuals with fully code-rendered neon/glow designs while preserving existing gameplay/control behavior.
+**Goal:** Improve combat feedback and visual variety by adding spark hit VFX, giving obstacles varied neon colors, and rendering bullets as equal-size fire-shaped projectiles.
 
 **Planned changes:**
-- Update `frontend/src/game/controls/Joystick.tsx` to render the joystick entirely with code (no `<img>` assets) while keeping the current input behavior, normalized x/y output, and lifecycle resets intact.
-- Update `frontend/src/game/controls/ShootButton.tsx` to render the SHOOT button entirely with code (no `<img>` assets) while keeping press/hold/release behavior and touch/mouse event handling intact.
-- Update `frontend/src/game/render/GameCanvas.tsx` to draw the player ship via Canvas 2D code (no image loading/drawing), preserving rotation behavior and readability across player sizes.
-- Remove/stop using joystick/shoot/ship generated image assets without affecting other existing generated assets (space background, logo mark, trophy icon), and ensure no missing-asset runtime errors.
+- Add a short-lived spark particle VFX at the bullet–obstacle collision point, distinct from the existing explosion/blast effect, and ensure it expires quickly.
+- Render obstacles with varied neon colors (independent of size) so multiple obstacles can appear in different colors at the same time, with each obstacle’s color staying consistent for its lifetime.
+- Update bullet rendering to a consistent-size flame/fire-shaped visual oriented along travel direction, while keeping bullet firing direction, origin point, and collision behavior unchanged.
 
-**User-visible outcome:** During gameplay, the on-screen joystick, SHOOT button, and player ship appear as bright neon/glow code-rendered designs, while controls and gameplay behavior remain the same.
+**User-visible outcome:** Bullet hits show a brief spark at impact, obstacles appear in multiple neon colors on-screen, and bullets look like uniform flame-shaped projectiles without changing gameplay behavior.

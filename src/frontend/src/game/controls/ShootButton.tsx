@@ -1,116 +1,125 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { Zap } from 'lucide-react';
 
 interface ShootButtonProps {
-  onShootStart: () => void;
-  onShootEnd: () => void;
+  onShoot: (shooting: boolean) => void;
 }
 
-export default function ShootButton({ onShootStart, onShootEnd }: ShootButtonProps) {
+export default function ShootButton({ onShoot }: ShootButtonProps) {
+  const buttonRef = useRef<HTMLDivElement>(null);
   const isShootingRef = useRef(false);
 
-  const handleShootStart = () => {
-    if (!isShootingRef.current) {
-      isShootingRef.current = true;
-      onShootStart();
-    }
-  };
+  useEffect(() => {
+    if (!buttonRef.current) return;
 
-  const handleShootEnd = () => {
-    if (isShootingRef.current) {
-      isShootingRef.current = false;
-      onShootEnd();
-    }
-  };
+    const button = buttonRef.current;
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    e.preventDefault();
-    handleShootStart();
-  };
+    const startShooting = () => {
+      if (!isShootingRef.current) {
+        isShootingRef.current = true;
+        onShoot(true);
+      }
+    };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    e.preventDefault();
-    handleShootEnd();
-  };
+    const stopShooting = () => {
+      if (isShootingRef.current) {
+        isShootingRef.current = false;
+        onShoot(false);
+      }
+    };
 
-  const handleTouchCancel = (e: React.TouchEvent) => {
-    e.preventDefault();
-    handleShootEnd();
-  };
+    const handleTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      startShooting();
+    };
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    handleShootStart();
-  };
+    const handleTouchEnd = (e: TouchEvent) => {
+      e.preventDefault();
+      stopShooting();
+    };
 
-  const handleMouseUp = (e: React.MouseEvent) => {
-    e.preventDefault();
-    handleShootEnd();
-  };
+    const handleMouseDown = (e: MouseEvent) => {
+      e.preventDefault();
+      startShooting();
+    };
 
-  const handleMouseLeave = (e: React.MouseEvent) => {
-    e.preventDefault();
-    handleShootEnd();
-  };
+    const handleMouseUp = () => {
+      stopShooting();
+    };
 
-  const handlePointerLeave = (e: React.PointerEvent) => {
-    e.preventDefault();
-    handleShootEnd();
-  };
+    const handleMouseLeave = () => {
+      stopShooting();
+    };
+
+    // Reset on visibility/orientation changes
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopShooting();
+      }
+    };
+
+    const handleOrientationChange = () => {
+      stopShooting();
+    };
+
+    // Attach listeners
+    button.addEventListener('touchstart', handleTouchStart, { passive: false });
+    button.addEventListener('touchend', handleTouchEnd, { passive: false });
+    button.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+    button.addEventListener('mousedown', handleMouseDown);
+    button.addEventListener('mouseup', handleMouseUp);
+    button.addEventListener('mouseleave', handleMouseLeave);
+
+    // Global listeners for release detection
+    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('orientationchange', handleOrientationChange);
+    window.addEventListener('resize', handleOrientationChange);
+
+    return () => {
+      button.removeEventListener('touchstart', handleTouchStart);
+      button.removeEventListener('touchend', handleTouchEnd);
+      button.removeEventListener('touchcancel', handleTouchEnd);
+      button.removeEventListener('mousedown', handleMouseDown);
+      button.removeEventListener('mouseup', handleMouseUp);
+      button.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('orientationchange', handleOrientationChange);
+      window.removeEventListener('resize', handleOrientationChange);
+    };
+  }, [onShoot]);
 
   return (
-    <button
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchCancel}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
-      onPointerLeave={handlePointerLeave}
-      className="relative flex h-32 w-32 select-none items-center justify-center rounded-full border-4 border-neon-magenta bg-gradient-to-br from-neon-magenta via-neon-purple to-neon-magenta shadow-neon-magenta-lg transition-all active:scale-95 active:shadow-neon-magenta-xl"
-      style={{ touchAction: 'none' }}
+    <div
+      ref={buttonRef}
+      className="relative cursor-pointer select-none rounded-full bg-gradient-to-br from-neon-magenta via-neon-purple to-neon-cyan shadow-neon-magenta-xl transition-all active:scale-95"
+      style={{ 
+        width: 'var(--control-size)',
+        height: 'var(--control-size)',
+        touchAction: 'none'
+      }}
     >
       {/* Outer glow ring */}
-      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-neon-magenta/20 to-neon-purple/20 blur-xl pointer-events-none" />
+      <div className="absolute inset-0 rounded-full border-2 border-neon-magenta/50 sm:border-3 md:border-4" />
       
-      <div className="relative flex flex-col items-center gap-1 pointer-events-none">
-        {/* Lightning bolt icon - code rendered */}
-        <svg
-          className="h-12 w-12 drop-shadow-neon-magenta"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <linearGradient id="boltGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#ffff00" />
-              <stop offset="50%" stopColor="#ffaa00" />
-              <stop offset="100%" stopColor="#ff00ff" />
-            </linearGradient>
-            <filter id="boltGlow">
-              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-          <path
-            d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"
-            fill="url(#boltGradient)"
-            stroke="#ffffff"
-            strokeWidth="1.5"
-            strokeLinejoin="round"
-            filter="url(#boltGlow)"
-          />
-        </svg>
-        
-        <span className="text-sm font-black tracking-wider text-white drop-shadow-neon-magenta">
+      {/* Inner content */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <Zap 
+          className="text-white drop-shadow-neon-cyan"
+          style={{ 
+            width: 'var(--shoot-icon-size)',
+            height: 'var(--shoot-icon-size)'
+          }}
+          fill="currentColor"
+        />
+        <span className="mt-0.5 text-[0.5rem] font-bold text-white drop-shadow-neon-magenta sm:text-xs">
           SHOOT
         </span>
       </div>
-      
-      {/* Inner ring decoration */}
-      <div className="absolute inset-3 rounded-full border-2 border-white/20 pointer-events-none" />
-    </button>
+
+      {/* Inner highlight */}
+      <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white/20 to-transparent pointer-events-none sm:inset-3 md:inset-4" />
+    </div>
   );
 }

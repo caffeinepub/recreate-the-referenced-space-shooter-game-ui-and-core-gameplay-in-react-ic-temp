@@ -32,6 +32,84 @@
         
         /* Dynamic viewport height variable */
         --app-dvh: 100vh;
+
+        /* Centralized Responsive Sizing System */
+        /* Mobile-first defaults (small screens) */
+        --logo-size: 5rem;
+        --title-size: 2.5rem;
+        --menu-card-padding: 0.75rem;
+        --menu-button-height: 3rem;
+        --menu-button-text: 1rem;
+        --menu-spacing: 1rem;
+        --menu-max-width: 20rem;
+        
+        --hud-card-padding: 0.5rem;
+        --hud-text-label: 0.625rem;
+        --hud-text-value: 1.25rem;
+        --hud-gap: 0.5rem;
+        --hud-pause-size: 2.5rem;
+        --hud-pause-icon: 1rem;
+        --hud-progress-width: 12rem;
+        --hud-progress-height: 0.5rem;
+        
+        --control-size: 5rem;
+        --control-offset: 0.75rem;
+        --joystick-knob-size: 2rem;
+        --shoot-icon-size: 1.5rem;
+    }
+
+    /* Tablet and up */
+    @media (min-width: 640px) {
+        :root {
+            --logo-size: 7rem;
+            --title-size: 4rem;
+            --menu-card-padding: 1.25rem;
+            --menu-button-height: 3.5rem;
+            --menu-button-text: 1.125rem;
+            --menu-spacing: 1.5rem;
+            --menu-max-width: 24rem;
+            
+            --hud-card-padding: 0.75rem;
+            --hud-text-label: 0.75rem;
+            --hud-text-value: 1.5rem;
+            --hud-gap: 0.75rem;
+            --hud-pause-size: 3rem;
+            --hud-pause-icon: 1.25rem;
+            --hud-progress-width: 14rem;
+            --hud-progress-height: 0.625rem;
+            
+            --control-size: 6rem;
+            --control-offset: 1rem;
+            --joystick-knob-size: 2.25rem;
+            --shoot-icon-size: 1.75rem;
+        }
+    }
+
+    /* Desktop and up */
+    @media (min-width: 768px) {
+        :root {
+            --logo-size: 8rem;
+            --title-size: 6rem;
+            --menu-card-padding: 1.5rem;
+            --menu-button-height: 4rem;
+            --menu-button-text: 1.25rem;
+            --menu-spacing: 2rem;
+            --menu-max-width: 28rem;
+            
+            --hud-card-padding: 1rem;
+            --hud-text-label: 0.875rem;
+            --hud-text-value: 1.875rem;
+            --hud-gap: 1rem;
+            --hud-pause-size: 3.5rem;
+            --hud-pause-icon: 1.5rem;
+            --hud-progress-width: 16rem;
+            --hud-progress-height: 0.75rem;
+            
+            --control-size: 8rem;
+            --control-offset: 1.5rem;
+            --joystick-knob-size: 3rem;
+            --shoot-icon-size: 2rem;
+        }
     }
 
     .dark {
@@ -87,19 +165,19 @@
         transition: opacity 0.2s ease-in-out;
     }
 
-    /* Touch control positioning with safe-area support */
+    /* Touch control positioning with safe-area support and responsive sizing */
     .touch-control-left {
         position: absolute;
-        bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));
-        left: max(1.5rem, env(safe-area-inset-left, 1.5rem));
+        bottom: max(var(--control-offset), env(safe-area-inset-bottom, var(--control-offset)));
+        left: max(var(--control-offset), env(safe-area-inset-left, var(--control-offset)));
         pointer-events: auto;
         z-index: 51;
     }
 
     .touch-control-right {
         position: absolute;
-        bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));
-        right: max(1.5rem, env(safe-area-inset-right, 1.5rem));
+        bottom: max(var(--control-offset), env(safe-area-inset-bottom, var(--control-offset)));
+        right: max(var(--control-offset), env(safe-area-inset-right, var(--control-offset)));
         pointer-events: auto;
         z-index: 51;
     }

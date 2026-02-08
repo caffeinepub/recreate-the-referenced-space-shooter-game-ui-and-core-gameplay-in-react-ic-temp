@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import type { GameState } from '@/game/types';
+import type { GameState, Bullet } from '@/game/types';
 
 interface GameCanvasProps {
   gameState: GameState;
@@ -46,7 +46,7 @@ export default function GameCanvas({ gameState }: GameCanvasProps) {
       ctx.shadowBlur = 15;
       
       ctx.beginPath();
-      // Nose (pointing right in local coords)
+      // Nose (pointing right in local coords, matching rotation direction)
       ctx.moveTo(size * 1.2, 0);
       // Bottom wing
       ctx.lineTo(-size * 0.8, size * 0.8);
@@ -88,6 +88,53 @@ export default function GameCanvas({ gameState }: GameCanvasProps) {
       ctx.restore();
     };
 
+    // Helper function to draw flame-shaped bullets
+    const drawBullet = (bullet: Bullet) => {
+      const radius = 5; // Fixed size for all bullets
+      const color = '#ff6600'; // Flame color (orange-red)
+
+      ctx.save();
+      ctx.translate(bullet.x, bullet.y);
+
+      // Calculate bullet direction for orientation
+      const angle = Math.atan2(bullet.vy, bullet.vx);
+      ctx.rotate(angle);
+
+      // Draw flame shape (teardrop pointing forward)
+      ctx.fillStyle = color;
+      ctx.strokeStyle = '#ffaa00';
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 15;
+      ctx.lineWidth = 1.5;
+
+      const flameLength = radius * 3;
+      const flameWidth = radius * 1.5;
+
+      ctx.beginPath();
+      // Tip of the flame (front)
+      ctx.moveTo(flameLength, 0);
+      // Curve to top
+      ctx.quadraticCurveTo(flameLength * 0.3, -flameWidth, -flameLength * 0.3, -flameWidth * 0.6);
+      // Back of flame (rounded)
+      ctx.quadraticCurveTo(-flameLength * 0.5, 0, -flameLength * 0.3, flameWidth * 0.6);
+      // Curve to bottom
+      ctx.quadraticCurveTo(flameLength * 0.3, flameWidth, flameLength, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Inner bright core
+      ctx.fillStyle = '#ffff00';
+      ctx.shadowColor = '#ffff00';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.ellipse(flameLength * 0.2, 0, flameLength * 0.4, flameWidth * 0.4, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+      ctx.shadowBlur = 0;
+    };
+
     // Animation loop
     let animationId: number;
     const render = () => {
@@ -112,27 +159,10 @@ export default function GameCanvas({ gameState }: GameCanvasProps) {
         );
       }
 
-      // Draw bullets with size variations
+      // Draw bullets as flame shapes
       gameState.bullets.forEach((bullet) => {
-        const radius = bullet.radius;
-        let color: string;
-        
-        if (bullet.size === 'small') {
-          color = '#00ffff';
-        } else if (bullet.size === 'medium') {
-          color = '#00ff88';
-        } else {
-          color = '#0088ff';
-        }
-
-        ctx.fillStyle = color;
-        ctx.shadowColor = color;
-        ctx.shadowBlur = radius * 2;
-        ctx.beginPath();
-        ctx.arc(bullet.x, bullet.y, radius, 0, Math.PI * 2);
-        ctx.fill();
+        drawBullet(bullet);
       });
-      ctx.shadowBlur = 0;
 
       // Draw explosions
       gameState.explosions.forEach((explosion) => {
@@ -154,8 +184,7 @@ export default function GameCanvas({ gameState }: GameCanvasProps) {
         ctx.stroke();
 
         // Inner glow
-        ctx.fillStyle = '#ffff00';
-        ctx.shadowColor = '#ffff00';
+        ctx.fillStyle = '#ffaa00';
         ctx.shadowBlur = 15;
         ctx.beginPath();
         ctx.arc(explosion.x, explosion.y, radius * 0.5, 0, Math.PI * 2);
@@ -165,45 +194,85 @@ export default function GameCanvas({ gameState }: GameCanvasProps) {
       });
       ctx.shadowBlur = 0;
 
-      // Draw enemies with size variations
+      // Draw spark particles
+      gameState.sparks.forEach((spark) => {
+        const age = Date.now() - spark.startTime;
+        const progress = age / spark.duration;
+        const alpha = 1 - progress;
+
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        
+        // Bright white/yellow spark streaks
+        const gradient = ctx.createLinearGradient(
+          spark.x,
+          spark.y,
+          spark.x - Math.cos(spark.angle) * spark.length,
+          spark.y - Math.sin(spark.angle) * spark.length
+        );
+        gradient.addColorStop(0, '#ffffff');
+        gradient.addColorStop(0.5, '#ffff00');
+        gradient.addColorStop(1, 'rgba(255, 200, 0, 0)');
+
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2 + (1 - progress) * 2;
+        ctx.shadowColor = '#ffffff';
+        ctx.shadowBlur = 8;
+        ctx.lineCap = 'round';
+
+        ctx.beginPath();
+        ctx.moveTo(spark.x, spark.y);
+        ctx.lineTo(
+          spark.x - Math.cos(spark.angle) * spark.length * (1 - progress * 0.5),
+          spark.y - Math.sin(spark.angle) * spark.length * (1 - progress * 0.5)
+        );
+        ctx.stroke();
+
+        ctx.restore();
+      });
+      ctx.shadowBlur = 0;
+
+      // Draw enemies with per-instance colors
       gameState.enemies.forEach((enemy) => {
+        const color = enemy.color;
+
         ctx.save();
         ctx.translate(enemy.x, enemy.y);
-        ctx.rotate(enemy.rotation || 0);
-        
-        let color: string;
-        let size: number;
+        ctx.rotate(enemy.rotation);
 
-        if (enemy.size === 'small') {
-          color = '#ffff00';
-          size = enemy.radius * 0.8;
-        } else if (enemy.size === 'medium') {
-          color = '#ff8800';
-          size = enemy.radius * 0.9;
-        } else {
-          color = '#ff0088';
-          size = enemy.radius;
-        }
-
+        // Hexagonal enemy shape
         ctx.strokeStyle = color;
+        ctx.fillStyle = color + '44';
         ctx.lineWidth = 3;
         ctx.shadowColor = color;
         ctx.shadowBlur = 15;
-        
+
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
           const angle = (Math.PI / 3) * i;
-          const x = size * Math.cos(angle);
-          const y = size * Math.sin(angle);
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
+          const x = Math.cos(angle) * enemy.radius;
+          const y = Math.sin(angle) * enemy.radius;
+          if (i === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
         }
         ctx.closePath();
+        ctx.fill();
         ctx.stroke();
-        
-        ctx.shadowBlur = 0;
+
+        // Inner detail
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.arc(0, 0, enemy.radius * 0.5, 0, Math.PI * 2);
+        ctx.stroke();
+
         ctx.restore();
       });
+      ctx.shadowBlur = 0;
 
       animationId = requestAnimationFrame(render);
     };
@@ -221,7 +290,7 @@ export default function GameCanvas({ gameState }: GameCanvasProps) {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 z-10 pointer-events-none"
+      className="absolute inset-0 w-full h-full"
       style={{ touchAction: 'none' }}
     />
   );

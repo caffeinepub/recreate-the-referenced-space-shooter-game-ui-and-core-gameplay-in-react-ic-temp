@@ -19,38 +19,51 @@ export default function MenuScreen({ highScore, onStartGame, isLoadingStats }: M
       <div className="absolute inset-0 bg-gradient-to-b from-space-dark/80 via-space-dark/60 to-space-dark/80" />
 
       {/* Content */}
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-8">
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-3 py-4 sm:px-4 sm:py-6">
         {/* Logo Mark */}
-        <div className="mb-6 animate-float">
+        <div className="mb-3 animate-float sm:mb-4">
           <img
             src="/assets/generated/logo-mark.dim_512x512.png"
             alt="Space Shooter Logo"
-            className="h-24 w-24 drop-shadow-neon-purple md:h-32 md:w-32"
+            className="drop-shadow-neon-purple"
+            style={{ width: 'var(--logo-size)', height: 'var(--logo-size)' }}
           />
         </div>
 
         {/* Title */}
-        <div className="mb-8 text-center">
-          <h1 className="mb-2 text-6xl font-black tracking-wider text-neon-purple drop-shadow-neon-purple md:text-8xl">
+        <div className="mb-4 text-center sm:mb-6">
+          <h1 
+            className="mb-1 font-black tracking-wider text-neon-purple drop-shadow-neon-purple"
+            style={{ fontSize: 'var(--title-size)' }}
+          >
             SPACE
           </h1>
-          <h1 className="text-6xl font-black tracking-wider text-neon-cyan drop-shadow-neon-cyan md:text-8xl">
+          <h1 
+            className="font-black tracking-wider text-neon-cyan drop-shadow-neon-cyan"
+            style={{ fontSize: 'var(--title-size)' }}
+          >
             SHOOTER
           </h1>
         </div>
 
         {/* High Score Card */}
-        <Card className="glass-card mb-8 w-full max-w-sm border-neon-cyan/30 bg-space-card/40 p-6 backdrop-blur-xl">
+        <Card 
+          className="glass-card mb-4 w-full border-neon-cyan/30 bg-space-card/40 backdrop-blur-xl sm:mb-6"
+          style={{ 
+            maxWidth: 'var(--menu-max-width)',
+            padding: 'var(--menu-card-padding)'
+          }}
+        >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <img
                 src="/assets/generated/icon-trophy.dim_128x128.png"
                 alt="Trophy"
-                className="h-10 w-10 drop-shadow-neon-magenta"
+                className="h-6 w-6 drop-shadow-neon-magenta sm:h-8 sm:w-8"
               />
-              <span className="text-lg font-semibold text-muted-foreground">High Score</span>
+              <span className="text-sm font-semibold text-muted-foreground sm:text-base">High Score</span>
             </div>
-            <span className="text-3xl font-black text-neon-magenta drop-shadow-neon-magenta">
+            <span className="text-xl font-black text-neon-magenta drop-shadow-neon-magenta sm:text-2xl">
               {isLoadingStats ? '...' : highScore}
             </span>
           </div>
@@ -59,43 +72,62 @@ export default function MenuScreen({ highScore, onStartGame, isLoadingStats }: M
         {/* Start Button */}
         <Button
           onClick={onStartGame}
-          size="lg"
-          className="neon-button mb-8 h-16 w-full max-w-sm bg-gradient-to-r from-neon-magenta to-neon-purple text-xl font-black tracking-wide text-white shadow-neon-magenta transition-all hover:scale-105 hover:shadow-neon-magenta-lg"
+          className="neon-button mb-4 w-full bg-gradient-to-r from-neon-magenta to-neon-purple font-black tracking-wide text-white shadow-neon-magenta transition-all hover:scale-105 hover:shadow-neon-magenta-lg sm:mb-6"
+          style={{ 
+            maxWidth: 'var(--menu-max-width)',
+            height: 'var(--menu-button-height)',
+            fontSize: 'var(--menu-button-text)'
+          }}
         >
           START GAME
         </Button>
 
         {/* Instruction Panels */}
-        <div className="mb-6 grid w-full max-w-2xl gap-4 md:grid-cols-2">
+        <div 
+          className="mb-3 grid w-full gap-2 sm:mb-4 sm:gap-3 md:grid-cols-2"
+          style={{ maxWidth: '32rem' }}
+        >
           {/* Desktop Controls */}
-          <Card className="glass-card border-neon-cyan/20 bg-space-card/30 p-4 backdrop-blur-lg">
-            <h3 className="mb-2 text-sm font-bold text-neon-cyan">Desktop:</h3>
-            <p className="text-sm text-muted-foreground">Arrow Keys / WASD + Space to Shoot</p>
+          <Card 
+            className="glass-card border-neon-cyan/20 bg-space-card/30 backdrop-blur-lg"
+            style={{ padding: 'calc(var(--menu-card-padding) * 0.75)' }}
+          >
+            <h3 className="mb-1 text-xs font-bold text-neon-cyan sm:text-sm">Desktop:</h3>
+            <p className="text-xs text-muted-foreground">Arrow Keys / WASD + Space</p>
           </Card>
 
           {/* Mobile Controls */}
-          <Card className="glass-card border-neon-magenta/20 bg-space-card/30 p-4 backdrop-blur-lg">
-            <h3 className="mb-2 text-sm font-bold text-neon-magenta">Mobile:</h3>
-            <p className="text-sm text-muted-foreground">Touch Joystick + Shoot Button</p>
+          <Card 
+            className="glass-card border-neon-magenta/20 bg-space-card/30 backdrop-blur-lg"
+            style={{ padding: 'calc(var(--menu-card-padding) * 0.75)' }}
+          >
+            <h3 className="mb-1 text-xs font-bold text-neon-magenta sm:text-sm">Mobile:</h3>
+            <p className="text-xs text-muted-foreground">Touch Joystick + Shoot</p>
           </Card>
         </div>
 
         {/* Auto-save Note */}
-        <Card className="glass-card mb-4 w-full max-w-2xl border-neon-purple/20 bg-space-card/20 p-3 backdrop-blur-lg">
+        <Card 
+          className="glass-card mb-3 w-full border-neon-purple/20 bg-space-card/20 backdrop-blur-lg sm:mb-4"
+          style={{ 
+            maxWidth: '32rem',
+            padding: 'calc(var(--menu-card-padding) * 0.6)'
+          }}
+        >
           <div className="flex items-center justify-center gap-2">
             <span className="text-xs text-muted-foreground">
-              Your progress is <span className="font-semibold text-neon-purple">auto-saved</span>
+              Progress <span className="font-semibold text-neon-purple">auto-saved</span>
             </span>
           </div>
         </Card>
 
         {/* Login Button */}
-        <div className="mt-4">
+        <div className="mt-2 sm:mt-3">
           <LoginButton />
         </div>
 
         {/* Footer */}
-        <footer className="mt-8 text-center text-xs text-muted-foreground/60">
+        <footer className="mt-4 text-center text-xs text-muted-foreground/60 sm:mt-6">
           © 2026. Built with ❤️ using{' '}
           <a
             href="https://caffeine.ai"

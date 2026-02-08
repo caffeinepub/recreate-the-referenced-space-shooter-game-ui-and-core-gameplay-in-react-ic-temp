@@ -1,10 +1,12 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 13,
+  "projectStateVersion": 19,
   "summary": "Build a ReactJS game replicating an existing reference game with the same layout/UI design and functionality, delivered as a step-by-step implementation guide.",
   "architectural_notes": [
     "Gameplay needs basic 2D physics/collision handling: border reflection and obstacle-obstacle response, plus bullet-obstacle and player-obstacle collisions.",
-    "User preference: player ship + on-screen joystick + SHOOT button should be rendered via code (CSS/SVG/canvas), not static image assets; visuals should be bright/attractive neon style."
+    "User preference: player ship + on-screen joystick + SHOOT button should be rendered via code (CSS/SVG/canvas), not static image assets; visuals should be bright/attractive neon style.",
+    "Prioritize mobile-first responsive sizing: use relative units (vw/vh/rem), safe-area insets, and consistent spacing so HUD/buttons/controls remain comfortably visible on small screens.",
+    "Add lightweight hit VFX (spark/particle burst) on bullet→obstacle collisions; support per-obstacle color variants; update bullet rendering to a consistent-size fire-shaped style."
   ],
   "known_issues": [
     "On-screen joystick, SHOOT button, and gameplay borders are currently not visible (UI rendering bug).",
@@ -235,6 +237,86 @@
         "REQ-29"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-align-bullet-spawn-position-and-velocity-with-the-player-ship-s-front-up-heading-so-bullets-consistently-originate-from-the-ship-nose-player-upside-direction-and-travel-in-the-exact-same-direction-the-ship-is-facing",
+      "title": "Align bullet spawn position and velocity with the player ship’s “front/up” heading so bullets consistently originate from the ship nose (player upside direction) and travel in the exact same direction the ship is facing.",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-improve-bullet-motion-smoothness-by-ensuring-the-game-loop-timing-does-not-stutter-or-restart-during-gameplay-state-updates-e-g-score-level-progress-changes-and-bullet-movement-remains-frame-rate-independent",
+      "title": "Improve bullet motion smoothness by ensuring the game loop timing does not stutter or restart during gameplay state updates (e.g., score/level/progress changes) and bullet movement remains frame-rate independent.",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-distinct-bullet-shape-variations-not-only-size-color-and-render-them-clearly-during-gameplay-so-bullets-appear-in-different-shapes",
+      "title": "Add distinct bullet shape variations (not only size/color) and render them clearly during gameplay so bullets appear in different shapes.",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-adjust-menu-screen-layout-and-typography-for-small-mobile-devices-so-all-elements-are-smaller-visually-attractive-and-comfortably-readable-without-excessive-scrolling-logo-title-high-score-card-start-button-instruction-cards-auto-save-note-footer",
+      "title": "Adjust Menu screen layout and typography for small mobile devices so all elements are smaller, visually attractive, and comfortably readable without excessive scrolling (logo, title, high score card, start button, instruction cards, auto-save note, footer).",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-adjust-gameplay-hud-sizing-spacing-for-mobile-so-score-level-cards-pause-button-progress-bar-and-overlays-are-smaller-and-do-not-obstruct-gameplay-on-small-screens",
+      "title": "Adjust Gameplay HUD sizing/spacing for mobile so Score/Level cards, Pause button, progress bar, and overlays are smaller and do not obstruct gameplay on small screens.",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-reduce-on-screen-control-ui-footprint-for-mobile-while-keeping-controls-comfortable-and-usable-scale-down-the-joystick-and-shoot-button-visual-size-adjust-their-offsets-from-screen-edges-respecting-safe-area-insets-and-ensure-they-remain-fully-visible-in-common-mobile-viewports",
+      "title": "Reduce on-screen control UI footprint for mobile while keeping controls comfortable and usable: scale down the Joystick and SHOOT button visual size, adjust their offsets from screen edges (respecting safe-area insets), and ensure they remain fully visible in common mobile viewports.",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-introduce-a-single-responsive-sizing-system-css-variables-and-or-tailwind-utility-pattern-used-by-menu-hud-and-touch-controls-to-keep-mobile-sizing-consistent-and-easy-to-tune-without-changing-gameplay-logic",
+      "title": "Introduce a single responsive sizing system (CSS variables and/or Tailwind utility pattern) used by Menu, HUD, and touch controls to keep mobile sizing consistent and easy to tune, without changing gameplay logic.",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-visible-spark-vfx-at-the-impact-point-whenever-a-bullet-hits-an-obstacle-in-addition-to-the-existing-explosion-blast-effect",
+      "title": "Add a visible spark VFX at the impact point whenever a bullet hits an obstacle, in addition to the existing explosion/blast effect.",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-render-obstacles-in-different-colors-not-only-based-on-size-so-multiple-obstacles-on-screen-can-have-visibly-different-neon-colors",
+      "title": "Render obstacles in different colors (not only based on size), so multiple obstacles on screen can have visibly different neon colors.",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-bullet-visuals-so-bullets-appear-as-a-consistent-size-fire-flame-shaped-projectile-instead-of-varying-sizes-while-keeping-bullet-gameplay-behavior-functional",
+      "title": "Update bullet visuals so bullets appear as a consistent-size, fire/flame-shaped projectile (instead of varying sizes), while keeping bullet gameplay behavior functional.",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -291,6 +373,30 @@
     {
       "id": "AR-14",
       "summary": "Replace image-based player ship, joystick, and SHOOT button with code-rendered UI (e.g., CSS/SVG/canvas) that looks bright/attractive and matches the neon style",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Update bullet spawn so bullets originate from the front/upward direction of the player ship (aligned to ship rotation/heading) rather than from an incorrect position/direction",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Improve bullet motion to feel smooth (game-like) and add distinct bullet shapes/visual variations during gameplay",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Adjust overall UI scale/spacing for mobile so all elements are smaller, attractive, and comfortably visible/usable on mobile devices (responsive sizing/layout polish)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Add visual VFX/visual polish: show spark effect when bullets hit obstacles; render obstacles in different colors; render bullets as a consistent-size fire-shaped projectile",
       "reqIds": [],
       "status": "pending"
     }

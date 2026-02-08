@@ -1,92 +1,83 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Neon code-rendered joystick, shoot button, and player ship (remove image dependencies)",
+  "title": "Space Shooter VFX and projectile visual updates",
   "requirements": [
     {
-      "id": "REQ-26",
-      "summary": "Replace joystick visuals with fully code-rendered neon UI while preserving existing joystick input behavior and lifecycle resets.",
+      "id": "REQ-37",
+      "summary": "Add short-lived spark VFX at bullet impact points on obstacles, alongside existing explosion effect.",
       "acceptanceCriteria": [
-        "frontend/src/game/controls/Joystick.tsx no longer renders joystick-base/knob images from /assets/generated (no <img> usage for the joystick UI).",
-        "The joystick still reports normalized x/y movement in the same range as before and resets to (0,0) on end/visibility/orientation/resize changes.",
-        "The joystick remains visually bright/attractive with a neon/glow look consistent with the current UI theme.",
-        "The joystick remains usable with both touch and mouse input and continues to prevent browser scrolling while interacting (touchAction/PreventDefault behavior preserved)."
+        "When a bullet collides with an obstacle, a short-lived spark effect is rendered at (or very near) the collision location immediately on hit.",
+        "The spark effect is visually distinct from the existing explosion ring/glow (e.g., multiple small bright streaks/particles that quickly fade).",
+        "Sparks automatically expire and are removed from the game state after a brief duration (no unbounded growth of VFX entities)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/game/controls/Joystick.tsx",
+          "path": "frontend/src/game/types.ts",
           "operation": "modify",
-          "description": "Remove joystick <img> usage and replace base/knob with code-rendered elements (e.g., divs with gradients, borders, and glow via existing Tailwind theme colors), while keeping all existing event listeners, preventDefault behavior, normalized x/y math, and lifecycle resets unchanged."
+          "description": "Extend game types to represent spark VFX entities (e.g., Spark/SparkParticle) and add a sparks collection to GameState so spark effects can be tracked and expired."
         },
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/game/useGameEngine.ts",
           "operation": "modify",
-          "description": "Add/adjust Tailwind utility classes (under @layer utilities) to support a consistent neon/glow joystick look (e.g., reusable glow/ring utilities), without changing gameplay control logic."
-        }
-      ]
-    },
-    {
-      "id": "REQ-27",
-      "summary": "Replace SHOOT button visuals with fully code-rendered neon UI while preserving press/hold/release behavior and event coverage.",
-      "acceptanceCriteria": [
-        "frontend/src/game/controls/ShootButton.tsx no longer renders any <img> (e.g., no /assets/generated/icon-bolt...).",
-        "Press-and-hold shooting continues to work: onShootStart fires once per press; onShootEnd fires on release/cancel/leave to avoid stuck shooting.",
-        "Button visuals are bright and attractive (neon/glow, clear label), and remain readable at typical mobile sizes.",
-        "Button remains functional with both touch and mouse events."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/game/controls/ShootButton.tsx",
-          "operation": "modify",
-          "description": "Remove the bolt icon <img> and replace it with a code-rendered graphic (e.g., inline SVG or pure CSS shapes) plus neon/glow styling; keep all existing touch/mouse handlers and the ‘fire once per press’ ref logic intact."
-        },
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Extend existing neon utility styles as needed so the SHOOT button’s code-rendered icon/label has a bright, readable glow at mobile sizes, without altering input behavior."
-        }
-      ]
-    },
-    {
-      "id": "REQ-28",
-      "summary": "Replace player ship image drawing with a code-rendered neon Canvas 2D ship while preserving rotation and readability across radii.",
-      "acceptanceCriteria": [
-        "frontend/src/game/render/GameCanvas.tsx no longer loads or draws /assets/generated/player-ship.dim_256x256.png (no ship Image() usage).",
-        "The player ship is drawn via Canvas 2D code (e.g., vector/shape-based) with a bright neon/glow appearance consistent with the game theme.",
-        "Ship rotation continues to visually match the player rotation value during gameplay.",
-        "No regression to gameplay rendering performance (no obvious stutter introduced by the new drawing routine)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/game/render/GameCanvas.tsx",
-          "operation": "modify",
-          "description": "Remove ship Image() loading/caching and implement a Canvas 2D vector ship drawing routine (path-based shapes with stroke/fill + controlled shadowBlur) that scales with player radius and renders under the existing translate/rotate transform to preserve rotation behavior and performance."
-        }
-      ]
-    },
-    {
-      "id": "REQ-29",
-      "summary": "Remove runtime dependencies on generated joystick/shoot/ship image assets while keeping other generated assets and gameplay overlay stacking unchanged.",
-      "acceptanceCriteria": [
-        "No runtime console errors for missing joystick/shoot/player image assets during gameplay.",
-        "Menu screen and other UI that uses generated assets (background, logo, trophy) remains unchanged and continues to render correctly.",
-        "Gameplay screen continues to render touch controls above the canvas (existing overlay stacking behavior remains)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/game/controls/Joystick.tsx",
-          "operation": "modify",
-          "description": "Ensure no remaining references to /assets/generated/joystick-base.dim_512x512.png or /assets/generated/joystick-knob.dim_256x256.png exist in the joystick UI implementation, while preserving the same DOM layering and pointer-events behavior."
-        },
-        {
-          "path": "frontend/src/game/controls/ShootButton.tsx",
-          "operation": "modify",
-          "description": "Ensure no remaining references to /assets/generated/icon-bolt.dim_256x256.png exist in the SHOOT button UI implementation, while preserving touchAction and overlay usability."
+          "description": "On bullet-obstacle collision, add spark VFX instances positioned at/near the collision point; implement lifetime-based cleanup so spark entities are removed after a brief duration without accumulating."
         },
         {
           "path": "frontend/src/game/render/GameCanvas.tsx",
           "operation": "modify",
-          "description": "Ensure no remaining references to /assets/generated/player-ship.dim_256x256.png exist in gameplay rendering; keep the canvas placement and z-index behavior unchanged so the touch overlay continues to sit above it."
+          "description": "Render spark VFX from game state in the canvas as distinct bright streak/particle bursts with fast fade-out, separate from the existing explosion ring/glow rendering."
+        }
+      ]
+    },
+    {
+      "id": "REQ-38",
+      "summary": "Give each obstacle a stable per-instance neon color so multiple obstacles can appear in different colors simultaneously.",
+      "acceptanceCriteria": [
+        "At runtime, multiple obstacles on-screen can appear in different colors simultaneously.",
+        "Obstacle colors remain consistent for each obstacle for its lifetime (do not flicker every frame).",
+        "Obstacle size behavior and scoring rules remain unchanged."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/game/types.ts",
+          "operation": "modify",
+          "description": "Add an optional/required per-enemy (obstacle) color field to the Enemy type to allow stable, per-instance color assignment independent of size."
+        },
+        {
+          "path": "frontend/src/game/useGameEngine.ts",
+          "operation": "modify",
+          "description": "Assign each spawned obstacle a neon color once at creation time (from a palette or controlled random selection) and keep it unchanged for the obstacle’s lifetime; do not alter size distribution or scoring."
+        },
+        {
+          "path": "frontend/src/game/render/GameCanvas.tsx",
+          "operation": "modify",
+          "description": "Use the per-obstacle color field when rendering obstacles, while preserving existing size-based geometry/behavior and leaving scoring logic unchanged."
+        }
+      ]
+    },
+    {
+      "id": "REQ-39",
+      "summary": "Render bullets as equal-size, flame-shaped projectiles oriented along travel direction while preserving existing bullet gameplay behavior.",
+      "acceptanceCriteria": [
+        "All bullets render at the same apparent size (no small/medium/large visible size differences).",
+        "Bullets render with a fire/flame-like shape (e.g., teardrop/flame silhouette with glow), oriented along the bullet travel direction.",
+        "Bullet collision behavior continues to work correctly against obstacles, and bullets still originate from the player ship’s nose and travel in the ship’s facing direction."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/game/types.ts",
+          "operation": "modify",
+          "description": "Update bullet typing to support a flame/fire visual mode (e.g., add 'flame' bullet shape or simplify bullet shape/size fields) while keeping radius available for collision."
+        },
+        {
+          "path": "frontend/src/game/useGameEngine.ts",
+          "operation": "modify",
+          "description": "Change bullet spawning so all bullets use a single consistent radius/visual size and a flame visual mode; preserve existing spawn-from-nose positioning and velocity aligned to ship rotation, and keep collision radius consistent with the new fixed size."
+        },
+        {
+          "path": "frontend/src/game/render/GameCanvas.tsx",
+          "operation": "modify",
+          "description": "Replace current variable-size/shape bullet rendering with a consistent-size fire/flame silhouette (with glow) rotated to match bullet travel direction (vx/vy), while continuing to render all active bullets and not affecting gameplay logic."
         }
       ]
     }
