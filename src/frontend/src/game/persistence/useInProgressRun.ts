@@ -94,7 +94,7 @@ export function useInProgressRun() {
       // Try to save to backend if actor is available
       if (!actor) {
         console.warn('[useInProgressRun] Actor not available, saved to local storage only');
-        return true;
+        return;
       }
 
       try {
@@ -105,14 +105,10 @@ export function useInProgressRun() {
           timeElapsed: BigInt(0), // Default value
         };
 
-        const success = await actor.saveInProgressRun(backendRun);
-        if (!success) {
-          console.warn('[useInProgressRun] Backend returned false for saveInProgressRun (likely unauthorized)');
-        }
-        return true; // Local save succeeded
+        await actor.saveInProgressRun(backendRun);
       } catch (error) {
         console.error('[useInProgressRun] Failed to save run to backend:', error);
-        return true; // Local save still succeeded
+        // Local save still succeeded, so we don't throw
       }
     },
     onSuccess: () => {
@@ -131,18 +127,14 @@ export function useInProgressRun() {
       // Try to clear backend if actor is available
       if (!actor) {
         console.warn('[useInProgressRun] Actor not available, cleared local storage only');
-        return true;
+        return;
       }
 
       try {
-        const success = await actor.clearInProgressRun();
-        if (!success) {
-          console.warn('[useInProgressRun] Backend returned false for clearInProgressRun (likely unauthorized)');
-        }
-        return true; // Local clear succeeded
+        await actor.clearInProgressRun();
       } catch (error) {
         console.error('[useInProgressRun] Failed to clear run from backend:', error);
-        return true; // Local clear still succeeded
+        // Local clear still succeeded, so we don't throw
       }
     },
     onSuccess: () => {

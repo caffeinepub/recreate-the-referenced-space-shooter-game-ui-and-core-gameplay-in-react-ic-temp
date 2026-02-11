@@ -33,22 +33,6 @@ export function getUrlParameter(paramName: string): string | null {
 }
 
 /**
- * Extracts a boolean URL parameter from the current URL
- * Accepts: 1, true, yes (case-insensitive) as truthy values
- *
- * @param paramName - The name of the parameter to extract
- * @returns true if parameter exists and is truthy, false otherwise
- */
-export function getBooleanUrlParameter(paramName: string): boolean {
-    const value = getUrlParameter(paramName);
-    if (value === null) {
-        return false;
-    }
-    const normalized = value.toLowerCase();
-    return normalized === '1' || normalized === 'true' || normalized === 'yes';
-}
-
-/**
  * Stores a parameter in sessionStorage for persistence across navigation
  * Useful for maintaining state like admin tokens throughout the session
  *

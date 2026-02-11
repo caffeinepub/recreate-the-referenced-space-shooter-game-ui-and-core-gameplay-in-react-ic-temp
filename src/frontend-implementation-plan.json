@@ -1,57 +1,136 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Make touch joystick & shoot button reliably visible above gameplay in production",
+  "title": "Space Shooter rebuild: stable menu/game flow and always-visible on-screen controls",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Render the touch-controls overlay above the canvas/HUD with correct safe-area padding, positioning, sizing, and stacking so joystick and SHOOT are visible during gameplay when showTouchControls is true.",
+      "summary": "Restore a complete, compiling Space Shooter frontend with menu-to-game flow, playable canvas gameplay, and non-crashing persistence hooks (stats + in-progress run).",
       "acceptanceCriteria": [
-        "On a touch-capable mobile device in landscape during active gameplay (not paused, not game over), the joystick and SHOOT button are visible without requiring any debug/force URL parameters.",
-        "Controls render above the game canvas and remain visible when interacting with the game (no accidental occlusion by other layers).",
-        "Controls respect safe-area insets (e.g., iPhone notch/home indicator) and remain tappable near screen edges."
+        "The project builds successfully without missing-file or import errors.",
+        "The app launches to the menu screen and can start a new run into the gameplay screen.",
+        "Gameplay renders on the canvas and basic controls (movement + shooting) work.",
+        "Stats and/or in-progress run persistence code paths do not throw runtime errors when starting, pausing, or exiting a run."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Harden touch-controls overlay layering and layout: raise the stacking order above the canvas/HUD, ensure a predictable stacking context (e.g., isolate the gameplay root), and adjust safe-area-aware offsets so bottom-left joystick and bottom-right SHOOT remain on-screen and tappable across mobile landscape and small-height layouts."
+          "description": "Harden the menu-to-game flow wiring (start new run, continue saved run, exit back to menu) and ensure stats state updates do not cause runtime errors when backend data is unavailable."
+        },
+        {
+          "path": "frontend/src/screens/MenuScreen.tsx",
+          "operation": "modify",
+          "description": "Verify the menu renders reliably (high score loading/error states, continue button gating) and that generated image asset references resolve correctly in this workspace."
         },
         {
           "path": "frontend/src/screens/GameScreen.tsx",
           "operation": "modify",
-          "description": "Adjust touch-controls overlay DOM placement/wrappers so the overlay is guaranteed to render above the canvas and HUD (stacking context safe), and add stable wrapper elements for left/right controls to support safe-area-aware positioning and later visibility checks."
+          "description": "Ensure gameplay screen wiring (canvas + HUD + controls + persistence autosave hooks) runs end-to-end without runtime errors during start/pause/exit and in both orientations."
+        },
+        {
+          "path": "frontend/src/game/persistence/useSavedStats.ts",
+          "operation": "modify",
+          "description": "Ensure stats load/save paths remain non-throwing and UI-safe when the backend actor is unavailable or rejects calls (keep returning null/false rather than propagating errors)."
+        },
+        {
+          "path": "frontend/src/game/persistence/useInProgressRun.ts",
+          "operation": "modify",
+          "description": "Ensure in-progress run load/save/clear paths remain non-throwing and UI-safe across actor availability changes, so starting/pausing/exiting a run never crashes."
+        },
+        {
+          "path": "frontend/public/assets/generated/space-bg.dim_1920x1080.png",
+          "operation": "create",
+          "description": "Add the required generated background asset to the public generated assets folder so menu background loads without 404s."
+        },
+        {
+          "path": "frontend/public/assets/generated/logo-mark.dim_512x512.png",
+          "operation": "create",
+          "description": "Add the required generated logo asset to the public generated assets folder so the menu logo loads without 404s."
+        },
+        {
+          "path": "frontend/public/assets/generated/icon-trophy.dim_128x128.png",
+          "operation": "create",
+          "description": "Add the required generated trophy icon to the public generated assets folder so the menu high-score card icon loads without 404s."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Eliminate CSS/stacking/positioning issues that can make controls present but invisible, and add a minimal regression check + manual debug path to detect invisible/off-screen controls early.",
+      "summary": "Make the on-screen joystick and shoot button always rendered/visible regardless of orientation, device type, touch capability, pause/game-over state, or URL/toggle gating.",
       "acceptanceCriteria": [
-        "When `showTouchControls` is true, the joystick base and shoot button each have non-zero rendered size and are within the viewport bounds.",
-        "The joystick and shoot button are visibly distinguishable against the background (not fully transparent or clipped).",
-        "A simple manual test path exists to validate visibility (e.g., using `?debugControls=1` to confirm `showTouchControls: YES` and seeing the controls on-screen)."
+        "The joystick and shoot button are visible on desktop browsers and on mobile devices.",
+        "The joystick and shoot button remain visible in portrait orientation.",
+        "The joystick and shoot button remain visible while paused and after game over.",
+        "No URL parameter (e.g., forceTouchControls) is required for visibility.",
+        "No in-app toggle can cause the joystick and shoot button to become hidden (they may be disabled functionally, but remain visible)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/index.css",
+          "path": "frontend/src/screens/GameScreen.tsx",
           "operation": "modify",
-          "description": "Audit and fix any styles that can hide controls while still rendering in the DOM (e.g., unintended opacity/visibility, clipping due to overflow, off-screen absolute positioning, insufficient z-index, or stacking-context pitfalls). Ensure controls keep a non-zero size and maintain visible contrast against the game background."
+          "description": "Remove all conditional rendering and URL/touch/orientation/pause/game-over gating for touch controls; always render the joystick + shoot button. Keep any user toggle as an input-enable/disable only (visual remains visible)."
         },
         {
-          "path": "frontend/src/game/ui/useTouchControlsDomSanityCheck.ts",
-          "operation": "create",
-          "description": "Add a small, development-focused DOM sanity check utility/hook that, when showTouchControls is true (and/or when ?debugControls=1 is enabled), measures the joystick/shoot wrappers via getBoundingClientRect and logs a clear warning if size is zero or if elements are outside the viewport bounds."
+          "path": "frontend/src/game/ui/Hud.tsx",
+          "operation": "modify",
+          "description": "Update the existing 'Touch Controls' switch semantics so it cannot hide controls; instead it only enables/disables touch-control input while leaving the controls visible."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Adjust touch-controls overlay styling for always-visible behavior (desktop + mobile + portrait), including safe-area padding, z-index layering, and a clear disabled visual state without hiding."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Ensure RotateDeviceOverlay does not block or obscure always-visible controls in portrait mode.",
+      "acceptanceCriteria": [
+        "In portrait mode on mobile, the joystick and shoot button are still visible on screen.",
+        "In portrait mode, the joystick and shoot button still receive pointer input (dragging joystick and pressing shoot work)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/RotateDeviceOverlay.tsx",
+          "operation": "modify",
+          "description": "Change the rotate UX from a full-screen blocking overlay to a non-blocking, non-obscuring hint (e.g., a small banner) with no pointer-event interception so controls remain visible and interactive in portrait."
         },
         {
           "path": "frontend/src/screens/GameScreen.tsx",
           "operation": "modify",
-          "description": "Wire the new touch-controls DOM sanity check into gameplay rendering: attach refs/data attributes to joystick/shoot wrappers and invoke the check whenever showTouchControls becomes true. Preserve the existing manual debug path via ?debugControls=1 and keep gameplay behavior unchanged."
+          "description": "Update integration so the rotate-to-landscape UX no longer blocks gameplay input or visibility (e.g., render the updated non-blocking hint only, and never gate controls behind it)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Ensure on-screen controls work with both touch and mouse/pointer input and do not get stuck after blur/visibility/orientation/resize changes.",
+      "acceptanceCriteria": [
+        "Dragging the joystick with a mouse updates movement and releasing resets to (0,0).",
+        "Pressing and holding the shoot button with a mouse triggers shooting and releasing stops shooting.",
+        "After switching tabs/window blur and returning, controls are not stuck in an active state (no continuous movement/shooting unless actively pressed)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/game/controls/Joystick.tsx",
+          "operation": "modify",
+          "description": "Verify mouse/pointer interactions remain correct when controls are always visible (pointer capture, release-to-zero behavior), and add any additional stuck-state prevention needed for blur/visibility/orientation/resize sequences."
         },
         {
-          "path": "frontend/src/game/ui/TouchControlsDebugOverlay.tsx",
+          "path": "frontend/src/game/controls/ShootButton.tsx",
           "operation": "modify",
-          "description": "Enhance the debug overlay (shown via ?debugControls=1) to include a concise visibility section that can display measured joystick/shoot sizes/viewport-in-bounds status (fed from GameScreen), helping validate that controls are not invisible due to CSS/layout regressions."
+          "description": "Verify mouse/pointer press-and-hold shooting works reliably with always-visible rendering, and harden lifecycle resets to prevent stuck shooting after focus/visibility/orientation/resize changes."
+        },
+        {
+          "path": "frontend/src/screens/GameScreen.tsx",
+          "operation": "modify",
+          "description": "Make control-state reset logic independent of visibility (since controls are always rendered) and ensure resets run on blur/tab switch/orientation/resize/visibility changes to prevent stuck movement/shooting."
+        },
+        {
+          "path": "frontend/src/game/ui/Hud.tsx",
+          "operation": "modify",
+          "description": "Make the pause UI non-blocking to pointer input outside the dialog (so controls can still be interacted with while paused, per always-visible/usable requirement), while preserving the existing pause/resume/exit flow."
         }
       ]
     }

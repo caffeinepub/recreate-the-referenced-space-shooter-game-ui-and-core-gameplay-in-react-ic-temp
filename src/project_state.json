@@ -1,32 +1,64 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
-  "architectural_notes": [],
+  "summary": "Rebuild the entire game from scratch and ensure on-screen touch controls (joystick and shoot button) are always visible regardless of device conditions.",
+  "architectural_notes": [
+    "Current workspace appears empty; rebuilding from scratch is required before applying UI/control changes."
+  ],
   "known_issues": [
-    "Joystick and shoot button are not visible in production (Version 21)."
+    "Joystick and shoot button are currently invisible due to conditional display logic (e.g., mobile+landscape-only and other state gates).",
+    "Project files are missing/empty in the workspace, preventing direct edits until rebuilt."
   ],
   "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-ensure-the-on-screen-touch-controls-overlay-joystick-bottom-left-and-shoot-button-bottom-right-is-visually-rendered-on-top-of-the-gameplay-canvas-when-showtouchcontrols-is-true-including-correct-positioning-sizing-safe-area-padding-and-z-index-so-the-controls-are-not-hidden-behind-the-canvas-hud",
-      "title": "Ensure the on-screen touch controls overlay (joystick bottom-left and SHOOT button bottom-right) is visually rendered on top of the gameplay canvas when `showTouchControls` is true, including correct positioning, sizing, safe-area padding, and z-index so the controls are not hidden behind the canvas/HUD.",
+      "id": "feature-rebuild-the-entire-space-shooter-game-project-so-it-is-complete-compiles-and-runs-end-to-end-frontend-motoko-backend-in-the-workspace-restoring-core-gameplay-menu-to-game-flow-and-persistence-hooks-stats-in-progress-run-as-described-by-the-existing-codebase-structure",
+      "title": "Rebuild the entire Space Shooter game project so it is complete, compiles, and runs end-to-end (frontend + Motoko backend) in the workspace, restoring core gameplay, menu-to-game flow, and persistence hooks (stats + in-progress run) as described by the existing codebase structure.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-fix-any-css-class-issues-that-could-cause-the-joystick-or-shoot-button-to-be-present-in-the-dom-but-invisible-e-g-opacity-visibility-zero-size-incorrect-positioning-off-screen-incorrect-stacking-context-or-pointer-events-preventing-interaction-and-add-a-minimal-regression-check-to-prevent-reintroducing-invisible-controls",
-      "title": "Fix any CSS/class issues that could cause the joystick or shoot button to be present in the DOM but invisible (e.g., opacity/visibility, zero size, incorrect positioning off-screen, incorrect stacking context, or pointer-events preventing interaction) and add a minimal regression check to prevent reintroducing invisible controls.",
+      "id": "feature-update-the-touch-controls-visibility-logic-so-the-on-screen-joystick-and-shoot-button-are-always-rendered-and-visible-regardless-of-orientation-portrait-landscape-device-type-mobile-desktop-touch-capability-pause-state-game-over-state-or-any-user-toggle-url-gating-currently-used-to-hide-them",
+      "title": "Update the touch-controls visibility logic so the on-screen joystick and shoot button are always rendered and visible regardless of orientation (portrait/landscape), device type (mobile/desktop), touch capability, pause state, game-over state, or any user toggle/URL gating currently used to hide them.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-ensure-the-rotate-to-landscape-ux-rotatedeviceoverlay-does-not-prevent-the-always-visible-joystick-and-shoot-button-from-being-seen-and-interacted-with-in-portrait-mode-e-g-by-removing-the-overlay-for-this-project-or-making-it-non-blocking-and-non-obscuring",
+      "title": "Ensure the rotate-to-landscape UX (RotateDeviceOverlay) does not prevent the always-visible joystick and shoot button from being seen and interacted with in portrait mode (e.g., by removing the overlay for this project or making it non-blocking and non-obscuring).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-make-the-on-screen-controls-usable-with-both-touch-and-mouse-pointer-input-after-the-visibility-change-including-preventing-stuck-input-states-when-the-page-loses-focus-orientation-changes-resizes-or-visibility-changes",
+      "title": "Make the on-screen controls usable with both touch and mouse/pointer input after the visibility change, including preventing stuck input states when the page loses focus, orientation changes, resizes, or visibility changes.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
     }
   ],
-  "new_feature_requests": [],
-  "projectName": "Fix invisible on-screen joystick and shoot button in production",
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Rebuild the entire game project from scratch (workspace is empty)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Make joystick and shoot button always visible (remove device/orientation/paused-state gating)",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "projectName": "Rebuild Space Shooter game and make joystick + shoot button always visible",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

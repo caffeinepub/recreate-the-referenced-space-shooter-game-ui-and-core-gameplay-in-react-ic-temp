@@ -4,117 +4,74 @@
 
 @layer base {
   :root {
-    /* OKLCH Color System with RGB/HEX Fallbacks */
-    
-    /* Primary - Neon Cyan */
-    --primary: #00d9ff; /* Fallback */
-    --primary: oklch(0.82 0.18 195);
-    --primary-foreground: #000814; /* Fallback */
-    --primary-foreground: oklch(0.15 0.02 240);
-
-    /* Secondary - Neon Purple */
-    --secondary: #a855f7; /* Fallback */
-    --secondary: oklch(0.65 0.24 295);
-    --secondary-foreground: #fafafa; /* Fallback */
-    --secondary-foreground: oklch(0.98 0.01 295);
-
-    /* Accent - Neon Magenta */
-    --accent: #ff006e; /* Fallback */
-    --accent: oklch(0.62 0.28 345);
-    --accent-foreground: #fafafa; /* Fallback */
-    --accent-foreground: oklch(0.98 0.01 345);
-
-    /* Muted */
-    --muted: #1e293b; /* Fallback */
-    --muted: oklch(0.25 0.02 240);
-    --muted-foreground: #94a3b8; /* Fallback */
-    --muted-foreground: oklch(0.68 0.02 240);
-
-    /* Background & Foreground */
-    --background: #000814; /* Fallback */
-    --background: oklch(0.10 0.02 240);
-    --foreground: #f8fafc; /* Fallback */
-    --foreground: oklch(0.98 0.01 240);
-
-    /* Card */
-    --card: #0f172a; /* Fallback */
-    --card: oklch(0.18 0.02 240);
-    --card-foreground: #f8fafc; /* Fallback */
-    --card-foreground: oklch(0.98 0.01 240);
-
-    /* Popover */
-    --popover: #0f172a; /* Fallback */
-    --popover: oklch(0.18 0.02 240);
-    --popover-foreground: #f8fafc; /* Fallback */
-    --popover-foreground: oklch(0.98 0.01 240);
-
-    /* Border & Input */
-    --border: #1e293b; /* Fallback */
-    --border: oklch(0.25 0.02 240);
-    --input: #1e293b; /* Fallback */
-    --input: oklch(0.25 0.02 240);
-
-    /* Ring */
-    --ring: #00d9ff; /* Fallback */
-    --ring: oklch(0.82 0.18 195);
-
-    /* Radius */
+    /* OKLCH Color System - Light Mode */
+    --background: 0.98 0.01 264;
+    --foreground: 0.15 0.02 264;
+    --card: 0.95 0.01 264;
+    --card-foreground: 0.15 0.02 264;
+    --popover: 0.98 0.01 264;
+    --popover-foreground: 0.15 0.02 264;
+    --primary: 0.50 0.20 264;
+    --primary-foreground: 0.98 0.01 264;
+    --secondary: 0.90 0.02 264;
+    --secondary-foreground: 0.15 0.02 264;
+    --muted: 0.92 0.02 264;
+    --muted-foreground: 0.45 0.02 264;
+    --accent: 0.92 0.02 264;
+    --accent-foreground: 0.15 0.02 264;
+    --destructive: 0.55 0.25 25;
+    --destructive-foreground: 0.98 0.01 264;
+    --border: 0.88 0.02 264;
+    --input: 0.88 0.02 264;
+    --ring: 0.50 0.20 264;
     --radius: 0.5rem;
 
-    /* Chart Colors */
-    --chart-1: #00d9ff; /* Fallback */
-    --chart-1: oklch(0.82 0.18 195);
-    --chart-2: #a855f7; /* Fallback */
-    --chart-2: oklch(0.65 0.24 295);
-    --chart-3: #ff006e; /* Fallback */
-    --chart-3: oklch(0.62 0.28 345);
-    --chart-4: #fbbf24; /* Fallback */
-    --chart-4: oklch(0.82 0.15 85);
-    --chart-5: #10b981; /* Fallback */
-    --chart-5: oklch(0.72 0.15 160);
+    /* Neon Colors */
+    --neon-cyan: 0.75 0.20 195;
+    --neon-purple: 0.70 0.25 300;
+    --neon-magenta: 0.70 0.25 330;
+    --neon-yellow: 0.85 0.20 90;
+    --neon-orange: 0.75 0.22 45;
 
-    /* Destructive */
-    --destructive: #ef4444; /* Fallback */
-    --destructive: oklch(0.62 0.24 25);
-    --destructive-foreground: #fafafa; /* Fallback */
-    --destructive-foreground: oklch(0.98 0.01 25);
-
-    /* Success */
-    --success: #10b981; /* Fallback */
-    --success: oklch(0.72 0.15 160);
-    --success-foreground: #000814; /* Fallback */
-    --success-foreground: oklch(0.15 0.02 160);
-
-    /* Warning */
-    --warning: #fbbf24; /* Fallback */
-    --warning: oklch(0.82 0.15 85);
-    --warning-foreground: #000814; /* Fallback */
-    --warning-foreground: oklch(0.15 0.02 85);
-
-    /* Neon Colors for Game Elements */
-    --neon-cyan: #00d9ff; /* Fallback */
-    --neon-cyan: oklch(0.82 0.18 195);
-    --neon-purple: #a855f7; /* Fallback */
-    --neon-purple: oklch(0.65 0.24 295);
-    --neon-magenta: #ff006e; /* Fallback */
-    --neon-magenta: oklch(0.62 0.28 345);
-    --neon-yellow: #fbbf24; /* Fallback */
-    --neon-yellow: oklch(0.82 0.15 85);
-    --neon-orange: #fb923c; /* Fallback */
-    --neon-orange: oklch(0.75 0.15 55);
-
-    /* Touch Control Sizing */
-    --control-size: 140px;
-    --joystick-knob-size: 60px;
-    --shoot-icon-size: 2.5rem;
+    /* Space Theme */
+    --space-dark: 0.10 0.02 264;
+    --space-darker: 0.05 0.02 264;
+    --space-card: 0.15 0.03 264;
   }
 
   .dark {
-    /* Dark mode uses same values for this neon theme */
-    --background: #000814;
-    --background: oklch(0.10 0.02 240);
-    --foreground: #f8fafc;
-    --foreground: oklch(0.98 0.01 240);
+    /* OKLCH Color System - Dark Mode */
+    --background: 0.10 0.02 264;
+    --foreground: 0.95 0.01 264;
+    --card: 0.15 0.03 264;
+    --card-foreground: 0.95 0.01 264;
+    --popover: 0.12 0.02 264;
+    --popover-foreground: 0.95 0.01 264;
+    --primary: 0.75 0.20 195;
+    --primary-foreground: 0.10 0.02 264;
+    --secondary: 0.20 0.03 264;
+    --secondary-foreground: 0.95 0.01 264;
+    --muted: 0.20 0.03 264;
+    --muted-foreground: 0.60 0.02 264;
+    --accent: 0.25 0.04 264;
+    --accent-foreground: 0.95 0.01 264;
+    --destructive: 0.60 0.25 25;
+    --destructive-foreground: 0.95 0.01 264;
+    --border: 0.25 0.04 264;
+    --input: 0.25 0.04 264;
+    --ring: 0.75 0.20 195;
+
+    /* Neon Colors (same in dark) */
+    --neon-cyan: 0.75 0.20 195;
+    --neon-purple: 0.70 0.25 300;
+    --neon-magenta: 0.70 0.25 330;
+    --neon-yellow: 0.85 0.20 90;
+    --neon-orange: 0.75 0.22 45;
+
+    /* Space Theme */
+    --space-dark: 0.10 0.02 264;
+    --space-darker: 0.05 0.02 264;
+    --space-card: 0.15 0.03 264;
   }
 }
 
@@ -128,67 +85,51 @@
   }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  /* Neon glow utilities */
-  .glow-cyan {
-    text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
-  }
-  .glow-purple {
-    text-shadow: 0 0 10px var(--neon-purple), 0 0 20px var(--neon-purple);
-  }
-  .glow-magenta {
-    text-shadow: 0 0 10px var(--neon-magenta), 0 0 20px var(--neon-magenta);
-  }
+/* Dynamic Viewport Height */
+:root {
+  --app-dvh: 100vh;
 }
 
-/* Game-specific styles */
+/* Gameplay Root */
 .gameplay-root {
   position: fixed;
   inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: var(--app-dvh);
   overflow: hidden;
-  background: var(--background);
-  /* Create isolated stacking context for predictable layering */
-  isolation: isolate;
+  background: oklch(var(--space-darker));
 }
 
 /* HUD Styles */
 .hud-top {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-  padding: 1rem;
-  z-index: 10;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  padding-top: max(env(safe-area-inset-top), 0.75rem);
+  padding-left: max(env(safe-area-inset-left), 0.75rem);
+  padding-right: max(env(safe-area-inset-right), 0.75rem);
   pointer-events: none;
 }
 
 .hud-stat {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
   pointer-events: auto;
-  background: linear-gradient(135deg, 
-    oklch(0.15 0.02 240 / 0.85) 0%, 
-    oklch(0.18 0.02 240 / 0.75) 100%);
-  border: 1px solid oklch(0.82 0.18 195 / 0.3);
-  box-shadow: 0 0 20px oklch(0.82 0.18 195 / 0.2),
-              inset 0 1px 0 oklch(1 0 0 / 0.1);
 }
 
 .hud-stat-icon {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   line-height: 1;
-  color: var(--neon-cyan);
-  filter: drop-shadow(0 0 8px var(--neon-cyan));
 }
 
 .hud-stat-content {
@@ -200,69 +141,51 @@
 .hud-stat-label {
   font-size: 0.625rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: oklch(0.68 0.02 240);
+  letter-spacing: 0.05em;
+  color: oklch(var(--muted-foreground));
 }
 
 .hud-stat-value {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 800;
   line-height: 1;
-  color: var(--neon-cyan);
-  text-shadow: 0 0 10px var(--neon-cyan);
-}
-
-.hud-stat-timer .hud-stat-icon {
-  color: var(--neon-yellow);
-  filter: drop-shadow(0 0 8px var(--neon-yellow));
+  color: oklch(var(--neon-cyan));
+  text-shadow: 0 0 10px oklch(0.75 0.20 195 / 0.6);
 }
 
 .hud-stat-timer .hud-stat-value {
-  color: var(--neon-yellow);
-  text-shadow: 0 0 10px var(--neon-yellow);
-}
-
-.hud-stat-phase .hud-stat-icon {
-  color: var(--neon-magenta);
-  filter: drop-shadow(0 0 8px var(--neon-magenta));
+  color: oklch(var(--neon-yellow));
+  text-shadow: 0 0 10px oklch(0.85 0.20 90 / 0.6);
 }
 
 .hud-stat-phase .hud-stat-value {
-  color: var(--neon-magenta);
-  text-shadow: 0 0 10px var(--neon-magenta);
-}
-
-.hud-stat-level .hud-stat-icon {
-  color: var(--neon-purple);
-  filter: drop-shadow(0 0 8px var(--neon-purple));
+  color: oklch(var(--neon-magenta));
+  text-shadow: 0 0 10px oklch(0.70 0.25 330 / 0.6);
 }
 
 .hud-stat-level .hud-stat-value {
-  color: var(--neon-purple);
-  text-shadow: 0 0 10px var(--neon-purple);
+  color: oklch(var(--neon-purple));
+  text-shadow: 0 0 10px oklch(0.70 0.25 300 / 0.6);
 }
 
 .hud-pause-button {
   pointer-events: auto;
-  background: linear-gradient(135deg, 
-    oklch(0.15 0.02 240 / 0.85) 0%, 
-    oklch(0.18 0.02 240 / 0.75) 100%);
-  border: 1px solid oklch(0.82 0.18 195 / 0.3);
-  color: var(--neon-cyan);
-  box-shadow: 0 0 20px oklch(0.82 0.18 195 / 0.2);
+  background: oklch(var(--space-card) / 0.8);
+  border: 1px solid oklch(var(--neon-cyan) / 0.3);
+  color: oklch(var(--neon-cyan));
+  backdrop-filter: blur(12px);
   transition: all 0.2s;
 }
 
 .hud-pause-button:hover {
-  background: linear-gradient(135deg, 
-    oklch(0.18 0.02 240 / 0.95) 0%, 
-    oklch(0.22 0.02 240 / 0.85) 100%);
-  box-shadow: 0 0 30px oklch(0.82 0.18 195 / 0.4);
+  background: oklch(var(--space-card));
+  border-color: oklch(var(--neon-cyan) / 0.6);
+  box-shadow: 0 0 20px oklch(0.75 0.20 195 / 0.4);
 }
 
 .hud-level-complete {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -271,316 +194,225 @@
 }
 
 .hud-level-complete-card {
-  padding: 2rem 3rem;
+  padding: 2rem;
   text-align: center;
-  background: linear-gradient(135deg, 
-    oklch(0.15 0.02 240 / 0.95) 0%, 
-    oklch(0.18 0.02 240 / 0.90) 100%);
-  border: 2px solid var(--neon-cyan);
-  box-shadow: 0 0 40px oklch(0.82 0.18 195 / 0.4),
-              inset 0 1px 0 oklch(1 0 0 / 0.1);
-  animation: pulse-glow 2s ease-in-out infinite;
+  animation: fadeInScale 0.3s ease-out;
 }
 
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 40px oklch(0.82 0.18 195 / 0.4),
-                inset 0 1px 0 oklch(1 0 0 / 0.1);
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
   }
-  50% {
-    box-shadow: 0 0 60px oklch(0.82 0.18 195 / 0.6),
-                inset 0 1px 0 oklch(1 0 0 / 0.1);
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
+/* Glass Card Effect */
 .glass-card {
-  background: linear-gradient(135deg, 
-    oklch(0.15 0.02 240 / 0.85) 0%, 
-    oklch(0.18 0.02 240 / 0.75) 100%);
-  border: 1px solid oklch(0.82 0.18 195 / 0.2);
+  background: oklch(var(--space-card) / 0.7);
+  border: 1px solid oklch(var(--border) / 0.3);
   border-radius: var(--radius);
-  box-shadow: 0 0 20px oklch(0.82 0.18 195 / 0.1),
-              inset 0 1px 0 oklch(1 0 0 / 0.05);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px oklch(0 0 0 / 0.3);
 }
 
-/* Touch Controls Overlay - FIXED: Raised z-index above HUD and canvas */
+/* Touch Controls - Always Visible */
 .touch-controls-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  pointer-events: none;
-  /* Raised from z-index: 5 to z-index: 15 to render above HUD (z-index: 10) */
   z-index: 15;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 1rem;
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
   padding-left: max(env(safe-area-inset-left), 1rem);
   padding-right: max(env(safe-area-inset-right), 1rem);
-  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
-  padding-top: max(env(safe-area-inset-top), 1rem);
-  /* Ensure visibility and prevent clipping */
-  overflow: visible;
   opacity: 1;
   visibility: visible;
+  transition: opacity 0.3s ease;
+}
+
+.touch-controls-disabled {
+  opacity: 0.3;
 }
 
 .touch-control-left,
 .touch-control-right {
-  position: absolute;
-  bottom: 2rem;
   pointer-events: auto;
-  /* Ensure controls are visible and not clipped */
-  opacity: 1;
-  visibility: visible;
-  /* Minimum size to ensure they're always rendered */
-  min-width: var(--control-size);
-  min-height: var(--control-size);
-}
-
-.touch-control-left {
-  left: 2rem;
-}
-
-.touch-control-right {
-  right: 2rem;
-}
-
-/* Touch Controls Hints */
-.touch-controls-hints {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 16;
-  animation: fade-in-out 4s ease-in-out forwards;
-}
-
-@keyframes fade-in-out {
-  0% {
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-.touch-hint {
-  position: absolute;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1.25rem;
-  background: linear-gradient(135deg, 
-    oklch(0.15 0.02 240 / 0.95) 0%, 
-    oklch(0.18 0.02 240 / 0.90) 100%);
-  border: 2px solid var(--neon-cyan);
-  border-radius: 9999px;
-  box-shadow: 0 0 30px oklch(0.82 0.18 195 / 0.5),
-              inset 0 1px 0 oklch(1 0 0 / 0.1);
-  animation: pulse-hint 2s ease-in-out infinite;
-}
-
-@keyframes pulse-hint {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 30px oklch(0.82 0.18 195 / 0.5),
-                inset 0 1px 0 oklch(1 0 0 / 0.1);
-  }
-  50% {
-    transform: scale(1.05);
-    box-shadow: 0 0 40px oklch(0.82 0.18 195 / 0.7),
-                inset 0 1px 0 oklch(1 0 0 / 0.1);
-  }
-}
-
-.touch-hint-left {
-  bottom: 2rem;
-  left: 2rem;
-  transform: translateX(-120%);
-}
-
-.touch-hint-right {
-  bottom: 2rem;
-  right: 2rem;
-  transform: translateX(120%);
-}
-
-.touch-hint-center {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 1rem 2rem;
-}
-
-.touch-hint-label,
-.touch-hint-label-center {
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--neon-cyan);
-  text-shadow: 0 0 10px var(--neon-cyan);
-  white-space: nowrap;
-}
-
-.touch-hint-label-center {
-  font-size: 1rem;
-}
-
-.touch-hint-arrow {
-  font-size: 1.5rem;
-  color: var(--neon-cyan);
-  filter: drop-shadow(0 0 8px var(--neon-cyan));
-  animation: arrow-bounce 1s ease-in-out infinite;
-}
-
-@keyframes arrow-bounce {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(4px);
-  }
-}
-
-.touch-hint-left .touch-hint-arrow {
-  animation: arrow-bounce-left 1s ease-in-out infinite;
-}
-
-@keyframes arrow-bounce-left {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(-4px);
-  }
+  justify-content: center;
 }
 
 /* Joystick Styles */
 .joystick-container {
-  position: relative;
-  width: var(--control-size);
-  height: var(--control-size);
-  touch-action: none;
-  user-select: none;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .joystick-base {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, 
-    oklch(0.15 0.02 240 / 0.85) 0%, 
-    oklch(0.18 0.02 240 / 0.75) 100%);
-  border: 3px solid var(--neon-cyan);
-  box-shadow: 0 0 30px oklch(0.82 0.18 195 / 0.4),
-              inset 0 2px 8px oklch(0 0 0 / 0.3),
-              inset 0 -2px 8px oklch(1 0 0 / 0.05);
+  background: radial-gradient(circle at center, oklch(var(--space-card) / 0.8), oklch(var(--space-card) / 0.4));
+  border: 2px solid oklch(var(--neon-cyan) / 0.4);
+  box-shadow: 
+    0 0 20px oklch(0.75 0.20 195 / 0.3),
+    inset 0 0 20px oklch(0 0 0 / 0.5);
+  backdrop-filter: blur(8px);
+  touch-action: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.joystick-base:active {
+  border-color: oklch(var(--neon-cyan) / 0.7);
+  box-shadow: 
+    0 0 30px oklch(0.75 0.20 195 / 0.5),
+    inset 0 0 20px oklch(0 0 0 / 0.5);
+}
+
+.joystick-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .joystick-knob {
   position: absolute;
-  left: 50%;
   top: 50%;
-  width: var(--joystick-knob-size);
-  height: var(--joystick-knob-size);
-  margin-left: calc(var(--joystick-knob-size) / -2);
-  margin-top: calc(var(--joystick-knob-size) / -2);
+  left: 50%;
+  width: 50px;
+  height: 50px;
+  margin: -25px 0 0 -25px;
   border-radius: 50%;
-  background: linear-gradient(135deg, 
-    var(--neon-cyan) 0%, 
-    oklch(0.72 0.16 195) 100%);
-  border: 2px solid oklch(1 0 0 / 0.3);
-  box-shadow: 0 0 20px var(--neon-cyan),
-              0 4px 12px oklch(0 0 0 / 0.4),
-              inset 0 2px 4px oklch(1 0 0 / 0.3),
-              inset 0 -2px 4px oklch(0 0 0 / 0.2);
-  transition: transform 0.1s ease-out;
-  cursor: grab;
-}
-
-.joystick-knob:active {
-  cursor: grabbing;
-  box-shadow: 0 0 30px var(--neon-cyan),
-              0 2px 8px oklch(0 0 0 / 0.5),
-              inset 0 2px 4px oklch(1 0 0 / 0.3),
-              inset 0 -2px 4px oklch(0 0 0 / 0.2);
+  background: radial-gradient(circle at 30% 30%, oklch(var(--neon-cyan)), oklch(var(--neon-purple)));
+  border: 2px solid oklch(var(--neon-cyan) / 0.8);
+  box-shadow: 
+    0 0 20px oklch(0.75 0.20 195 / 0.8),
+    inset 0 0 10px oklch(1 0 0 / 0.3);
+  transition: transform 0.05s ease-out;
+  pointer-events: none;
 }
 
 /* Shoot Button Styles */
 .shoot-button {
-  width: var(--control-size);
-  height: var(--control-size);
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  background: linear-gradient(135deg, 
-    var(--neon-magenta) 0%, 
-    oklch(0.52 0.26 345) 100%);
-  border: 3px solid oklch(1 0 0 / 0.3);
-  box-shadow: 0 0 40px var(--neon-magenta),
-              0 4px 16px oklch(0 0 0 / 0.4),
-              inset 0 2px 8px oklch(1 0 0 / 0.3),
-              inset 0 -2px 8px oklch(0 0 0 / 0.2);
+  background: radial-gradient(circle at center, oklch(var(--neon-magenta) / 0.3), oklch(var(--space-card) / 0.6));
+  border: 3px solid oklch(var(--neon-magenta) / 0.5);
+  box-shadow: 
+    0 0 25px oklch(0.70 0.25 330 / 0.4),
+    inset 0 0 20px oklch(0 0 0 / 0.5);
+  backdrop-filter: blur(8px);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
   touch-action: none;
-  user-select: none;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.15s;
+  outline: none;
 }
 
-.shoot-button:active {
+.shoot-button:active,
+.shoot-button-pressed {
+  background: radial-gradient(circle at center, oklch(var(--neon-magenta) / 0.6), oklch(var(--space-card) / 0.8));
+  border-color: oklch(var(--neon-magenta) / 0.9);
+  box-shadow: 
+    0 0 40px oklch(0.70 0.25 330 / 0.7),
+    inset 0 0 30px oklch(0.70 0.25 330 / 0.3);
   transform: scale(0.95);
-  box-shadow: 0 0 50px var(--neon-magenta),
-              0 2px 12px oklch(0 0 0 / 0.5),
-              inset 0 2px 8px oklch(1 0 0 / 0.3),
-              inset 0 -2px 8px oklch(0 0 0 / 0.2);
 }
 
-.shoot-icon-glow {
-  filter: drop-shadow(0 0 8px oklch(0.75 0.25 330 / 0.8));
+.shoot-button-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-/* Debug Overlay */
-.touch-debug-overlay {
-  position: absolute;
-  top: 6rem;
-  right: 1rem;
-  max-width: 320px;
-  padding: 1rem;
-  background: linear-gradient(135deg, 
-    oklch(0.15 0.02 240 / 0.95) 0%, 
-    oklch(0.18 0.02 240 / 0.90) 100%);
-  border: 1px solid oklch(0.82 0.18 195 / 0.3);
-  border-radius: var(--radius);
-  box-shadow: 0 0 20px oklch(0.82 0.18 195 / 0.2);
-  z-index: 100;
-  pointer-events: none;
+.shoot-button-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  color: oklch(var(--neon-magenta));
+  text-shadow: 0 0 15px oklch(0.70 0.25 330 / 0.9);
+  filter: drop-shadow(0 0 10px oklch(0.70 0.25 330));
 }
 
-/* Responsive adjustments */
-@media (max-width: 640px) {
+/* Menu Styles */
+.menu-card {
+  transition: all 0.3s ease;
+}
+
+.menu-button {
+  transition: all 0.2s ease;
+}
+
+/* Responsive Menu Sizing */
+:root {
+  --logo-size: 120px;
+  --title-size: 3rem;
+  --menu-max-width: 28rem;
+  --menu-button-height: 3.5rem;
+  --menu-button-text: 1.125rem;
+  --menu-card-padding: 1rem;
+}
+
+@media (min-width: 640px) {
   :root {
-    --control-size: 120px;
-    --joystick-knob-size: 50px;
-    --shoot-icon-size: 2rem;
+    --logo-size: 160px;
+    --title-size: 4rem;
+    --menu-max-width: 32rem;
+    --menu-button-height: 4rem;
+    --menu-button-text: 1.25rem;
+    --menu-card-padding: 1.25rem;
   }
+}
 
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Drop Shadows */
+.drop-shadow-neon-cyan {
+  filter: drop-shadow(0 0 20px oklch(0.75 0.20 195 / 0.8));
+}
+
+.drop-shadow-neon-purple {
+  filter: drop-shadow(0 0 20px oklch(0.70 0.25 300 / 0.8));
+}
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
   .hud-top {
-    gap: 0.5rem;
-    padding: 0.75rem;
+    gap: 0.25rem;
+    padding: 0.5rem;
   }
 
   .hud-stat {
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
+    padding: 0.375rem 0.5rem;
+    gap: 0.375rem;
   }
 
   .hud-stat-icon {
-    font-size: 1.25rem;
+    font-size: 1rem;
   }
 
   .hud-stat-label {
@@ -588,83 +420,63 @@
   }
 
   .hud-stat-value {
-    font-size: 1rem;
+    font-size: 0.875rem;
   }
 
-  .touch-control-left,
-  .touch-control-right {
-    bottom: 1.5rem;
+  .joystick-container {
+    width: 120px;
+    height: 120px;
   }
 
-  .touch-control-left {
-    left: 1.5rem;
+  .joystick-base {
+    width: 100px;
+    height: 100px;
   }
 
-  .touch-control-right {
-    right: 1.5rem;
+  .joystick-knob {
+    width: 40px;
+    height: 40px;
+    margin: -20px 0 0 -20px;
   }
 
-  .touch-hint-left,
-  .touch-hint-right {
-    bottom: 1.5rem;
+  .shoot-button {
+    width: 85px;
+    height: 85px;
   }
 
-  .touch-hint-left {
-    left: 1.5rem;
-  }
-
-  .touch-hint-right {
-    right: 1.5rem;
-  }
-
-  .touch-hint-label {
-    font-size: 0.75rem;
-  }
-
-  .touch-hint-arrow {
-    font-size: 1.25rem;
+  .shoot-button-icon {
+    font-size: 2rem;
   }
 }
 
-/* Landscape-specific adjustments */
-@media (orientation: landscape) and (max-height: 500px) {
-  :root {
-    --control-size: 100px;
-    --joystick-knob-size: 42px;
-    --shoot-icon-size: 1.75rem;
+/* Portrait Mode Adjustments */
+@media (orientation: portrait) {
+  .touch-controls-overlay {
+    padding: 0.75rem;
   }
 
-  .hud-top {
-    padding: 0.5rem;
-    gap: 0.5rem;
+  .joystick-container {
+    width: 100px;
+    height: 100px;
   }
 
-  .hud-stat {
-    padding: 0.375rem 0.625rem;
+  .joystick-base {
+    width: 85px;
+    height: 85px;
   }
 
-  .touch-control-left,
-  .touch-control-right {
-    bottom: 1rem;
+  .joystick-knob {
+    width: 35px;
+    height: 35px;
+    margin: -17.5px 0 0 -17.5px;
   }
 
-  .touch-control-left {
-    left: 1rem;
+  .shoot-button {
+    width: 75px;
+    height: 75px;
   }
 
-  .touch-control-right {
-    right: 1rem;
-  }
-
-  .touch-hint {
-    padding: 0.5rem 1rem;
-  }
-
-  .touch-hint-label {
-    font-size: 0.625rem;
-  }
-
-  .touch-hint-arrow {
-    font-size: 1rem;
+  .shoot-button-icon {
+    font-size: 1.75rem;
   }
 }

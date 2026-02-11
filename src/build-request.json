@@ -1,53 +1,93 @@
 {
   "kind": "build_request",
-  "title": "Fix invisible on-screen joystick and shoot button in production",
-  "priority": "high",
+  "title": "Rebuild Space Shooter game and make joystick + shoot button always visible",
+  "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Ensure the on-screen touch controls overlay (joystick bottom-left and SHOOT button bottom-right) is visually rendered on top of the gameplay canvas when `showTouchControls` is true, including correct positioning, sizing, safe-area padding, and z-index so the controls are not hidden behind the canvas/HUD.",
-      "target": "frontend",
+      "text": "Rebuild the entire Space Shooter game project so it is complete, compiles, and runs end-to-end (frontend + Motoko backend) in the workspace, restoring core gameplay, menu-to-game flow, and persistence hooks (stats + in-progress run) as described by the existing codebase structure.",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-1"
         ],
         "quotes": [
-          "not visible joystick and shoot button"
+          "rebuild the entire game from scratch"
         ]
       },
       "acceptanceCriteria": [
-        "On a touch-capable mobile device in landscape during active gameplay (not paused, not game over), the joystick and SHOOT button are visible without requiring any debug/force URL parameters.",
-        "Controls render above the game canvas and remain visible when interacting with the game (no accidental occlusion by other layers).",
-        "Controls respect safe-area insets (e.g., iPhone notch/home indicator) and remain tappable near screen edges."
+        "The project builds successfully without missing-file or import errors.",
+        "The app launches to the menu screen and can start a new run into the gameplay screen.",
+        "Gameplay renders on the canvas and basic controls (movement + shooting) work.",
+        "Stats and/or in-progress run persistence code paths do not throw runtime errors when starting, pausing, or exiting a run."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Fix any CSS/class issues that could cause the joystick or shoot button to be present in the DOM but invisible (e.g., opacity/visibility, zero size, incorrect positioning off-screen, incorrect stacking context, or pointer-events preventing interaction) and add a minimal regression check to prevent reintroducing invisible controls.",
+      "text": "Update the touch-controls visibility logic so the on-screen joystick and shoot button are always rendered and visible regardless of orientation (portrait/landscape), device type (mobile/desktop), touch capability, pause state, game-over state, or any user toggle/URL gating currently used to hide them.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-1"
         ],
         "quotes": [
-          "not visible joystick and shoot button"
+          "always show controls"
         ]
       },
       "acceptanceCriteria": [
-        "When `showTouchControls` is true, the joystick base and shoot button each have non-zero rendered size and are within the viewport bounds.",
-        "The joystick and shoot button are visibly distinguishable against the background (not fully transparent or clipped).",
-        "A simple manual test path exists to validate visibility (e.g., using `?debugControls=1` to confirm `showTouchControls: YES` and seeing the controls on-screen)."
+        "The joystick and shoot button are visible on desktop browsers and on mobile devices.",
+        "The joystick and shoot button remain visible in portrait orientation.",
+        "The joystick and shoot button remain visible while paused and after game over.",
+        "No URL parameter (e.g., forceTouchControls) is required for visibility.",
+        "No in-app toggle can cause the joystick and shoot button to become hidden (they may be disabled functionally, but remain visible)."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Ensure the rotate-to-landscape UX (RotateDeviceOverlay) does not prevent the always-visible joystick and shoot button from being seen and interacted with in portrait mode (e.g., by removing the overlay for this project or making it non-blocking and non-obscuring).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "always show controls"
+        ]
+      },
+      "acceptanceCriteria": [
+        "In portrait mode on mobile, the joystick and shoot button are still visible on screen.",
+        "In portrait mode, the joystick and shoot button still receive pointer input (dragging joystick and pressing shoot work)."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Make the on-screen controls usable with both touch and mouse/pointer input after the visibility change, including preventing stuck input states when the page loses focus, orientation changes, resizes, or visibility changes.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "joystick and shoot button invisible here"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Dragging the joystick with a mouse updates movement and releasing resets to (0,0).",
+        "Pressing and holding the shoot button with a mouse triggers shooting and releasing stops shooting.",
+        "After switching tabs/window blur and returning, controls are not stuck in an active state (no continuous movement/shooting unless actively pressed)."
       ]
     }
   ],
   "constraints": [
-    "Do not modify files under frontend/src/components/ui (read-only).",
-    "Do not modify immutable hook entrypoints (frontend/src/hooks/useInternetIdentity.ts / .tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx).",
-    "Backend remains single-actor; no backend changes are required for this visibility fix."
+    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
+    "Do not modify files under frontend/src/components/ui (read-only UI components must be composed, not edited).",
+    "Do not edit immutable hook files: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx."
   ],
   "nonGoals": [
-    "Changing joystick/shoot gameplay behavior (movement mapping, firing logic, multitouch handling) unless required to resolve visibility.",
-    "Adding new authentication methods or external services."
+    "Adding multiplayer, real-time networking, or chat.",
+    "Integrating third-party authentication providers beyond Internet Identity.",
+    "Adding external databases or non-IC backend services.",
+    "Adding payments, leaderboards across users, or social features unless explicitly requested."
   ],
   "imageRequirements": {
     "required": [],

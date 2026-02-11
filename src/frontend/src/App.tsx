@@ -36,7 +36,6 @@ function App() {
   }, [savedStats]);
 
   const handleStartGame = () => {
-    // Clear any existing saved run when starting fresh
     clearRun();
     setResumeData(null);
     setGameState('playing');
@@ -62,7 +61,6 @@ function App() {
   };
 
   const handleGameOver = (finalScore: number, finalLevel: number) => {
-    // Clear saved run on game over
     clearRun();
     
     if (finalScore > highScore) {

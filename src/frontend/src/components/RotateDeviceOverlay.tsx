@@ -9,26 +9,19 @@ export default function RotateDeviceOverlay({ show }: RotateDeviceOverlayProps) 
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-space-dark/98 backdrop-blur-lg"
+      className="fixed top-0 left-0 right-0 z-[90] flex items-center justify-center bg-gradient-to-b from-space-dark/95 to-transparent backdrop-blur-sm pointer-events-none"
       style={{
-        paddingTop: 'env(safe-area-inset-top)',
-        paddingBottom: 'env(safe-area-inset-bottom)',
+        paddingTop: 'max(env(safe-area-inset-top), 1rem)',
+        paddingBottom: '1rem',
         paddingLeft: 'env(safe-area-inset-left)',
         paddingRight: 'env(safe-area-inset-right)'
       }}
     >
-      <div className="flex flex-col items-center gap-8 px-6 text-center">
-        <div className="animate-bounce">
-          <Smartphone className="h-20 w-20 rotate-90 text-neon-cyan drop-shadow-neon-cyan" />
-        </div>
-        <div className="space-y-3">
-          <h2 className="text-3xl font-black uppercase tracking-wider text-neon-purple drop-shadow-neon-purple">
-            Rotate Your Device
-          </h2>
-          <p className="text-base font-medium text-muted-foreground">
-            Please rotate your device to landscape mode to play
-          </p>
-        </div>
+      <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-space-dark/90 border border-neon-cyan/30 shadow-[0_0_20px_oklch(0.75_0.20_195/0.3)]">
+        <Smartphone className="h-5 w-5 rotate-90 text-neon-cyan animate-pulse" />
+        <p className="text-sm font-semibold text-neon-cyan">
+          Rotate to landscape for best experience
+        </p>
       </div>
     </div>
   );

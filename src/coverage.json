@@ -1,54 +1,101 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-08T07:01:00.561Z",
+  "generatedAt": "2026-02-11T05:33:11.036Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 4,
+    "implemented": 4,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Ensure the on-screen touch controls overlay (joystick bottom-left and SHOOT button bottom-right) is visually rendered on top of the gameplay canvas when `showTouchControls` is true, including correct positioning, sizing, safe-area padding, and z-index so the controls are not hidden behind the canvas/HUD.",
+        "summary": "Rebuild the entire Space Shooter game project so it is complete, compiles, and runs end-to-end (frontend + Motoko backend) in the workspace, restoring core gameplay, menu-to-game flow, and persistence hooks (stats + in-progress run) as described by the existing codebase structure.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/screens/GameScreen.tsx"
+          "frontend/src/App.tsx",
+          "frontend/src/screens/MenuScreen.tsx",
+          "frontend/src/screens/GameScreen.tsx",
+          "frontend/src/game/persistence/useSavedStats.ts",
+          "frontend/src/game/persistence/useInProgressRun.ts",
+          "frontend/public/assets/generated/space-bg.dim_1920x1080.png",
+          "frontend/public/assets/generated/logo-mark.dim_512x512.png",
+          "frontend/public/assets/generated/icon-trophy.dim_128x128.png"
         ],
         "matchedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/screens/GameScreen.tsx"
+          "frontend/src/App.tsx",
+          "frontend/src/screens/GameScreen.tsx",
+          "frontend/src/game/persistence/useSavedStats.ts",
+          "frontend/src/game/persistence/useInProgressRun.ts"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Fix any CSS/class issues that could cause the joystick or shoot button to be present in the DOM but invisible (e.g., opacity/visibility, zero size, incorrect positioning off-screen, incorrect stacking context, or pointer-events preventing interaction) and add a minimal regression check to prevent reintroducing invisible controls.",
+        "summary": "Update the touch-controls visibility logic so the on-screen joystick and shoot button are always rendered and visible regardless of orientation (portrait/landscape), device type (mobile/desktop), touch capability, pause state, game-over state, or any user toggle/URL gating currently used to hide them.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/game/ui/useTouchControlsDomSanityCheck.ts",
           "frontend/src/screens/GameScreen.tsx",
-          "frontend/src/game/ui/TouchControlsDebugOverlay.tsx"
+          "frontend/src/game/ui/Hud.tsx",
+          "frontend/src/index.css"
         ],
         "matchedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/game/ui/useTouchControlsDomSanityCheck.ts",
           "frontend/src/screens/GameScreen.tsx",
-          "frontend/src/game/ui/TouchControlsDebugOverlay.tsx"
+          "frontend/src/game/ui/Hud.tsx",
+          "frontend/src/index.css"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Ensure the rotate-to-landscape UX (RotateDeviceOverlay) does not prevent the always-visible joystick and shoot button from being seen and interacted with in portrait mode (e.g., by removing the overlay for this project or making it non-blocking and non-obscuring).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/RotateDeviceOverlay.tsx",
+          "frontend/src/screens/GameScreen.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/RotateDeviceOverlay.tsx",
+          "frontend/src/screens/GameScreen.tsx"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Make the on-screen controls usable with both touch and mouse/pointer input after the visibility change, including preventing stuck input states when the page loses focus, orientation changes, resizes, or visibility changes.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/game/controls/Joystick.tsx",
+          "frontend/src/game/controls/ShootButton.tsx",
+          "frontend/src/screens/GameScreen.tsx",
+          "frontend/src/game/ui/Hud.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/game/controls/Joystick.tsx",
+          "frontend/src/game/controls/ShootButton.tsx",
+          "frontend/src/screens/GameScreen.tsx",
+          "frontend/src/game/ui/Hud.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
     "build-request.json",
+    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/game/ui/TouchControlsDebugOverlay.tsx",
-    "frontend/src/game/ui/useTouchControlsDomSanityCheck.ts",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/RotateDeviceOverlay.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/game/controls/Joystick.tsx",
+    "frontend/src/game/controls/ShootButton.tsx",
+    "frontend/src/game/persistence/useInProgressRun.ts",
+    "frontend/src/game/persistence/useSavedStats.ts",
+    "frontend/src/game/ui/Hud.tsx",
     "frontend/src/index.css",
     "frontend/src/screens/GameScreen.tsx",
     "frontend/src/utils/urlParams.ts",

@@ -98,7 +98,7 @@ export default function Hud({
 
       {/* Pause Dialog */}
       <Dialog open={isPaused} onOpenChange={onPause}>
-        <DialogContent className="glass-card max-w-md">
+        <DialogContent className="glass-card max-w-md pointer-events-auto">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-neon-cyan">Game Paused</DialogTitle>
             <DialogDescription className="text-muted-foreground">
@@ -119,7 +119,7 @@ export default function Hud({
               </div>
             </div>
 
-            {/* REQ-3: Touch Controls Toggle */}
+            {/* Touch Controls Toggle */}
             <div className="glass-card p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <Label htmlFor="touch-controls-toggle" className="text-sm font-medium cursor-pointer">
@@ -132,7 +132,7 @@ export default function Hud({
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                Toggle on-screen joystick and shoot button for touch devices
+                Enable or disable on-screen joystick and shoot button
               </p>
             </div>
           </div>

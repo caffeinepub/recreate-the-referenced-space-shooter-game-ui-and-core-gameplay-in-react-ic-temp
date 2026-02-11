@@ -37,11 +37,8 @@ export function useSavedStats() {
       }
 
       try {
-        const success = await actor.saveStats(stats.highScore, stats.lastCompletedLevel);
-        if (!success) {
-          console.warn('[useSavedStats] Backend returned false for saveStats (likely unauthorized)');
-        }
-        return success;
+        await actor.saveStats(stats.highScore, stats.lastCompletedLevel);
+        return true;
       } catch (error) {
         console.error('[useSavedStats] Failed to save stats to backend:', error);
         // Don't throw - just log and return false

@@ -110,7 +110,7 @@ export enum UserRole {
 export interface backendInterface {
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    clearInProgressRun(): Promise<boolean>;
+    clearInProgressRun(): Promise<void>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getInProgressRun(): Promise<InProgressRun | null>;
@@ -119,11 +119,11 @@ export interface backendInterface {
     hasInProgressRun(): Promise<boolean>;
     isCallerAdmin(): Promise<boolean>;
     loadStats(): Promise<GameStats | null>;
-    resetPlayerStats(player: Principal): Promise<boolean>;
-    resetStats(): Promise<boolean>;
-    saveCallerUserProfile(profile: UserProfile): Promise<boolean>;
-    saveInProgressRun(run: InProgressRun): Promise<boolean>;
-    saveStats(highScore: bigint, lastCompletedLevel: bigint): Promise<boolean>;
+    resetPlayerStats(player: Principal): Promise<void>;
+    resetStats(): Promise<void>;
+    saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    saveInProgressRun(run: InProgressRun): Promise<void>;
+    saveStats(highScore: bigint, lastCompletedLevel: bigint): Promise<void>;
 }
 import type { GameStats as _GameStats, InProgressRun as _InProgressRun, UserProfile as _UserProfile, UserRole as _UserRole } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
@@ -156,7 +156,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async clearInProgressRun(): Promise<boolean> {
+    async clearInProgressRun(): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.clearInProgressRun();
@@ -282,7 +282,7 @@ export class Backend implements backendInterface {
             return from_candid_opt_n7(this._uploadFile, this._downloadFile, result);
         }
     }
-    async resetPlayerStats(arg0: Principal): Promise<boolean> {
+    async resetPlayerStats(arg0: Principal): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.resetPlayerStats(arg0);
@@ -296,7 +296,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async resetStats(): Promise<boolean> {
+    async resetStats(): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.resetStats();
@@ -310,7 +310,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async saveCallerUserProfile(arg0: UserProfile): Promise<boolean> {
+    async saveCallerUserProfile(arg0: UserProfile): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.saveCallerUserProfile(arg0);
@@ -324,7 +324,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async saveInProgressRun(arg0: InProgressRun): Promise<boolean> {
+    async saveInProgressRun(arg0: InProgressRun): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.saveInProgressRun(arg0);
@@ -338,7 +338,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async saveStats(arg0: bigint, arg1: bigint): Promise<boolean> {
+    async saveStats(arg0: bigint, arg1: bigint): Promise<void> {
         if (this.processError) {
             try {
                 const result = await this.actor.saveStats(arg0, arg1);

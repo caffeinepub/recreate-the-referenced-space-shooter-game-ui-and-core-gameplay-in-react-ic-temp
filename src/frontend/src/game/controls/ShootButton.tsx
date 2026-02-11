@@ -1,12 +1,13 @@
-import { useEffect, useRef } from 'react';
-import { Zap } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 interface ShootButtonProps {
   onShoot: (shooting: boolean) => void;
+  disabled?: boolean;
 }
 
-export default function ShootButton({ onShoot }: ShootButtonProps) {
-  const buttonRef = useRef<HTMLDivElement>(null);
+export default function ShootButton({ onShoot, disabled = false }: ShootButtonProps) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [isPressed, setIsPressed] = useState(false);
   const activePointerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -14,87 +15,74 @@ export default function ShootButton({ onShoot }: ShootButtonProps) {
 
     const button = buttonRef.current;
 
-    const startShooting = () => {
+    const handleStart = () => {
+      if (disabled) return;
+      setIsPressed(true);
       onShoot(true);
     };
 
-    const stopShooting = () => {
+    const handleEnd = () => {
+      activePointerRef.current = null;
+      setIsPressed(false);
       onShoot(false);
     };
 
     const handlePointerDown = (e: PointerEvent) => {
-      // Only respond if no pointer is active
-      if (activePointerRef.current !== null) return;
+      if (disabled || activePointerRef.current !== null) return;
       
       e.preventDefault();
       activePointerRef.current = e.pointerId;
       button.setPointerCapture(e.pointerId);
-      startShooting();
+      handleStart();
     };
 
     const handlePointerUp = (e: PointerEvent) => {
-      // Only respond to the active pointer
       if (activePointerRef.current !== e.pointerId) return;
       
       e.preventDefault();
       if (button.hasPointerCapture(e.pointerId)) {
         button.releasePointerCapture(e.pointerId);
       }
-      activePointerRef.current = null;
-      stopShooting();
+      handleEnd();
     };
 
     const handlePointerCancel = (e: PointerEvent) => {
-      // Only respond to the active pointer
       if (activePointerRef.current !== e.pointerId) return;
-      
-      activePointerRef.current = null;
-      stopShooting();
+      handleEnd();
     };
 
     const handleLostPointerCapture = (e: PointerEvent) => {
-      // Only respond to the active pointer
       if (activePointerRef.current !== e.pointerId) return;
-      
-      activePointerRef.current = null;
-      stopShooting();
+      handleEnd();
     };
 
-    // Reset on visibility/orientation/resize/blur changes
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        activePointerRef.current = null;
-        stopShooting();
+        handleEnd();
       }
     };
 
     const handleOrientationChange = () => {
-      activePointerRef.current = null;
-      stopShooting();
+      handleEnd();
     };
 
     const handleResize = () => {
-      activePointerRef.current = null;
-      stopShooting();
+      handleEnd();
     };
 
     const handleBlur = () => {
-      activePointerRef.current = null;
-      stopShooting();
+      handleEnd();
     };
 
     const handlePageHide = () => {
-      activePointerRef.current = null;
-      stopShooting();
+      handleEnd();
     };
 
-    // Attach pointer event listeners
     button.addEventListener('pointerdown', handlePointerDown);
     button.addEventListener('pointerup', handlePointerUp);
     button.addEventListener('pointercancel', handlePointerCancel);
     button.addEventListener('lostpointercapture', handleLostPointerCapture);
 
-    // Attach lifecycle listeners
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('orientationchange', handleOrientationChange);
     window.addEventListener('resize', handleResize);
@@ -106,46 +94,30 @@ export default function ShootButton({ onShoot }: ShootButtonProps) {
       button.removeEventListener('pointerup', handlePointerUp);
       button.removeEventListener('pointercancel', handlePointerCancel);
       button.removeEventListener('lostpointercapture', handleLostPointerCapture);
+
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('orientationchange', handleOrientationChange);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('blur', handleBlur);
       window.removeEventListener('pagehide', handlePageHide);
     };
-  }, [onShoot]);
+  }, [onShoot, disabled]);
+
+  // Reset when disabled changes
+  useEffect(() => {
+    if (disabled) {
+      setIsPressed(false);
+      onShoot(false);
+    }
+  }, [disabled, onShoot]);
 
   return (
-    <div
+    <button
       ref={buttonRef}
-      className="shoot-button flex items-center justify-center"
-      style={{ 
-        width: 'var(--control-size)',
-        height: 'var(--control-size)',
-        touchAction: 'none'
-      }}
+      className={`shoot-button ${isPressed ? 'shoot-button-pressed' : ''} ${disabled ? 'shoot-button-disabled' : ''}`}
+      aria-label="Shoot"
     >
-      <div className="flex flex-col items-center gap-1">
-        <Zap 
-          className="shoot-icon-glow"
-          style={{ 
-            width: 'var(--shoot-icon-size)',
-            height: 'var(--shoot-icon-size)',
-            color: 'oklch(0.96 0.05 200)',
-            strokeWidth: 2.5
-          }}
-          fill="oklch(0.75 0.25 330)"
-        />
-        <span 
-          className="shoot-icon-glow font-bold tracking-wider"
-          style={{ 
-            fontSize: 'clamp(0.625rem, 2vw, 0.875rem)',
-            color: 'oklch(0.96 0.05 200)',
-            textShadow: '0 0 8px oklch(0.75 0.25 330 / 0.8)'
-          }}
-        >
-          SHOOT
-        </span>
-      </div>
-    </div>
+      <span className="shoot-button-icon">⚡</span>
+    </button>
   );
 }
